@@ -167,3 +167,32 @@ root.render(
   </React.StrictMode>
 );
 ```
+
+# 5. Replace Title and Favicon in `index.html`
+
+Let's look into `public` > `index.html` and replace contents of `<title>` with our project title.
+
+For the favicon, this line already handles the `src` attribute's value
+
+```html
+<link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+```
+
+### Creating our favicon
+
+Check out this link: [favicon.io](https://favicon.io/favicon-generator/).
+
+Options | What I chose
+--------|-------------
+Text| J
+Background| Square
+Font Family | Leckerli One
+Font Variant | Regular 400 Normal
+Font Size | 110
+Font Color | #FFFFFF
+Background Color | #209CEE
+
+
+So just place our own `favicon.ico` into the `public` folder, and replace the placeholder react favicon. 
+
+It should now re-render that image.
