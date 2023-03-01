@@ -139,3 +139,31 @@ Go to the `src` folder and delete these files:
 - setupTests.js
 
 Nearly all the files in `src` except for `App.js` and `index.js`. 
+
+Then update `App.js` and `index.js` accordingly
+
+```js
+function App() {
+  return (
+    <div className="App">
+      <h1>Job Tracker</h1>
+    </div>
+  );
+}
+
+export default App;
+```
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+```
