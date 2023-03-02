@@ -284,5 +284,12 @@ Description on the left, Login/Register on the right
 
 ## Styled Components
 
-Styling react components. 
+[Styling components for React](https://github.com/styled-components/styled-components). Here are the [docs](https://styled-components.com/docs).
 
+> styled-components utilises tagged template literals to style your components.
+
+It removes the mapping between components and styles. This means that when you're defining your styles, you're actually creating a normal React component, that has your styles attached to it.
+
+```sh
+npm install styled-components
+```
