@@ -196,3 +196,44 @@ Background Color | #209CEE
 So just place our own `favicon.ico` into the `public` folder, and replace the placeholder react favicon. 
 
 It should now re-render that image.
+
+# 6. Using normalize.css 
+
+*Side-note*: Now I was deciding whether to just discard the step CSS normalize step altogether, since if you are familiar with CSS at a decent level to understand `box-sizing` (and spot box-sizing related bugs), margins, padding, and specific browser behaviors (default body margin, needing 100% height), etc... then just write your own CSS for the ground up. I would've omitted this step but I want to skip some of the CSS to go straight to the app development. Go to [Step 7](#7-coding-the-landing-page) if you want to omit this step.
+
+- Going to speed up the development process by using [normalize.css](https://necolas.github.io/normalize.css/) which makes browsers render all elements more consistently. It creates a set of baseline styles for HTML elements for browsers across the board. 
+
+You can either download the file from the link or run the command in the terminal:
+
+```sh
+npm install normalize.css
+```
+
+First stop the server if you have it running with `Ctrl + C`, then run the above command within the `client` folder.
+
+Now let's use the file, so in `index.js` **before the line** `import './index.css';` put `import 'normalize.css';` 
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import 'normalize.css';
+import './index.css';
+import App from './App';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+```
+
+### Now a side note while installing this package
+
+**Do not run** `npm audit fix --force` if you do not know what you are doing. Just ignore the `npm audit report` till a fix is found, because it ended up installing and breaking the current code. Alternatively, run `npm audit fix` without the `--force` parameter (dangerous option sincce it upgrades the unsafe dependencies regardless of any rules).
+
+Thankfully, version control system `git` to the rescue! I was able to save my `package-lock.json` and `package.json` by using `git revert` before the change happened. Then I ran `npm install` to restore the modules. 
+
+# 7. Coding the Landing Page
+
+ss
