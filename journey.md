@@ -7,6 +7,7 @@ Documenting my steps while making `job-tracker`
 Just going to make a working list of my the tools, environment, etc.
 
 - Visual Studio Code
+  - VS Code's [ES7+ React/Redux/React-Native snippets](https://marketplace.visualstudio.com/items?itemName=dsznajder.es7-react-js-snippets) install @ extensions tab
 - Windows Terminal
 - Node.js (along with `npm`)
 
@@ -185,10 +186,10 @@ Check out this link: [favicon.io](https://favicon.io/favicon-generator/).
 Options | What I chose
 --------|-------------
 Text| J
-Background| Square
-Font Family | Leckerli One
+Background| Rounded
+Font Family | Roboto
 Font Variant | Regular 400 Normal
-Font Size | 110
+Font Size | 120
 Font Color | #FFFFFF
 Background Color | #209CEE
 
@@ -236,4 +237,52 @@ Thankfully, version control system `git` to the rescue! I was able to save my `p
 
 # 7. Coding the Landing Page
 
-ss
+Create a `pages` directory within `src`. Then create a `Landing.js` component.
+
+Tip: In VS Code, `Ctrl + b` to toggle side menu or `Ctrl + Shift + e` to open project explorer. Click on `src` folder within that side menu, then click the new file icon (page + icon) and type out `pages/Landing.js` which will create both a directory and file at the same time.
+
+```
+job-tracker
+  |- client
+       |- node_modules
+       |- public
+       |- src
+          | - assets
+          | - pages
+```
+
+### Creating the logo 
+
+Head over to [favicon.ico](https://favicon.io/logo-generator/) and click the Logo generator. 
+Here are my settings:
+
+Options | What I chose
+--------|-------------
+Text| Job Tracker
+Font| Roboto
+color | none
+Font Color | #209CEE
+Text| J
+Font Color | white
+Shape | Rounded
+Color | #209CEE
+
+Issue: SyntaxError: unknown: Namespace tags are not supported by default. **React's JSX doesn't support namespace tags**. 
+
+In the SVG file, I changed
+
+```
+xmlns:xlink TO xmlnsXlink
+xmlns:svgjs TO xmlnsXsvgjs
+```
+
+The reason being is that we are working with JSX, and these must be in camelCase property. Here is the [Stack Overflow Response](https://stackoverflow.com/questions/59820954/syntaxerror-unknown-namespace-tags-are-not-supported-by-default).
+
+## Landing Page will have a 2 column lay-out
+
+Description on the left, Login/Register on the right
+
+## Styled Components
+
+Styling react components. 
+
