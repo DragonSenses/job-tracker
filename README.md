@@ -30,9 +30,11 @@ cd /job-tracker
 3. Install dependencies
 
 ```powershell
-npm run install-dependencies
+npm install
 ```
 
-TODO: Set this up later
+4. Run the app on localhost:3000
 
-4. 
+```powershell
+npm run start
+```
