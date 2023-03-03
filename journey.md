@@ -8,6 +8,7 @@ Just going to make a working list of my the tools, environment, etc.
 
 - Visual Studio Code
   - VS Code's [ES7+ React/Redux/React-Native snippets](https://marketplace.visualstudio.com/items?itemName=dsznajder.es7-react-js-snippets) install @ extensions tab
+  - vscode-styled-components
 - Windows Terminal
 - Node.js (along with `npm`)
 
@@ -191,8 +192,7 @@ Font Family | Roboto
 Font Variant | Regular 400 Normal
 Font Size | 120
 Font Color | #FFFFFF
-Background Color | #209CEE
-
+Background Color | #2cb1bc
 
 So just place our own `favicon.ico` into the `public` folder, and replace the placeholder react favicon. 
 
@@ -261,11 +261,12 @@ Options | What I chose
 Text| Job Tracker
 Font| Roboto
 color | none
-Font Color | #209CEE
+Font Color | #2cb1bc
 Text| J
 Font Color | white
 Shape | Rounded
-Color | #209CEE
+Color | #2cb1bc
+#209CEE
 
 Issue: SyntaxError: unknown: Namespace tags are not supported by default. **React's JSX doesn't support namespace tags**. 
 
@@ -293,3 +294,174 @@ It removes the mapping between components and styles. This means that when you'r
 ```sh
 npm install styled-components
 ```
+
+Also download the extension called vscode-styled-components (to have syntax highlighting of CSS within the [Template literals](https://styled-components.com/docs/basics#motivation))
+
+`Landing.js` 
+```js
+import React from 'react'
+import logo from '../assets/images/logo.svg'
+import main from '../assets/images/main.svg'
+import styled from 'styled-components'
+
+
+function Landing() {
+  return (
+    <main>
+      <nav>
+        <img src={logo} alt="job tracker logo" className="logo" />
+      </nav>
+      <div className="container page">
+        <div className="info">
+          <h1>Job <span>Tracking</span> App</h1>
+          <h4>Track and manage all your job applications in one place.</h4>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            Fuga odit pariatur voluptatum quam quia facere delectus, ipsam deleniti
+            officiis culpa. Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+            Veritatis optio provident iusto tempore nam natus odio sit, ipsum dolorem pariatur!
+          </p>
+          <button className='btn btn-hero'>Login/Register</button>
+        </div>
+        <img src={main} alt="job hunt" className='img main-img'></img>
+      </div>
+    </main>
+  );
+}
+
+const Wrapper = styled.main`
+  
+`
+export default Landing 
+```
+
+`import` styled-components module, then create a styled component (called `Wrapper`) right before the `export`.
+
+```js 
+import React from 'react'
+import logo from '../assets/images/logo.svg'
+import main from '../assets/images/main.svg'
+import styled from 'styled-components'
+
+function Landing() {
+  return (
+    <main>
+      { /* ... logic here */ }
+    </main>
+  );
+}
+
+const Wrapper = styled.main`
+  
+`
+export default Landing 
+```
+
+Why `styled.main` ? Since we wrapped the `Landing` component in a `<main>` tag. 
+
+Now we can replace the `<main>` tag with `<Wrapper>`: 
+
+```js 
+import React from 'react'
+import logo from '../assets/images/logo.svg'
+import main from '../assets/images/main.svg'
+import styled from 'styled-components'
+
+function Landing() {
+  return (
+    <Wrapper>
+      { /* ... logic here */ }
+    </Wrapper>
+  );
+}
+
+const Wrapper = styled.main`
+  nav {
+    width: var(--fluid-width);
+  }
+`
+export default Landing 
+```
+
+## What's the benefit of doing all this?
+
+Now we can select all the elements and all the classes, inside the React component.
+
+And just like with **SASS* we can do nesting of css, so lets say we target only the `<span>` inside `<h1>`, so we can do something like this:
+
+```css
+h1 {
+  font-weight: 700;
+  span{
+    color: red;
+  }
+}
+```
+
+- **No class name bugs** - styled components generates unique class names for your styles. No duplication, overlap or misspellings
+- **Easier deltion of CSS**
+- **Maintenance**
+- **Automatic critical CSS** 
+- **Simple dynamic styling**
+
+Check out the [Motivation](https://styled-components.com/docs/basics#motivation) behind styled components.
+
+Let's start targeting the HTML elements:
+
+```js
+const Wrapper = styled.main`
+  nav {
+    width: var(--fluid-width);
+    max-width: var(--max-width);
+    margin: 0 auto;
+    height: var(--nav-height);
+    display: flex;
+    align-items: center;
+  }
+  .page {
+    min-height: calc(100vh - var(--nav-height));
+    display: grid;
+    align-items: center;
+    margin-top: -3rem;
+  }
+  h1 {
+    font-weight: 700;
+    span {
+      color: var(--primary-500);
+    }
+  }
+  p {
+    color: var(--grey-600);
+  }
+  .main-img {
+    display: none;
+  }
+  @media (min-width: 992px) {
+    .page {
+      grid-template-columns: 1fr 1fr;
+      column-gap: 3rem;
+    }
+    .main-img {
+      display: block;
+    }
+  }
+`
+```
+
+## Create `wrappers` folder under `src`>`assets`
+
+The styled component `Wrapper` will be moved into a file also named `Landing.js` but under the `wrappers` folder where we'll import into our `pages` > `Landing.js`.
+
+### Issue solved - Warning of several instances of "styled-components"
+
+On Chrome Developer Tools, this issue with pop up.
+
+Issue solved: duplicated module in node_modules.
+
+Ran this command in the terminal:
+
+```sh
+npm dedupe
+```
+
+### TO DO LATER: Make React `Logo` component or `Header` component with navbar
