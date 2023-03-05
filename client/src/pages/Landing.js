@@ -1,13 +1,13 @@
 import React from 'react'
-import logo from '../assets/images/logo.svg'
 import main from '../assets/images/main.svg'
 import Wrapper from '../assets/wrappers/LandingPage';
+import Logo from '../components/Logo';
 
 function Landing() {
   return (
     <Wrapper>
       <nav>
-        <img src={logo} alt="job tracker logo" className="logo" />
+        <Logo />
       </nav>
       <div className="container page">
 
