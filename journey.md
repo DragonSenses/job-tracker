@@ -610,10 +610,10 @@ To set up the structure for the rest of the pages, which are single-page applica
 
 ### Installing 
 
-[Installation](https://www.npmjs.com/package/react-router)
+[Installation](https://www.npmjs.com/package/react-router-dom)
 
 ```sh
-npm i react-router
+npm i react-router-dom
 ```
 
 Now import the four components in `App.js`:
@@ -701,4 +701,15 @@ function App() {
 }
 ```
 
-Now since we are devloping it in localhost-3000
+Now since we are devloping it in localhost:3000. Let's run the project:
+
+```sh
+npm start
+```
+
+Now `localhost:3000` should open up in browser. 
+
+- Homepage is the dashboard
+- To see the landing page, go to this link -> `localhost:3000/landing`
+- Register page -> `localhost:3000/register`
+- Error page -> anything added after `localhost:3000/####` that doesn't match above
