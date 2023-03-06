@@ -782,3 +782,59 @@ export default function Error() {
 - The wrapper gives it full height of the viewport and centers the rest. 
 - Link the user back to home page
 
+---
+
+# The `Register` page
+
+- Add imports to `Register.js`
+
+```jsx
+import React from 'react'
+import Logo from '../components/Logo.js'
+import Wrapper from '../assets/wrappers/RegisterPage'
+```
+
+Register will be a form that includes `Username`, `Email` and `Password`. 
+
+It can toggle to a Log-In form with just `Email` and `Password`
+
+- The default state of Register page is these inputs 
+
+Let's create a JavaScript object that contains these values, called `initialState`:
+
+```jsx
+const initialState = {
+  name: '',
+  email:'',
+  password:'',
+  isMember: false,
+}
+```
+
+Now inside the function let's create a [React Hook](https://reactjs.org/docs/hooks-overview.html). 
+
+
+```jsx
+const [values, setValues] = useState(initialState);
+```
+
+We use array destructuring to give different names to the state variables. 
+
+- where `values` represent the the `initialState` object
+- and `setValues` function will control the state
+
+- The initial state argument is only used during the first render.
+
+Now add event handlers:
+
+```jsx
+  const handleChange = (e) => { 
+    console.log(e.target) 
+  }
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    console.log(e.target);
+  }
+```
+
