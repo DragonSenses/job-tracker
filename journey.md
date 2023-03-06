@@ -925,3 +925,46 @@ export default function FormRow({type, name, value, handleChange, labelText}) {
 }
 ```
 
+## Use `FormRow` component in `Register`
+
+- First import
+
+```js
+import { FormRow, Logo } from '../components'
+```
+
+- Using the component, and passing the necessary props
+
+```jsx
+<FormRow
+  type="text"
+  name="name"
+  value={values.name}
+  handleChange={handleChange}
+/>
+```
+
+- Now reusing the component to make the other form rows:
+
+```jsx
+<FormRow
+  type="email"
+  name="email"
+  value={values.email}
+  handleChange={handleChange}
+/>
+
+<FormRow
+  type="password"
+  name="password"
+  value={values.password}
+  handleChange={handleChange}
+/>
+```
+
+- Note how because we set up the `initalState` as an object with properties `name`, `email` & `password`,  `handleChange` function will access both the name of the input and value, then access the proper value in intialState object afterwards. That is why `handleChange` can be reused, because it is assigned to a prop and invoked in the `FormRow` component. 
+
+Now see it rendered @ `http://localhost:3000/register` try typing into an input field, say `Email` and open up Developer Tools (Press F12 in Chrome) and see the console log the proper input type, name, class, and value. The value matches the email in the state. 
+
+---
+
