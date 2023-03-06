@@ -6,7 +6,7 @@ const initialState = {
   name: '',
   email:'',
   password:'',
-  isMember: false,
+  isMember: true,
 }
 
 export default function Register() {
@@ -22,6 +22,17 @@ export default function Register() {
   }
 
   return (
-    <h1>Register</h1>
+    <Wrapper className='full-page'>
+      <form className='form' onSubmit={onSubmit} action="">
+        <Logo />
+        <h3>Log In</h3>
+        <div className="form-row">
+          <label htmlFor="name" className="form-label">Name</label>
+          <input type="text" value={values.name} name="name"
+          onChange={handleChange} className="form-input"/>
+        </div>
+        <button type="submit" className="btn btn-block">submit</button>
+      </form>
+    </Wrapper>
   )
 }

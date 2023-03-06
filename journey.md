@@ -813,6 +813,11 @@ const initialState = {
 
 Now inside the function let's create a [React Hook](https://reactjs.org/docs/hooks-overview.html). 
 
+Let's import `useState` first:
+
+```jsx
+import React, { useState } from 'react'
+```
 
 ```jsx
 const [values, setValues] = useState(initialState);
@@ -837,4 +842,34 @@ Now add event handlers:
     console.log(e.target);
   }
 ```
+
+Working on actual return of `Register`
+
+Going to have a wrapper with `full-page` class for CSS styles to apply, along with a `form`. The `Logo` will be on top along with some header text like "Log-In" or "Register". After we create a div with className "form-row". 
+
+```jsx
+  return (
+    <Wrapper className='full-page'>
+      <form className='form' onSubmit={onSubmit} action="">
+        <Logo />
+        <h3>Log In</h3>
+        <div className="form-row">
+          
+        </div>
+      </form>
+    </Wrapper>
+  )
+```
+
+Inside "form-row" add the label and input. Along with a submit button after form-row div.
+
+```js
+<div className="form-row">
+  <label htmlFor="name" className="form-label">Name</label>
+  <input type="text" value={values.name} name="name"
+  onChange={handleChange} className="form-input"/>
+</div>
+<button type="submit" className="btn btn-block">submit</button>
+```
+
 
