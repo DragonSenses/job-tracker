@@ -464,4 +464,241 @@ Ran this command in the terminal:
 npm dedupe
 ```
 
-### TO DO LATER: Make React `Logo` component or `Header` component with navbar
+# 8. Create `components` folder 
+
+Project Directory:
+```
+job-tracker
+  |- client
+       |- node_modules
+       |- public
+       |- src
+          | - assets
+              | - css
+              | - images
+              | - wrappers
+          | - components
+          | - pages
+```
+
+Now create a `Logo.js` within components, and move out the following lines out of `Landing.js` into logo component: 
+
+```js
+import logo from '../assets/images/logo.svg'
+
+<img src={logo} alt="job tracker logo" className="logo" />
+```
+
+And import it in `Landing.js`
+```js
+import Logo from '../components/Logo';
+
+function Landing() {
+  return (
+    <Wrapper>
+      <nav>
+        <Logo />
+      </nav>
+      {/* ... */}
+    </Wrapper>
+  );
+}
+```
+
+## Organizing `components`, `imports` & `exports`
+
+When the project scales, the components folder will be large and in turn the number of imports will increase. e.g., for `Landing Page`, let says it is not just the logo but many things like `Header`, 
+`Footer`, `NavBar`, `SideBar`, `Ads` components then the imports would take up a lot of space in Landing component:
+
+`Landing.js`
+```js
+import Logo from '../components/Logo';
+import Header from '../components/Header';
+import NavBar from '../components/NavBar';
+import SideBar from '../components/SideBar';
+import Ads from '../components/Ads';
+import Footer from '../components/Footer';
+
+function Landing() {
+  return (
+    <Wrapper>
+      <Logo />
+      <Header />
+      <NavBar />
+      <SideBar />
+      <Ads />
+      <Footer />
+      {/* ... */}
+    </Wrapper>
+  );
+}
+export default Landing 
+```
+
+This is fine as the app still works. Its all about preference, but the other and cleaner/concise way to do this is to set up an `index.js` within the components folder (or any folder with different files such as `pages`). In `index.js` import the `Logo` component and export everything. 
+
+So instead of import one component file at a time like above, we can just look into `index.js` and specify what components are needed. So here is what the `import` in Landing looks like:
+
+```js
+import { Logo } from '../components'
+
+function Landing() {
+  return (
+    <Wrapper>
+      <Logo />
+    </Wrapper>
+  );
+}
+export default Landing 
+```
+
+The `index.js` in the `components` folder:
+```js
+import Logo from "./Logo";
+
+export { Logo };
+```
+
+Now we can easily *scale* our imports/exports like so:
+
+`components > index.js`
+```js
+import Ads from './Ads'
+import Footer from './Footer'
+import Header from './Header'
+import Loading from './Loading'
+import Logo from './Logo'
+import Navbar from './Navbar'
+import SideBar from './SideBar'
+
+export {
+  Ads,
+  Footer,
+  Header,
+  Loading,
+  Logo,
+  Navbar,
+  SideBar,
+}
+```
+
+`Landing.js`
+```js
+import { Ads, Footer, Header, Loading, Logo, NavBar, SideBar } from '../components'
+
+function Landing() {
+  return (
+    <Wrapper>
+      <Logo />
+      <Header />
+      <NavBar />
+      <SideBar />
+      <Ads />
+      <Footer />
+      {/* ... */}
+    </Wrapper>
+  );
+}
+export default Landing 
+```
+
+We can list out specifically the named exports we need.
+
+# 9. React Router
+
+To set up the structure for the rest of the pages, which are single-page applications, and the routing solution is React Router v6. [React Router Docs](https://reactrouter.com/en/main/start/overview).
+
+### Installing 
+
+[Installation](https://www.npmjs.com/package/react-router)
+
+```sh
+npm i react-router
+```
+
+Now import the four components in `App.js`:
+
+```jsx
+import { BrowserRouter, Routes, Route, Links } from 'react-router-dom'
+```
+
+Now to use it within the `App`
+
+```jsx
+function App() {
+  return (
+    <div className="App">
+      <Landing />
+    </div>
+  );
+}
+```
+
+The App with the imports and components:
+
+```jsx
+import Landing from "./pages/Landing"
+import { BrowserRouter, Routes, Route, Links } from 'react-router-dom'
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        
+        <Landing />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+```
+
+- Wrap app component in `BrowserRouter`
+- Then within set-up `Routes` component
+- Inside Routes, we set-up each `Route` 
+- Each `Route` has props `path` and `element` 
+- `path` is pathname to add to URL
+- `element` could be anything, we can provide the HTML in element or we can get the component
+
+e.g., 
+
+```jsx
+<Route path="/" element={<div>Dashboard</div>} />
+```
+
+## Homepage
+
+If the user is logged-in, then goes right away to the dashboard. Otherwise, transfer the user to a landing page to register/log-in. The "/" forward slash signals the home page. 
+
+```jsx
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<div>Dashboard</div>}/>     
+        <Landing />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+
+Let's set-up the other pages. Notice the error page will be at the end, if no matches. 
+
+```jsx
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<div>Dashboard</div>}/>
+        <Route path="/register" element={<div>Register</div>}/>     
+        <Route path="/landing" element={<Landing />}/>     
+        <Route path="*" element={<h1>Error</h1>}/>     
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+
+Now since we are devloping it in localhost-3000
