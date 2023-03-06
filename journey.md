@@ -713,3 +713,46 @@ Now `localhost:3000` should open up in browser.
 - To see the landing page, go to this link -> `localhost:3000/landing`
 - Register page -> `localhost:3000/register`
 - Error page -> anything added after `localhost:3000/####` that doesn't match above
+
+# `pages` set-up
+
+- Create pages components : Dashboard, Error, Register
+- Create `index.js` and import all the pages, and export them one by one (including Landing)
+- Import them in `App.js`
+
+
+`index.js` 
+```jsx
+import Dashboard from "./Dashboard";
+import Error from "./Error";
+import Landing from "./Landing";
+import Register from "./Register";
+
+export {
+  Dashboard,
+  Error,
+  Landing,
+  Register
+}
+```
+
+`App.js`
+```jsx
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Dashboard, Error, Landing, Register } from './pages'
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Dashboard />}/>
+        <Route path="/register" element={<Register />}/>     
+        <Route path="/landing" element={<Landing />}/>     
+        <Route path="*" element={<Error />}/>     
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+```
