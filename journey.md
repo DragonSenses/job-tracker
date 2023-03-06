@@ -872,4 +872,56 @@ Inside "form-row" add the label and input. Along with a submit button after form
 <button type="submit" className="btn btn-block">submit</button>
 ```
 
+## Creating a `FormRow` component
+
+I want to use those inputs from FormRow and pass them as `props` to other components. For example, the email for `Profile` component.
+
+- Create `FormRow.js` component in `components` folder and update the `index.js` accordingly
+- Move the code from `Register` of the `div className = 'form-row'` out into the new component
+
+Looking at the code:
+
+```jsx
+    <div className="form-row">
+      <label htmlFor="name" className="form-label">Name</label>
+      <input 
+        type="text" 
+        value={values.name} 
+        name="name"
+        onChange={handleChange} 
+        className="form-input" />
+    </div>
+```
+The FormRow component will look for props, as we need to pass down things like `type`, `value`, `name`, `onChange` and also a `labelText`.
+
+- I don't see labelText, why? Well because there will be instances where the variable or state may be camelCase, but I would like to display it properly (non-camelCase). I'll get back to this later as this comment was added some time after. 
+
+Let's receive the props in `FormRow` :
+
+```jsx
+export default function FormRow({type, name, value, handleChange, labelText}) {
+```
+
+And now to change the above code to use the props rather than hardcoding. Like this:
+
+```jsx
+import React from 'react'
+
+export default function FormRow({type, name, value, handleChange, labelText}) {
+  return (
+    <div className="form-row">
+      <label htmlFor={name} className="form-label">
+        { labelText || name }
+      </label>
+      <input 
+        type={type} 
+        value={value} 
+        name={name}
+        onChange={handleChange}
+        className="form-input"
+      />
+    </div>
+  )
+}
+```
 
