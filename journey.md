@@ -1096,3 +1096,173 @@ const toggleMember = () => {
   </button>
 </p>
 ```
+
+---
+
+# Managing States
+
+Before we move on, we have to discuss managing states in React. Link to [article on managing states](https://www.freecodecamp.org/news/how-to-manage-state-in-your-react-apps/#:~:text=Global%20%28UI%29%20state%20%E2%80%93%20Global%20state%20is%20data,example%20of%20global%20state%20is%20authenticated%20user%20state.). 
+
+There are four main types of state you need to properly manage in your React apps:
+
+1. Local state
+2. Global state
+3. Server state
+4. URL state
+
+### Local (UI) state
+
+> Local state is data we manage in one or another component.
+
+Local state is most often managed in React using the `useState` hook.
+
+For example, local state would be needed to show or hide a modal component or to track values for a form component, such as form submission, when the form is disabled and the values of a form’s inputs.
+
+### Global (UI) state 
+
+> Global state is data we manage across multiple components.
+
+Global state is necessary when we want to get and update data anywhere in our app, or in multiple components at least.
+
+A common example of global state is ***authenticated user state***. If a user is logged into our app, it is necessary to get and change their data throughout our application.
+
+Sometimes state we think should be local might become global.
+
+### Server state 
+
+> Data that comes from an external server that must be integrated with our UI state.
+
+Server state is a simple concept, but can be hard to manage alongside all of our local and global UI state.
+
+There are several pieces of state that must be managed every time you fetch or update data from an external server, including loading and error state.
+
+Fortunately there are tools such as SWR and React Query that make managing server state much easier.
+
+### URL state 
+
+> Data that exists on our URLs, including the pathname and query parameters.
+
+URL state is often missing as a category of state, but it is an important one.
+In many cases, a lot of major parts of our application rely upon accessing URL state. Try to imagine building a blog without being able to fetch a post based off of its slug or id that is located in the URL!
+
+There are undoubtedly more pieces of state that we could identify, but these are the major categories worth focusing on for most applications you build.
+
+
+### Managing Local State in React
+
+Local state is perhaps the easiest kind of state to manage in React, considering there are so many tools built into the core React library for managing it.
+
+- `useState` is the first tool you should reach for to manage state in your components.
+
+It can take accept any valid data value, including primitive and object values. Additionally, its setter function can be passed down to other components as a callback function (without needing optimizations like `useCallback`).
+
+```js
+import { useState } from "react";
+
+function Layout() {
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+  return (
+    <>
+      <Sidebar isSidebarOpen={isSidebarOpen} closeSidebar={() => setSidebarOpen(false)} />
+      {/* ... */}
+    </>
+  );
+}
+```
+
+- `useReducer` is another option that can be used for either local or global state. It is similar in many ways to `useState` under the hood, although instead of just an initial state it accepts a reducer.
+
+The benefit of `useReducer` is that it provides a built-in way to **perform a number of different state operations with the help of the reducer function**, which makes it more dynamic overall than useState.
+
+You can see the benefit of `useReducer` versus `useState` in this vote tracking example. All we have to do to update state is pass the callback function `dispatch` a string (which is then passed to the reducer) instead of the new state itself.
+
+```js
+const initialState = { votes: 0 };
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'upvote':
+      return {votes: state.votes + 1};
+    case 'downvote':
+      return {votes: state.votes - 1};
+    default:
+      throw new Error();
+  }
+}
+
+function VoteCounter() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  return (
+    <>
+      Current Votes: {state.votes}
+      <button onClick={() => dispatch({type: 'upvote'})}>Upvote</button>
+      <button onClick={() => dispatch({type: 'downvote'})}>Downvote</button>
+    </>
+  );
+}
+```
+
+### How to Manage Global State in React
+
+Once you attempt to manage state across multiple components, things get a bit trickier.
+
+You will reach a point in your application where patterns like “lifting state up” and passing callbacks down to update your state from components lead to lots and lots of props.
+
+What do you do if you want to update a component’s state from basically anywhere in your app? You turn it into global state.
+
+To manage it, however, you should opt for a third-party solution. Many developers are inclined to use built-in React features like the Context API to manage their state.
+
+The reason to not use Context for global state management lies in the way it works. **The default behavior for Context is to re-render all children components if the value provided to it as a prop changes.**
+
+> To be clear: the Context API is not a state management solution. It is a way to avoid problems like props drilling (creating a bunch of props in components that don’t need it), but it is only helpful for reading state, not updating it.
+
+For example, it is *bad* practice to combine `useReducer` and `useContext`:
+
+```js
+function App() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  return (
+    <StateProvider.Provider value={{ state, dispatch }}>
+      <ComponentA />
+      <ComponentB />
+      <ComponentC />
+    </StateProvider.Provider>
+  )
+}
+```
+
+In many cases, you do not want all children to update in response to a global state update, because all children may not be consuming or relying upon that global state. You only want to re-render if their props or state changes.
+
+To manage your global state, use tried and tested third-party libraries. 
+
+# Managing Global State / Global Context in our app
+
+The **Global State** of our App will store things `user`, `jobs`, `isLoading`. 
+
+[Passing Data Deeply with Context](https://beta.reactjs.org/learn/passing-data-deeply-with-context)
+
+*Context* lets the parent component make some information available to any component in the tree below it—no matter how deep—without passing it explicitly through props.
+
+Context lets a parent component provide data to the entire tree below it. 
+
+So we will be using `useContext` from 'react', a React Hook that lets you read and subscribe to context from your component. Here are the [docs on useContext](https://beta.reactjs.org/reference/react/useContext).
+
+We will also be wrapping our `App` component in an `AppProvider` component. 
+
+Let's just get into it and solve challenges along the way. 
+
+1. Create `context` folder within `src`, with a file called `appContext.js`
+
+2. Let's set up the imports in that file
+
+```jsx
+import React from 'react';
+import { useState, useReducer, useContext } from 'react'
+```
+
+- Using useReducer() here as well
+
+3. Create initialState object to store our 
