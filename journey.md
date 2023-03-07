@@ -1265,4 +1265,24 @@ import { useState, useReducer, useContext } from 'react'
 
 - Using useReducer() here as well
 
-3. Create initialState object to store our 
+3. Create initialState object to store our state
+
+```jsx
+const initialState = {
+  isLoading: false,
+  showAlert: false,
+  alertText: '',
+  alertType: '',
+}
+```
+
+4. Create Context called `AppContext`
+
+```jsx
+const AppContext = React.createContext();
+```
+
+Context has two components has provider as well as consumer. We will be making the `AppProvider` component, which will wrap the `App` so we have to render its `children`. 
+
+Make sure to use the hook `useState` and export `initialState`.
+
