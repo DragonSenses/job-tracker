@@ -9,12 +9,14 @@ const Wrapper = styled.main`
     display: flex;
     align-items: center;
   }
+  /* // If using logo.svg
   .logo {
     width: 400px;
     height: 240px;
     fill: none;
     padding: 8px 16px 0px 0px;
-  }
+  } 
+  */
   .page {
     min-height: calc(100vh - var(--nav-height));
     display: grid;
