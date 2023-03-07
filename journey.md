@@ -1329,7 +1329,7 @@ export { initialState, useAppContext }
 Context lets a component receive information from distant parents without passing it as props. 
 
 Also export what we need from appContext such as `initalState` and `useAppContext`. 
-
+ 
 ## Using `AppContext` in `Register` component
 
 ```jsx
@@ -1351,3 +1351,33 @@ We should see an Object which contains `alertText`, `alertType`, `isLoading` and
 Now we can remove the `showAlert` property from `Register`'s `initialState` object. And substitute anywhere we have `values.showAlert` with just `showAlert` as we use the global context instead. 
 
 Now to test that this all works, go to register page and open Chrome Developer Tools. Keep going right on the tabs to Components and now click on `AppProvider` and go to the `hooks` on the right panel. Toggle the `showAlert` fom false to true. We should now see that `showAlert` is data being shared by both components.
+
+## Now let's use `useReducer` instead of `useState`
+
+[useReducer docs](https://beta.reactjs.org/reference/react/useReducer)
+
+Let's create a `reducer.js` file in `context` directory
+
+A React reducer is a function that accepts two parameters: a state and an action, and returns a new state based on the action. It is used with the useReducer hook, which is an alternative to useState for managing complex state logic. 
+
+Reducers are functions that take two arguments: the current state and the action to return a new state result. i.e.,  (state, action) = newState. The reducer accepets an action and the app's previous state and returns the new state. Action specifies what occured, and the reducers role is to return the new state as a result of that action.
+
+For now just going to print out if the `action.type` and throw an Error. `reducer.js` will look like:
+
+```jsx
+const reducer = (state, action) => {
+  throw new Error(`No such action: ${action.type}`);
+}
+
+export default reducer
+```
+
+Now back to `appContext.js`:
+
+- remove `useState` from imports
+- import `reducer` 
+- replace `useState` with `useReducer`
+
+`useReducer` looks for a reduce function (which handles the dispatch) as the first parameter, and `initalState`.
+
+Also since we no longer `useState`, that `setState` should be renamed to `dispatch`
