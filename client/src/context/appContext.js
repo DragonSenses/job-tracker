@@ -22,4 +22,8 @@ export default function AppProvider(props) {
   )
 }
 
-export { initialState }
+const useAppContext = () => {
+  return useContext(AppContext)
+}
+
+export { initialState, useAppContext }

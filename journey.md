@@ -1286,3 +1286,46 @@ Context has two components has provider as well as consumer. We will be making t
 
 Make sure to use the hook `useState` and export `initialState`.
 
+```jsx
+import React from 'react';
+import { useState, useReducer, useContext } from 'react'
+
+const initialState = {
+  isLoading: false,
+  showAlert: false,
+  alertText: '',
+  alertType: '',
+}
+
+const AppContext = React.createContext();
+
+export default function AppProvider(props) {
+  const { children } = props;
+  const [state, setState] = useState(initialState);
+
+
+  return (
+    <AppContext.Provider value = {{...state}}>
+      {children}
+    </AppContext.Provider>
+  )
+}
+
+export { initialState }
+```
+
+- We export `AppProvider` and `initialState`
+- And we set up a custom hook so that we can avoid code duplication of: `import useContext`, and `AppContext` in every component to have access in the `value` prop that will be passed in `AppContext.Provider`
+- In custom hook, called `useAppContext` (because **Functions starting with `use` are called *Hooks*** see [Hooks](https://beta.reactjs.org/learn#using-hooks))
+
+```jsx
+const useAppContext = () => {
+  return useContext(AppContext)
+}
+
+export { initialState, useAppContext }
+```
+
+Context lets a component receive information from distant parents without passing it as props. 
+
+Also export what we need from appContext such as `initalState` and `useAppContext`. 
