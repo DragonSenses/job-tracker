@@ -1329,3 +1329,25 @@ export { initialState, useAppContext }
 Context lets a component receive information from distant parents without passing it as props. 
 
 Also export what we need from appContext such as `initalState` and `useAppContext`. 
+
+## Using `AppContext` in `Register` component
+
+```jsx
+export default function Register() {
+  const [values, setValues] = useState(initialState);
+  const state = useAppContext();
+  console.log(state);
+  
+  // ...
+```
+Open up the app & developer tools on http://localhost:3000/register and see the AppContext logged.
+
+We should see an Object which contains `alertText`, `alertType`, `isLoading` and `showAlert`. Now we can extract these values from the `state` object, or forego the `state` assignment altogether and just pull out those values. Like so:
+
+```jsx
+  const {isLoading, showAlert} = useAppContext();
+```
+
+Now we can remove the `showAlert` property from `Register`'s `initialState` object. And substitute anywhere we have `values.showAlert` with just `showAlert` as we use the global context instead. 
+
+Now to test that this all works, go to register page and open Chrome Developer Tools. Keep going right on the tabs to Components and now click on `AppProvider` and go to the `hooks` on the right panel. Toggle the `showAlert` fom false to true. We should now see that `showAlert` is data being shared by both components.
