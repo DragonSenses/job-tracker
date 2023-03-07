@@ -811,6 +811,14 @@ const initialState = {
 }
 ```
 
+## Updating the Screen with `useState`
+
+[React Beta Docs on Updating the Screen](https://beta.reactjs.org/learn#updating-the-screen)
+
+Often, you'll want your component to "remember" some information and display it. To do this, add ***state*** to your component. 
+
+Functions starting with `use` are called *Hooks*, e.g., `useState` is a built-in Hook provided by React. 
+
 Now inside the function let's create a [React Hook](https://reactjs.org/docs/hooks-overview.html). 
 
 Let's import `useState` first:
@@ -819,16 +827,18 @@ Let's import `useState` first:
 import React, { useState } from 'react'
 ```
 
+We declare a ***state variable*** inside our component. You will get two things from `useState`: the current state `values`, and the function that lets you update it `setCount`. Any name can be given but the convention is to call them `[something, setSomething]`
+
 ```jsx
 const [values, setValues] = useState(initialState);
 ```
 
 We use array destructuring to give different names to the state variables. 
-
 - where `values` represent the the `initialState` object
 - and `setValues` function will control the state
-
 - The initial state argument is only used during the first render.
+
+In other words, the first time `Register` component is display, the values will be `initialState` or more specifically a JavaScript object where its name, email, password and isMember is false. When you want to change state, call `setValues()` and pass the new value to it. If the you render the same component multiple times, each will get its own state. 
 
 Now add event handlers:
 
@@ -967,4 +977,60 @@ import { FormRow, Logo } from '../components'
 Now see it rendered @ `http://localhost:3000/register` try typing into an input field, say `Email` and open up Developer Tools (Press F12 in Chrome) and see the console log the proper input type, name, class, and value. The value matches the email in the state. 
 
 ---
+
+## Form Validation 
+
+Whenever you are dealing with forms, you'd want to set-up some form validation to catch things early on the client side rather than on the server side. 
+
+So I'll add an `Alert` component which signals to the user that they need to provide all input values, because one or more are empty. 
+
+- Creating the `Alert` component (rfc, set className to style, return an alert message)
+
+Let's see how it looks in `Register` component, but first we should add a flag/boolean condition that signals whether alert should be seen. We can add this in `initialState` object, as `showAlert`.
+
+### A side note about adding initialState
+
+As of now, it is easier to put these flags like `isMember` or `showAlert`. We can move them out later, because the question remains whether we should ***pass the state down*** from `Register` component, for it later to be shared by other components. Or should initialSDtate be move upwards to the closest component containing all of them. We will have to see.
+
+For now let's just add it so we can see the `Alert` component rendered on `Register`. Import component, add it to `initalState` and conditionally render it under the "Log-In" text.
+
+```jsx
+import { Alert, FormRow, Logo } from '../components'
+
+{/* ... */}
+
+const initialState = {
+  name: '',
+  email: '',
+  password: '',
+  isMember: true,
+  showAlert: true,
+}
+
+{/* ... */}
+
+  <h3>Log In</h3>
+  { values.showAlert && <Alert />}
+```
+
+Now `npm start` in the Terminal to see it rendered on our page, localhost:3000.
+
+1. Press `F12` or right-click the page to `Inspect`. 
+2. On the tabs with Elements, Console, etc... keep going right until you find `Components` Page. 
+3. Click on `Register` in the Tree
+4. Make sure to widen the Developer Tools View so you can see the right panel
+5. Right panel consists of the Component, props & hooks.
+6. Under hooks, there is a checkbox where we can toggle off `showAlert` so lets do that
+7. Alert toggles off correctly
+
+--- 
+
+### Side Note - `[DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq)`
+
+We see the above error, which also shows the line 
+```js
+<input type="password" name="password" class="form-input" value>
+``` 
+
+that triggers it. We should add one more attribute called `autocomplete` within the `FormRow` component to ensure `autocomplete="on"`. [Stack Overflow Post on autocomplete](https://stackoverflow.com/questions/54970352/input-elements-should-have-autocomplete-attributes).
 
