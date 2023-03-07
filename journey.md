@@ -796,7 +796,7 @@ import Wrapper from '../assets/wrappers/RegisterPage'
 
 Register will be a form that includes `Username`, `Email` and `Password`. 
 
-It can toggle to a Log-In form with just `Email` and `Password`
+It can toggle to a Log In form with just `Email` and `Password`
 
 - The default state of Register page is these inputs 
 
@@ -855,7 +855,7 @@ Now add event handlers:
 
 Working on actual return of `Register`
 
-Going to have a wrapper with `full-page` class for CSS styles to apply, along with a `form`. The `Logo` will be on top along with some header text like "Log-In" or "Register". After we create a div with className "form-row". 
+Going to have a wrapper with `full-page` class for CSS styles to apply, along with a `form`. The `Logo` will be on top along with some header text like "Log In" or "Register". After we create a div with className "form-row". 
 
 ```jsx
   return (
@@ -992,7 +992,7 @@ Let's see how it looks in `Register` component, but first we should add a flag/b
 
 As of now, it is easier to put these flags like `isMember` or `showAlert`. We can move them out later, because the question remains whether we should ***pass the state down*** from `Register` component, for it later to be shared by other components. Or should initialSDtate be move upwards to the closest component containing all of them. We will have to see.
 
-For now let's just add it so we can see the `Alert` component rendered on `Register`. Import component, add it to `initalState` and conditionally render it under the "Log-In" text.
+For now let's just add it so we can see the `Alert` component rendered on `Register`. Import component, add it to `initalState` and conditionally render it under the "Log In" text.
 
 ```jsx
 import { Alert, FormRow, Logo } from '../components'
@@ -1034,3 +1034,65 @@ We see the above error, which also shows the line
 
 that triggers it. We should add one more attribute called `autocomplete` within the `FormRow` component to ensure `autocomplete="on"`. [Stack Overflow Post on autocomplete](https://stackoverflow.com/questions/54970352/input-elements-should-have-autocomplete-attributes).
 
+---
+
+## Toggling between Register or Log In
+
+Finally, the `isMember` property from the `initialState` will be used. 
+
+We want a way to toggle between a `Register` form or `Log In` form. 
+
+Controlling:
+- Inputs to display
+- Changed the heading (from Register to Log In)
+- On Submit, which Functions are involved (a register request or Log In request)
+
+How to translate this to code?
+
+1. First, a toggle function that inverts the value. More specifically, I want to extract the **current** value from `values` thats found in the state, and only change `isMember` to it's opposite value. 
+
+```jsx
+const toggleMember = () => {
+  setValues({...values, isMember: !values.isMember});
+}
+```
+
+  - What is the `...` ? The [Spread Syntax](https://javascript.info/rest-parameters-spread#spread-syntax).
+  - Since `initialState` is an object that stores our state as values, we want to "spread out" all the current values
+
+2. There are 3 locations where we use `isMember` condition. 
+  - `<h3>` that has `Register` or `Log In`
+  - On the inputs, we do not want to display the "name" `FormRow` field on Log In. But display it ony Register.
+  - The actual toggle element for `isMember`, which will be a button. 
+  
+```jsx
+// The heading <h3>
+<h3>{values.isMember ? "Log In" : "Register"}</h3>
+
+// Name Input
+{ !values.isMember && (
+  <FormRow
+    type="text"
+    name="name"
+    value={values.name}
+    handleChange={handleChange}
+  />
+)}
+```
+
+3. Creating the toggle button
+  - Displayed right after the submit button
+  - For now, it will be a `<p>` that displays text whether the user is `Not a member yet?` or is `Already a member?`. 
+  - Note that if form is "Log In", then it should show "Register"
+  - After that it displays a button that runs the function in step 1
+
+```jsx
+<p>
+  <button
+    type='button'
+    onClick={toggleMember}
+    className="member-btn">
+    Register
+  </button>
+</p>
+```
