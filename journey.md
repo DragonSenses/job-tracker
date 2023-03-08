@@ -1535,3 +1535,25 @@ Now lets destructure the values from the state in the handler. Then check if any
 
 Next we check for if any of them are missing (let's check name only if isMember is false, and we are on the Register panel). If this is the case, then return, else let's log the values. 
 
+```jsx
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const { name, email, password, isMember } = values;
+
+    if( !email || !password || (!isMember && !name)){
+      displayAlert();
+      return; 
+    }
+    console.log(values);
+  }
+```
+
+## Hiding the Alert properly
+
+Once Alert component is displayed, it does not disappear unless we refresh the page or navigate away. It should hide when we successfully register/log-in. 
+
+So let's create an export a `const` action of `CLEAR_ALERT`, then set up the imports in `reducer.js` and `appContext.js`. 
+
+- Next in `reducer.js` set the global context, state of showAlert to false, alertType and alertText to empty. 
+
+- In `appContext.js`, let's create a function of `clearAlert()` that dispatches `CLEAR_ALERT` after 4 seconds. 
