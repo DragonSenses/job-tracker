@@ -1662,3 +1662,38 @@ Right after the `main` line, add this line: `"type":"module",`
 
 I used to do CommonJS a lot and have it memorized. I thought it was difficult to set it up, but it was easier than I expected. So I definitely can vouch for using ES6 in Node, because more often than not front-end would run ES6 set-up (think `create-react-app`) so it makes senses to have the server run the same set-up. Although it is up to preference, for smaller apps its probably easy to type out those lines in CommonJS.
 
+# Express
+
+```sh
+npm install express
+```
+
+Now in `server.js`
+
+```js
+import express from 'express'
+const app = express()
+
+app.get('/', (req, res) => {
+  res.send('Hello');
+})
+
+const port = process.env.PORT || 4000;
+
+app.listen(port, () => console.log(`Server is listening on port ${port}...`));
+```
+
+Notice how we :
+- import the `express` ES6 module
+- Set up a custom port, preferably one that does not collide with our front-end's port: 3000
+- We set a home route in `app.get()`
+
+Let's run the server:
+
+```sh
+node server
+```
+
+Now open up a browser and send a `GET` request @ `localhost:4000`
+
+We should see the message. This indicates our set-up is good to go.

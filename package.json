@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/DragonSenses/job-tracker/issues"
   },
-  "homepage": "https://github.com/DragonSenses/job-tracker#readme"
+  "homepage": "https://github.com/DragonSenses/job-tracker#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
