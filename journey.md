@@ -1472,3 +1472,66 @@ export default function Alert() {
 
 ### Takeaway: Now every time we use `Alert` component the values in our application will be provided from the **Global Context**
 
+# Piecing things together : using Alert in Register
+
+**Goal: Display `Alert` when one of the input values is missing**
+
+Recall the `handleChange` method:
+
+```jsx
+  const handleChange = (e) => {
+    console.log(e.target)
+  }
+```
+
+We look for the event, every time we type something in the input we set the values. 
+
+Ok we also have access to the `initialState` object or `state` in an object called `values` because of this:
+
+```jsx
+  const [values, setValues] = useState(initialState);
+```
+
+Let's spread out all the values in the object. We also have access to the `event` or `e.target`, and more specifically the `e.target.name` and `e.target.value`, we can dynamically set that property with the value. 
+
+```jsx
+  const handleChange = (e) => {
+    setValues({...values, [e.target.name]: e.target.value });
+  }
+```
+
+We can create *Dynamic Object Keys* by taking advantage of [Square Brackets Notation](https://javascript.info/object#square-brackets) or more specifically the [Computed Properties](https://javascript.info/object#computed-properties).
+
+Now let's test out the handler:
+
+```sh
+cd client
+npm run start
+```
+
+- Go to localhost:3000/register
+- Open Chrome Dev Tools, go to Components Pane, Hit `Register` 
+- Type into email input and we should see `email` property update its State in the `hooks` section
+
+Now onto the `onSubmit` handler. First we have to destructure `displayAlert` from the global context. So this line:
+
+```jsx
+  const {isLoading, showAlert} = useAppContext();
+```
+Turns into this line:
+
+```jsx
+  const {isLoading, showAlert, displayAlert} = useAppContext();
+```
+
+Now lets destructure the values from the state in the handler. Then check if any of the values are empty:
+
+```jsx
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const { name, email, password, isMember } = values;
+  }
+```
+
+Next we check for if any of them are missing (let's check name only if isMember is false, and we are on the Register panel). If this is the case, then return, else let's log the values. 
+
