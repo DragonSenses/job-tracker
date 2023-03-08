@@ -1697,3 +1697,40 @@ node server
 Now open up a browser and send a `GET` request @ `localhost:4000`
 
 We should see the message. This indicates our set-up is good to go.
+
+## Adding the `middleware`
+
+middleware - software that acts as a bridge between an operating system or database and applications, especially on a network.
+
+Let's say we have a request for some resource (e.g., localhost:4000/something) that doesn't exist we would get a default Express not found response: `Cannot GET /something`. We want a custom response to send back. 
+
+Let's create a folder called `middleware`. This is the folder that will contain our `.js` files, that contains our custom functions to run as a fallback before rendering the page.
+
+***Middleware lets you define custom functions that can be run before rendering either a page or a group of pages (layout).*** 
+
+We will have a `not-found` middleware and `error` middleware
+
+**REMEMBER**: since we are using `ES6 Modules` in Node, we need to use `.js` as the extension for the files. So when we `import` we have to add `.js` at the end of the file path. 
+
+e.g.,
+
+```js
+import notFoundMiddleware from './middleware/not-found.js'
+```
+
+### not-found middleware
+
+Let's create a `not-found.js` file in `middleware` directory:
+
+```js
+const notFoundMiddleware = (req, res) => 
+  res.status(404).send('404! Oops, Route does not exist'); 
+
+export default notFoundMiddleware
+```
+
+Now in `server`, we have to import the module and have `app.use(notFoundMiddleWare)` to signal that it is looking for all the `http` methods (GET, POST, etc.) and same for home route. Express first tries to match the request to all the routes that we have (right now just home route "/") and then if none of them match, then we go to `app.use()` to serve up the middleware.
+
+
+
+
