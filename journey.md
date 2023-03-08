@@ -1557,3 +1557,108 @@ So let's create an export a `const` action of `CLEAR_ALERT`, then set up the imp
 - Next in `reducer.js` set the global context, state of showAlert to false, alertType and alertText to empty. 
 
 - In `appContext.js`, let's create a function of `clearAlert()` that dispatches `CLEAR_ALERT` after 4 seconds. 
+
+# The Server
+
+Go to the `job-tracker` directory which contains `client`, so if in `client` folder just go one level up. We will set up the server so run this line:
+
+```sh
+npm init -y
+```
+
+This initializes npm, and creates a file `package.json` 
+The `-y` parameter is short for `--yes`, which automatically answers "yes" to any prompts that npm might print on the command line.
+
+You can see list of parameters and npm init withh `npm help init`. 
+
+Next create a file `server.js` still in the `job-tracker` directory.
+
+Now to run the server the command in the shell is:
+
+```sh
+node server
+```
+
+## CommonJS vs ES6
+
+Node uses both. Before and still is using CommonJS where they have a `require` but ES6 can import. If the project front-end is in ES6 but server-side is CommonJS there may be bugs. CommonJS good to set up for simple API's, but full project go ES6. 
+
+```
+CommonJS
+
+const express = require('express')
+const app = express()
+```
+
+```
+ES6
+
+import express from 'express'
+const app = express()
+```
+
+But ES6 needs a bit more set-up to be used as a module. See the [Node docs on Modules: Packages](https://nodejs.org/api/packages.html#modules-packages).
+
+> Node.js will treat the following as ES modules when passed to node as the initial input, or when referenced by import statements or import() expressions:
+
+- Files with an .mjs extension.
+
+- Files with a .js extension when the nearest parent package.json file contains a top-level "type" field with a value of "module".
+
+### Let's go with the latter and go to `package.json` file
+
+```json
+{
+  "name": "job-tracker",
+  "version": "1.0.0",
+  "description": "A job tracking and management application.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DragonSenses/job-tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DragonSenses/job-tracker/issues"
+  },
+  "homepage": "https://github.com/DragonSenses/job-tracker#readme"
+}
+```
+
+Right after the `main` line, add this line: `"type":"module",`
+
+```json
+{
+  "name": "job-tracker",
+  "version": "1.0.0",
+  "description": "A job tracking and management application.",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DragonSenses/job-tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DragonSenses/job-tracker/issues"
+  },
+  "homepage": "https://github.com/DragonSenses/job-tracker#readme"
+}
+```
+
+**From now on will be able to use, import and export in our server as well.**
+
+I used to do CommonJS a lot and have it memorized. I thought it was difficult to set it up, but it was easier than I expected. So I definitely can vouch for using ES6 in Node, because more often than not front-end would run ES6 set-up (think `create-react-app`) so it makes senses to have the server run the same set-up. Although it is up to preference, for smaller apps its probably easy to type out those lines in CommonJS.
+
