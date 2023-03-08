@@ -1731,6 +1731,66 @@ export default notFoundMiddleware
 
 Now in `server`, we have to import the module and have `app.use(notFoundMiddleWare)` to signal that it is looking for all the `http` methods (GET, POST, etc.) and same for home route. Express first tries to match the request to all the routes that we have (right now just home route "/") and then if none of them match, then we go to `app.use()` to serve up the middleware.
 
+### error middleware
 
+notFound - looks for requests that do not match any of our current routes
 
+error - looks for errors that are happening in our existing route
+
+Create `error-handler.js`
+
+It will have a function that accepts 4 parameters. This indicates to express that the first one will be error, and it will pass in that error. 
+
+- For now just log the error, and return a generic 500 response.
+- In json, set up that indicates that there was an error `json( {"msg":"Error occured"})`
+- import this into `server.js`
+
+Make sure to place this last in the server. Later on when we have `async` errors in our controllers, and eventually handle custom Mongoose Errors (like `node-express`)
+
+Here is what `error-handler.js` looks like:
+
+```js
+const errorHandlerMiddleware = (err, req, res, next) => {
+  console.log(err);
+  res.status(500).json({msg:"Error occured."});
+}
+
+export default errorHandlerMiddleware
+```
+
+and now in the server
+
+```js
+import notFoundMiddleware from './middleware/not-found.js'
+import errorHandlerMiddleware from './middleware/error-handler.js'
+
+import express from 'express'
+const app = express()
+
+app.get('/', (req, res) => {
+  res.send('Hello');
+})
+
+app.use(notFoundMiddleware);
+app.use(errorHandlerMiddleware);
+
+const port = process.env.PORT || 4000;
+
+app.listen(port, () => console.log(`Server is listening on port ${port}...`));
+```
+
+We can test it by throwing an error in the home route
+
+```js
+app.get('/', (req, res) => {
+  throw new Error();
+  res.send('Hello');
+})
+```
+
+Now we see the json, `{"msg":"Error occured."}` when we head over to `localhost:4000` and in the terminal we see the `Error` which comes from the `server.js`.
+
+Now with the `Middlewares` in place we can set up the connection to MongoDB.
+
+# MongoDB Set-Up
 
