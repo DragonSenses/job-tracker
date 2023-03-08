@@ -1381,3 +1381,94 @@ Now back to `appContext.js`:
 `useReducer` looks for a reduce function (which handles the dispatch) as the first parameter, and `initalState`.
 
 Also since we no longer `useState`, that `setState` should be renamed to `dispatch`
+
+## Dispatching our first action
+
+We want to display Alert when one of the values are empty.
+
+Let's create an `actions.js` file within `context` folder. Then we export a `const` variable `DISPLAY_ALERT = 'SHOW_ALERT'` (in all uppercase as convention).
+
+`import` this variable in both `reducer.js` and `appContext.js`.
+
+- Let's handle that action right away in the reducer. If `action.type` is equivalent to `DISPLAY_ALERT` then return the current state as it is (spread out the values) but modify the following:
+- `showAlert` property to true.
+- The `alertType: 'danger'` 
+- and `alertText:` to Please provide all values!
+
+Like this: 
+
+```jsx
+import { DISPLAY_ALERT } from "./actions";
+
+const reducer = (state, action) => {
+  if(action.type === DISPLAY_ALERT) {
+    return {
+      ...state,
+      showAlert: true,
+      alertType: 'danger',
+      alertText: 'Please provide all values!',
+    }
+  }
+  throw new Error(`No such action: ${action.type}`);
+}
+```
+
+Next in `AppContext.js` set up the function. Above the return but below the state and `useReducer`:
+
+```jsx
+  const displayAlert = () => {
+    dispatch({type:DISPLAY_ALERT});
+  }
+```
+
+Inside the function body we `dispatch()`, where we dispatch an **Object** with the type of `DISPLAY_ALERT`.
+
+So when working with `useReducer` we are passing in the object, and one thing we **MUST** pass in is the *type property*. 
+
+Optionally, we can provide other properties, in our case we will stick with payload. If we are providing some kind of value to reducer to use later in the actual function then we go with payload. But for now we just pass in the object, and type must be present. 
+
+```jsx
+  const displayAlert = () => {
+    dispatch({type:DISPLAY_ALERT});
+  }
+```
+
+Also add `DISPLAY_ALERT` in the value, since ***every time we set up a function we should pass it down*** in `AppContext.Provider`.
+
+```jsx
+  return (
+    <AppContext.Provider value = {{...state}}>
+      {children}
+    </AppContext.Provider>
+  )
+
+  // Pass function displayAlert down
+  return (
+    <AppContext.Provider value = {{...state, displayAlert}}>
+      {children}
+    </AppContext.Provider>
+  )
+```
+
+### Make `Alert` component dynamic
+
+- First `useAppContext` and import
+- Two values that we are extracting from the **state** are `alertType` and `alertText`, the dynamic values that will change depending on our actions (the ones we are dispatching)
+- Also change the hard coded `className` from `alert-danger` to interpolate `alertType`
+
+```jsx
+import React from 'react'
+import { useAppContext } from '../context/appContext'
+
+export default function Alert() {
+  const { alertType, alertText } = useAppContext();
+  return (
+    <div className={`alert alert-${alertType}`}>
+      {alertText}
+    </div>
+  )
+}
+```
+
+### Takeaway: Now every time we use `Alert` component the values in our application will be provided from the **Global Context**
+
