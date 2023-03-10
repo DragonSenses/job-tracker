@@ -2016,3 +2016,125 @@ start();
 
 6. Create `MONGO_URL` in `.env`
 
+Get your specific URL from `MongoDB Atlas Interface` Under Deployment > Database > Connect
+
+- Connect your Application > Node.js 4.1 or later
+- Get the connection string into application code, copy it and paste it in `MONGO_URL=YOUR_CONNECTION_STRING` in `.env`
+
+7. npm run start
+
+Start the server and we should see server is listening on port etc.
+
+# The MVC model -> Model-View-Controller
+
+Model-View-Controller (MVC) is a software design pattern that divides an application into three components: model, view and controller. 
+
+The **model** is responsible for managing the data and logic of the application. 
+
+The **view** is responsible for rendering the presentation of the model in a particular format. 
+
+The **controller** is responsible for handling user input and interaction, and controlling how data is displayed by selecting a view.
+
+The main benefit of MVC is that it separates the concerns of an application, making it easier to maintain, test and reuse. MVC also allows for different views to use the same model, which can improve consistency and user experience. MVC is commonly used for developing user interfaces, especially web applications.
+
+# How to implement MVC in my application?
+
+The implementation of MVC may vary depending on the programming language and framework you use. However, a general approach is to create three classes or components for each layer of MVC: model, view and controller12. The model class should contain the data and logic of your application. The view class should define how to present the data to the user. The controller class should handle user input and interaction, and select a view based on the request12.
+
+For example, if you are using Java, you can create a model class that represents an entity such as an employee, a view class that displays employee details in HTML format, and a controller class that receives user requests and calls methods on the model and view classes.
+
+# How to implement MVC in my node.js application?
+
+Here is the response bing gave me:
+
+```
+To implement MVC in your Node.js application, you can use a framework such as Express.js or Sails.js that provides features and tools for creating MVC applications. You can also follow some general steps to structure your application into model, view and controller components:
+
+- Create a package.json file that contains the metadata and dependencies of your application. You can use npm init command to generate this file.
+- Install the required packages for building the MVC structure in Node.js. You will need at least express for routing and handling requests, ejs for templating views, mongoose for connecting to MongoDB database, and nodemon for restarting the server automatically15. You can use npm install command to install these packages.
+- Create a config file that stores your configuration variables such as port number, database URL, secret key etc. This file exports a JavaScript object that contains these variables.
+- Create a server file that initializes your express app, sets up middleware functions, connects to the database, and listens on a port. This file imports the config file and requires other modules such as express, mongoose etc.
+- Create a routes folder that contains files for defining your routes and controllers. Each file exports a function that takes an express app as an argument and uses app.get(), app.post(), app.put() or app.delete() methods to register routes with callbacks or controller functions. You can also use express.Router() class to create modular route handlers.
+- Create a controllers folder that contains files for defining your controller functions. Each file exports one or more functions that handle user input and interaction, perform business logic using models, and send responses using views. You can also use res.render() method to render ejs templates as views.
+- Create a models folder that contains files for defining your data models using mongoose schema and model classes. Each file exports one or more model classes that represent entities or collections in your database. You can also define methods, validations, hooks etc on your models.
+- Create a views folder that contains files for defining your HTML templates using ejs syntax. Each file has an .ejs extension and uses <% %> tags to embed JavaScript code or expressions. You can also use partials, layouts etc to reuse common elements in your views.
+These are some general steps to implement MVC in Node.js using Express.js framework. However, you may need to modify or add more steps depending on your specific requirements and preferences.
+```
+
+# Routes and Controllers
+
+Create `controllers` folder in the root directory. Recall that the **controller** is responsible for handling user input and interaction, and controlling how data is displayed by selecting a view.
+
+In this case, we will have an authentication controller called `authController.js`, which will store these functionalities:
+
+- log in 
+- register
+- update user 
+
+So create that file and within, we have three functions:
+
+```js
+const register = (req, res) => {
+  res.send('register user');
+}
+
+const login = (req, res) => {
+  res.send('login user');
+}
+
+const updateUser = (req, res) => {
+  res.send('updateUser');
+}
+
+export { register, login, updateUser }
+```
+
+Now create the `routes` folder with `authRoutes.js` file which will export a function takes an express app as an argumentand uses app.get(), app.post(), app.put() or app.delete() methods to register routes with callbacks or controller functions. 
+
+Here we use express.Router() class to create modular route handlers.
+
+
+```js
+import express from 'express'
+const router = express.Router()
+
+import { register, login, updateUser } from '../controllers/authController.js'
+```
+
+Now we can set up our routes:
+
+```js
+router.route('/register').post(register);
+router.route('/login').post(login);
+router.route('/updateUser').patch(updateUser);
+```
+
+Then export our router:
+
+```js
+export default router
+```
+
+So back in the `server.js`, let's 
+
+- import `authRouter`
+- set up auth route in path '/api/v1/auth' and pass in `authRouter`
+
+```js
+// Routers
+import authRouter from './routes/authRoutes.js'
+
+// right after app.get('/')
+app.use('/api/v1/auth', authRouter);
+```
+
+Since this is a `POST` route, we need to access the JSON that's past it. We do this with special built-in middleware from **Express**.
+
+So add this line before `app.get()`:
+
+```js
+app.use(express.json());
+```
+
+This makes the JSON data available to the controllers. With POST requests, we'll be looking for stuff which is JSON data that will be passed to us with the `.json()` middleware from Express.
+
