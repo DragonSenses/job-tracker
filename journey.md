@@ -1792,5 +1792,74 @@ Now we see the json, `{"msg":"Error occured."}` when we head over to `localhost:
 
 Now with the `Middlewares` in place we can set up the connection to MongoDB.
 
+# Loading Environment variables
+
+To add our application's config options we need a package [dotenv](https://www.npmjs.com/package/dotenv) which loads environment variables from a `.env` file into `process.env`. Storing configuration in the environment separate from code is based on the [Twelve-Factor App Methodology](https://12factor.net/config). 
+
+## Steps to install and set up `dotenv`
+
+0. Make sure all of this is in your `root` directory not `client`
+
+1. Create `.env` file in the root of your project
+
+```env
+S3_BUCKET="YOURS3BUCKET"
+SECRET_KEY="YOURSECRETKEYGOESHERE"
+```
+
+Eventually we will add our connection string, API keys, variables that store our sensitive data.
+
+2. 
+```sh 
+npm install dotenv
+```
+
+3. import and configure `dotenv` as early as possible in application, in the server
+
+Using [import "as"](https://javascript.info/import-export#import-as) to import under a different name.
+
+```jsx
+import * as dotenv from 'dotenv'
+dotenv.config()
+import express from 'express'
+```
+
+4. Now `process.env` has the keys and values you defined in your `.env` file
+
+5. **IMPORTANT**: `.gitignore`
+
+We have to add the folders/files:
+-`/node_modules`
+- `.env`
+
+You do NOT want these to be added to the source control. 
+
+6. Go with port 5000 to test
+
+Add this to `.env` file
+
+```
+PORT=5000
+```
+
+Now remember the lines we added at the end of `server.js` where we interpolated the `port` variable:
+
+```js
+const port = process.env.PORT || 4000;
+
+app.listen(port, () => console.log(`Server is listening on port ${port}...`));
+```
+
+WE can access the variable like so: `process.env.PORT`, and use it.
+
+To test we just run the command in the terminal:
+
+```sh
+npm run start
+```
+
+NOW the server is listening on port 5000, which means the set-up has been correct so far.
+
+Now we have a way 
 # MongoDB Set-Up
 

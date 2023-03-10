@@ -1,12 +1,17 @@
-import notFoundMiddleware from './middleware/not-found.js'
-import errorHandlerMiddleware from './middleware/error-handler.js'
+import dotenv from 'dotenv'
+dotenv.config()
 
 import express from 'express'
 const app = express()
 
+import notFoundMiddleware from './middleware/not-found.js'
+import errorHandlerMiddleware from './middleware/error-handler.js'
+
 app.get('/', (req, res) => {
   res.send('Hello');
 })
+
+
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
