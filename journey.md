@@ -1860,6 +1860,159 @@ npm run start
 
 NOW the server is listening on port 5000, which means the set-up has been correct so far.
 
-Now we have a way 
+Now we have a way to access our sensitive variables such as API keys, connection strings to databases, and more through `process.env` object. We can prevent theft by securing our API keys this way.
+
+Here is an interesting Medium article [How to Hide Your API Keys](https://betterprogramming.pub/how-to-hide-your-api-keys-c2b952bc07e6) by Sylwia Vargas. If you can't access it, here are the salient points:
+
+- Services like Google Cloud and AWS make it possible ot set restrictions of the API key
+- key might only be used within a given URL
+
+- Front End: Hide Your Keys (React)
+- Apart from securing the API key, we can also hide it.
+- IMPORTANT! If you created your React app with create-react-app, please be mindful of that your env variables will become a part of the build, meaning, they will be publicly available for anyone who’d inspect your files. You can still follow the steps below for the development phase so your API keys don’t get into github. Then, before deploying your page, delete the .env file and use the platform’s key management system (see below for Heroku and Netlify).
+
+1. Create a file called .env in the root of your project’s directory.
+
+app's tree:
+```sh
+- your_project_folder
+  - node_modules
+  - public
+  - src
+  - .env         <-- create it here
+  - .gitignore
+  - package-lock.json
+  - package.json
+```
+
+2. Inside the .env file, prepend REACT_APP_ to your API key name of choice and assign it.
+
+`REACT_APP_` is, in fact, a tool that create-react-app uses to identify these variables.
+
+```txt
+// .env
+API_KEY=your_api_key            <-- nope, this won't work
+REACT_APP_API_KEY=your_api_key  <-- yes!
+// Example:
+// REACT_APP_GOOGLE_API_KEY=123456
+```
+
+3. Add the .env file to your .gitignore file.
+
+You don’t want this file to be committed to gitHub!
+
+```txt
+// .gitignore
+
+# api keys
+.env       <-- add this line
+
+# dependencies
+/node_modules
+...
+```
+
+After you’ve saved .gitignore, run `$ git status` to make sure that `.env` is not on the list of changes to be committed.
+
+4. Access the API key via the `process.env` object.
+
+To check that you can access your API key, go to your `App.js` file and add `console.log` at the top below the `require` (or `import`) statements. After saving the file and reloading the page, if the console log does not show your API key, try restarting the react server. And of course, make sure to remove the `console.log` line before committing your code.
+
+```jsx
+// src/App.js
+import React, { Component } from 'react';
+import './App.css';
+console.log(process.env.REACT_APP_GOOGLE_API_KEY)
+class App extends Component {
+...}
+```
+
+Just know that the key may show up in your network requests.
+
+So, if you wish to totally mask your key, you should make a backend that proxies your requests, and store the API key there.
+
+This solution, however, also may not be optimal “because then how do you protect the access to the backend that proxies the request? Or are you gonna leave this backend endpoint public?” 
+
+In full transparency, reverse proxy solution is still vulnerable because you still need to protect access to it with an API key in the client side. Exadra37 points out:
+
+The reverse proxy approach has the advantage that now your third party API key is in a environment you control, thus you can employ as many layers of API security measures as you can afford in order to prevent abuse of the third party service you are paying for.
+
 # MongoDB Set-Up
+
+Let's switch back the PORT on `.env` back to 4000. 
+
+I'll assume you have a MongoDB Atlas account, and are familiar with Databases. 
+
+If not, you can either go to the MongoDB University (if you are a slow but surely learner), or if you are an accelerated learner here is a great [MongoDB Crash Course 2022](https://www.youtube.com/watch?v=2QQGWYe7IDU), in just 30 minutes it will help you up catch up to speed. 
+
+In my opinion the crash course is a lot better in its conciseness, whereas the MongoDB University courses forces you to watch videos from their player (which may not be accessible for everyone). Don't even get me started on the fact that their MongoDB Atlas interface does not have Dark Mode, the top most wanted request in the last years but they still have not delivered. Anyways, I digress.
+
+## `mongoose` module
+
+[mongoose](https://www.npmjs.com/package/mongoose) is a MongoDB object modeling tool designed to work in an asynchronouse environment. 
+
+1. Create `db` folder at the root and `connect.js` file within it.
+
+- `db` is our database folder
+- `connect.js` will have a function that sets up our URL
+
+Stop the server and 
+
+2. install `mongoose`
+
+```sh
+npm install mongoose
+```
+
+3. Import mongoose in `connect.js`
+
+```js
+// Using Node.js `require()`
+const mongoose = require('mongoose');
+
+// Using ES6 imports
+import mongoose from 'mongoose';
+```
+
+4. Setting up the connection.
+
+We have to set up the function that looks for the URL Connection String.
+
+Using mongoose's `connect` method **returns a Promise.** So in the server, we must set up `async` and `await`.
+
+In `connect.js`
+
+```js
+import mongoose from 'mongoose'
+
+const connectDB = (URL) => {
+  return mongoose.connect(URL);
+}
+
+export default connectDB
+```
+
+5. Create a function to start the server only on successful connection
+
+Only run the server, if the database connection was successful. The function called `start` has to be `async` and use `await`. We use the `connectDB` function that we will import in the `server.js`. 
+
+We will access the `URL` connection string through `process.env.MONGO_URL`. Move `app.listen()` after the the `connectDB`, then invoke the function right after.
+
+```js
+const start = async () => {
+  try{
+    await connectDB(process.env.MONGO_URL);
+    app.listen(port, () => { 
+      console.log(`Server is listening on port ${port}...`)
+    });
+
+  } catch(error){
+    console.log(error);
+  }
+}
+
+start();
+```
+
+6. Create `MONGO_URL` in `.env`
 
