@@ -2138,3 +2138,63 @@ app.use(express.json());
 
 This makes the JSON data available to the controllers. With POST requests, we'll be looking for stuff which is JSON data that will be passed to us with the `.json()` middleware from Express.
 
+# Jobs Controller 
+
+CRUD functions.
+
+Functionality:
+
+- createJob
+- getAllJobs
+- updateJob
+- deleteJob
+- showStats
+
+**Because we are communicating with our database** all of these functions are all `async`
+
+## Create the Jobs Router
+
+In `routes` directory, create `jobsRouter.js` and import the functions from the jobs controller. 
+
+```js
+import express from 'express'
+const router = express.Router()
+
+import {
+  createJob,
+  getAllJobs,
+  updateJob,
+  deleteJob,
+  showStats,
+} from '../controllers/jobsController.js'
+
+export default router
+```
+
+## Setting up the Jobs Route Structure
+
+The route will be 'api/v1/jobs', so in `server.js` the `jobsRouter` will be passed in.
+
+```js
+app.use('/api/v1/jobs', jobsRouter);
+```
+
+and we set up the routes in `jobsRouter`
+
+```js
+router.route('/').post(createJob).get(getAllJobs);
+router.route('/stats').get(showStats);
+router.route('/:id').delete(deleteJob).patch(updateJob);
+
+export default router
+```
+
+- The route will be 'api/v1/jobs' will have `post` and `get` methods.
+
+- Then route in stats will access the data about the applications (how many are pending, interviews, etc.)
+
+- Then we pass in id, so we can remove the job, and update the job
+
+- `/stats` string must be above `:id` (an actual value from MongoDB)
+
+Express looks for routes, it may not find a job with this particular id with stats.

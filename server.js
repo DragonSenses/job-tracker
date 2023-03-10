@@ -9,6 +9,7 @@ import connectDB from './db/connect.js'
 
 // Routers
 import authRouter from './routes/authRoutes.js'
+import jobsRouter from './routes/jobsRoutes.js'
 
 // Middleware
 import notFoundMiddleware from './middleware/not-found.js'
@@ -21,6 +22,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/jobs', jobsRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
