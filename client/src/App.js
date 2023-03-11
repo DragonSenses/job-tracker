@@ -1,5 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { Dashboard, Error, Landing, Register } from './pages'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Dashboard, Error, Landing, Register } from './pages';
 
 function App() {
   return (

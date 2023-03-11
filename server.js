@@ -1,19 +1,19 @@
-import dotenv from 'dotenv'
-dotenv.config()
+import dotenv from 'dotenv';
+dotenv.config();
 
-import express from 'express'
-const app = express()
+import express from 'express';
+const app = express();
 
 // Database and AuthenticateUser
-import connectDB from './db/connect.js'
+import connectDB from './db/connect.js';
 
 // Routers
-import authRouter from './routes/authRoutes.js'
-import jobsRouter from './routes/jobsRoutes.js'
+import authRouter from './routes/authRoutes.js';
+import jobsRouter from './routes/jobsRoutes.js';
 
 // Middleware
-import notFoundMiddleware from './middleware/not-found.js'
-import errorHandlerMiddleware from './middleware/error-handler.js'
+import notFoundMiddleware from './middleware/not-found.js';
+import errorHandlerMiddleware from './middleware/error-handler.js';
 
 app.use(express.json());
 
@@ -39,6 +39,6 @@ const start = async () => {
   } catch(error){
     console.log(error);
   }
-}
+};
 
 start();

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useReducer, useContext } from 'react'
+import { useReducer, useContext } from 'react';
 import reducer from './reducer';
 import { DISPLAY_ALERT, CLEAR_ALERT } from "./actions";
 
