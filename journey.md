@@ -2198,3 +2198,221 @@ export default router
 - `/stats` string must be above `:id` (an actual value from MongoDB)
 
 Express looks for routes, it may not find a job with this particular id with stats.
+
+## Add jobs controller and routes to server
+
+```js
+import jobsRouter from './routes/jobsRoutes.js'
+
+//...
+
+app.use('/api/v1/jobs', jobsRouter);
+```
+
+# Testing the routes in [Postman](https://www.postman.com/)
+
+Create a collection named after your project name.
+Create two folders > Add a Folder
+- `Auth` and `Jobs`
+
+Inside `Auth` add New Request. `[CTRL + E]` to rename to "Register User" and change it to a `POST` request.
+
+## Set Up the globals
+
+Click on the top right icon "Environment quick look" and "Add Globals"
+
+Run the server and go to localhost:4000 in the browser, copy the address bar and paste it in the `Initial Value` field. Add `base_url` to the variable field of it, with type default.
+
+Append 'api/v1' so `Initial Value` should look like: 
+
+```
+http://localhost:4000/api/v1
+```
+
+**Important** now Save it in the top right. So we can access this variable.
+
+## Now back in `register user` post request
+
+Add this to the POST request
+
+```
+{{base_url}}/auth/register
+```
+
+{{base_url}} is how we will access our global variable.
+
+- Now `Send` the request. We should see `register user` has been returned, along with the relevant data in the console.
+
+- base_url , register function, and rest of the routes is and will be working (unless we make any errors)
+
+# Recap of MVC
+
+MVC splits a large/complex application to specific sections that have their own purpose.
+
+Example:
+
+1. **Request:** User requests a specific page from a server
+
+- Based on URL user is requesting, the server will send all of the request information to a specific **controller**
+
+## Controller
+
+- ***Handles request flow***
+- Controller should never directly interact with data logic, only ever use Model to perform these interactions.
+- Responsible for handling the entire request from the client
+- Tells the rest of the server what to do with the request
+- Acts as the middleman between **Model** and **View**
+- Should not contain very much code
+- Tells Model what to do and respond with what the Model returns
+
+2. **Get Data**: Controller receives request, asks the Model for information based on the request
+
+## Model
+- ***Handles data logic***
+- Interacts with database
+- Handles all Validation, Saving, Updating, Deleting, Etc. of the data
+- Does not handle User request, or what to do on failure or success (Controller does this)
+
+3. **Get Presentation:** After Model sends response back to Controller, Controller now then interacts with View to Render data to the user
+
+## View
+
+- **Handles data presentation**
+- Template file that dynamically renders HTML based on data Controller sends it
+- Does not worry about final presentation of data, instead just cares only about how to present it
+- View sends final presentation back to the controller
+
+4. **Response**: Controller handles sending that presentation back to the user
+
+**IMPORTANT**: `Model` and `View` never interact with each other. Any interactions done between Model and View are done by `Controller`. ***Presentation of data and Logic of data are completely separated***, facilitating the process of creating complex applications.
+
+## HTTP Verb Primer
+
+From [stack overflow](https://stackoverflow.com/questions/31089221/what-is-the-difference-between-put-post-and-patch)
+
+HTTP Verb | Operation
+----------|----------
+POST | **C**reate
+GET | **R**ead
+PUT | **U**pdate
+DELETE | **D**elete
+PATCH | Submits a ***partial modification** to a resource (e.g., only need to update one field for the resource)
+
+1. GET
+
+GET is the simplest type of HTTP request method; the one that browsers use each time you click a link or type a URL into the address bar. It instructs the server to transmit the data identified by the URL to the client. Data should never be modified on the server side as a result of a GET request. In this sense, a GET request is read-only.
+
+2. POST
+
+The POST verb is mostly utilized to create new resources. In particular, it's used to create subordinate resources. That is, subordinate to some other (e.g. parent) resource.
+
+On successful creation, return HTTP status 201, returning a Location header with a link to the newly-created resource with the 201 HTTP status.
+
+3. PUT 
+
+PUT is most-often utilized for update capabilities, PUT-ing to a known resource URI with the request body containing the newly-updated representation of the original resource.
+
+4. DELETE
+
+DELETE is pretty easy to understand. It is used to delete a resource identified by a URI.
+
+On successful deletion, return HTTP status 200 (OK) along with a response body, perhaps the representation of the deleted item (often demands too much bandwidth), or a wrapped response (see Return Values below). Either that or return HTTP status 204 (NO CONTENT) with no response body. In other words, a 204 status with no body, or the JSEND-style response and HTTP status 200 are the recommended responses.
+
+5. PATCH
+
+Patch request says that we would only send the data that we need to modify without modifying or effecting other parts of the data. Ex: if we need to update only the first name, we pass only the first name.
+
+---
+
+# Back to POSTMAN, create more requests
+
+Let's duplicate our earlier "Register User" request, `[CTRL + D]`
+
+- Create Login > Post > and add the URL
+
+- Create Update User > Patch > URL
+
+Send to confirm they are working.
+
+Note: Make sure to save the requests in Postman in the top right
+
+If the route does not exist then we should have the `not-found` middleware kick in and send us a "Route does not exist".
+
+## Do the same with Jobs
+
+- Add new Request Under Jobs > Post > {{base_url}}/jobs
+
+Save it and send, should see "createJob"
+
+- New Request > Get All Jobs > GET > {{base_url}}/jobs
+
+- New Request > Show Stats > GET > {{base_url}}/jobs/stats
+
+- New Request > Update Job > PATCH > {{base_url}}/jobs/321
+
+- New Request > Delete Job > DELETE > {{base_url}}/jobs/321
+
+The 321 could be any random id
+
+Send them all and we should see the respective responses "createJob, getAllJobs, showStats, updateJob, deleteJob" with responses 200.
+
+Now we are ready to create our **Model**
+
+# Models
+
+Create `models` folder in the root directory
+
+## Defining our User Schema
+
+[Schemas](https://mongoosejs.com/docs/guide.html)
+
+Create `User.js` within it:
+
+- import mongoose
+- create User Schema
+- Pass schema definition into a Model we can work with using
+
+```js
+mongoose.model(modelNamne, schema)
+```
+
+Our User Scehama will have the 3 required and 2 optional fields: `{ name, email, password, lastName, location}`.
+
+```js
+import mongoose from "mongoose";
+const { Schema } = mongoose;
+
+const UserSchema = new Schema({
+  name: {
+    type: String,
+    required: [true, 'Please provide name'],
+    minlength: 2,
+    maxlength: 20,
+    trim: true,
+  },
+  email: {
+    type: String,
+    required: [true, 'Please provide email'],
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: [true, 'Please provide password'],
+    minlength: 6,
+  },
+  lastName: {
+    type: String,
+    trim: true,
+    maxlength: 20,
+    default:'lastName',
+  },
+  location: {
+    type: String,
+    trim: true,
+    maxlength: 30,
+    default:'my location',
+  },
+});
+
+export default mongoose.model('User', UserSchema);
+```
