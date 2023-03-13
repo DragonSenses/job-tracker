@@ -2416,3 +2416,68 @@ const UserSchema = new Schema({
 
 export default mongoose.model('User', UserSchema);
 ```
+
+# Form Validation
+
+We need to validate the inputs from the User Schema.
+
+I will be using mongoose's [Validators](https://mongoosejs.com/docs/validation.html), a middleware that has access to the fields. To be more specific, the [Custom Validators](https://mongoosejs.com/docs/validation.html#custom-validators) from mongoose. It allows custom validation by passing a **validatiton function** [more info here](https://mongoosejs.com/docs/api/schematype.html#schematype_SchemaType-validate).
+
+Let's set up validation for "email". 
+
+```js
+const UserSchema = new Schema({
+  // ...
+  email: {
+    type: String,
+    required: [true, 'Please provide email'],
+    validate: {
+      validator: function(v) {
+        return;
+      },
+      message: 'Please provide a valid email!'
+    },
+    unique: true,
+  },
+  // ...
+});
+```
+
+As we can see, we have a `validate` key, with the value an object having two properties.
+
+1. A validator function
+2. An error message
+
+We will be using an external npm package called [validator](https://www.npmjs.com/package/validator).
+The reason for using an external package instead of a custom made one ourselves is because this should be well-tested and gives us a variety of options. Right now, making our own validator is not a primary concern but later we can always remove this dependency and do so. 
+
+Install `validator` package
+
+```sh
+npm install validator
+```
+
+Then for ES6 imports
+```jsx
+import validator from 'validator';
+```
+
+Then pass in the reference to the function to `validate`, in `User.js`
+
+```js
+import validator from 'validator';
+
+const UserSchema = new Schema({
+  // ...
+  email: {
+    type: String,
+    required: [true, 'Please provide email'],
+    validate: {
+      validator: validator.isEmail,
+      message: 'Please provide a valid email!'
+    },
+    unique: true,
+  },
+  // ...
+});
+```
