@@ -3158,3 +3158,19 @@ class NotFoundError extends CustomError {
 Let's create an `errors` folder @ root directory and set up the `index.js` to export all the custom errors we will make (each in their separate file).
 
 Import the `BadRequestError` in `authController.js` to use it. Run the POST request with an empty field and we should see the proper msg and error.
+
+## Check for duplicate emails in Register Controller
+
+Let's catch the duplicate email earlier and not rely on error handler.
+
+Check the database if a user with that same email property exists using the `User.findOne()` method. 
+
+So in `authController.js`,
+
+```js
+  const userAlreadyExists = await User.findOne({email});
+
+  if(userAlreadyExists){
+    throw new BadRequestError(`The email: ${email} is already in use.`);
+  }
+```
