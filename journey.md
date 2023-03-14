@@ -3153,3 +3153,8 @@ class NotFoundError extends CustomError {
 }
 ```
 
+## Refactoring our `errors`
+
+Let's create an `errors` folder @ root directory and set up the `index.js` to export all the custom errors we will make (each in their separate file).
+
+Import the `BadRequestError` in `authController.js` to use it. Run the POST request with an empty field and we should see the proper msg and error.
