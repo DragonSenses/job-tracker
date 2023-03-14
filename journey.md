@@ -1698,6 +1698,18 @@ Now open up a browser and send a `GET` request @ `localhost:4000`
 
 We should see the message. This indicates our set-up is good to go.
 
+# Middleware 
+
+Here is a brilliant explanation of [Middleware](https://www.theodinproject.com/lessons/nodejs-express-101#middleware) from TheOdinProject. 
+
+Middleware is a complicated word for a simple concept. A middleware is just a plain JavaScript function that Express will call for you between the time it receives a network request and the time it fires off a response (i.e. it’s a function that sits in the middle). You will eventually be using several of these functions that will run in a specific sequence for every request.
+
+For example, you might have a logger (that prints details of the request to the console), an authenticator (that checks to see if the user is logged in, or otherwise has permission to access whatever they’re requesting) and a static-file server (if the user is requesting a static file then it will send it to them). All of these functions will be called in the order you specify every time there’s a request on the way to your `app.get("/")` function.
+
+It is possible and common to write your own middleware functions (you’ll be doing that later) so let’s take a minute to demystify what they’re actually doing. Middleware functions are just plain JavaScript functions with a specific function signature (that is, it takes a specific set of arguments in a specific order).
+
+The three middleware function arguments are: `req`, `res`, and `next`. Technically, these are just variables, so you could call them anything, but convention (and the express documentation) almost always give them these names.
+
 ## Adding the `middleware`
 
 middleware - software that acts as a bridge between an operating system or database and applications, especially on a network.
@@ -2481,3 +2493,42 @@ const UserSchema = new Schema({
   // ...
 });
 ```
+
+# Register back-end
+
+Let's set up the Register in the authController. 
+
+Import the User Model, we try to create the user and catch for any errors.
+
+So a `try..catch` is involved. For positive we send a `201` status and error is `500` status.
+
+`201 Created` - request succeeded, and a new resource was created as a result.
+
+`500 Internal Server Erro` - The server has encountered a situation it does not know how to handle.
+
+[MDN's HTTP Response Status Codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
+
+```js
+import User from '..models/User.js'
+
+const register = async (req, res) => {
+  try {
+    const user = await User.create(req.body);
+    res.status(201).json({user});
+  } catch(error){
+    res.status(500).json({ msg:'there was an error' });
+  }
+  
+  res.send('register user');
+}
+```
+
+WE have the register in the `Authentication Controller`, creating the user is an asynchronous function, so have to add `async` and `await`. 
+
+NOTE: in `server.js` we have:
+
+```js
+app.use(express.json());
+```
+
+## Go to Postman to test
