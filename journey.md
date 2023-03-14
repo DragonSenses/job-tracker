@@ -2820,7 +2820,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     msg: '500 - Something went wrong, try again later',
   }
 
-  res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({msg: err});
+  res.status(defaultError.statusCode).json({msg: err});
 }
 
 export default errorHandlerMiddleware
@@ -2828,5 +2828,133 @@ export default errorHandlerMiddleware
 
 Now we created an object called `defaultError` with the constant, and an error msg. 
 
-Notice right now we have `{msg: err}` instead of `{defaultError.msg}`, because right now we want to see the error printed out in Postman. This will be changed later.
+Instead of `res.status(StatusCodes.Internal_SERVER_ERROR).json({msg: err});` we replace it with `res.status(defaultError.statusCode).json({msg: err});`
 
+Notice right now we have `{msg: err}` instead of `{defaultError.msg}`, because right now we want to see the error (we received as the first argument to the function) printed out in Postman. This is to help with different types of errors such as MongoDB errors. This will be changed later.
+
+# Error Handling
+
+We can re-use our Error Handling logic here in other projects.
+
+First let's look at the error object we get. When we do a `POST` request. 
+
+```json
+{
+    "msg": {
+        "errors": {
+            "name": {
+                "name": "ValidatorError",
+                "message": "Please provide name",
+                "properties": {
+                    "message": "Please provide name",
+                    "type": "required",
+                    "path": "name",
+                    "value": ""
+                },
+                "kind": "required",
+                "path": "name",
+                "value": ""
+            }
+        },
+        "_message": "User validation failed",
+        "name": "ValidationError",
+        "message": "User validation failed: name: Please provide name"
+    }
+}
+```
+
+- An Error object with `errors` property. 
+- Every field that is missing is going to be added as a property to `errors`
+- In this case, a missing `name` field will add a `msg.errors.name` property.
+- A missing `email` field will add a `msg.errors.email` property
+- Inside the missing fields we have a key `name` and value of `ValidatorError`
+
+## Error - Missing Field
+
+There are a couple ways to handle this error to provide meaningful information for the user.
+
+1. We can check for `ValidationError` and give the user the error message instead.
+
+```js
+const errorHandlerMiddleware = (err, req, res, next) => {
+  console.log(err);
+
+  const defaultError = {
+    statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+    msg: '500 - Something went wrong, try again later',
+  }
+
+  if(err.name === 'ValidationError'){
+    defaultError.statusCode = StatusCodes.BAD_REQUEST;
+    defaultError.msg = err.message;
+  }
+
+  res.status(defaultError.statusCode).json({msg: defaultError.msg});
+}
+```
+
+2. Have an array that goes through each missing field of the error object and print out their messages.
+
+Notice if we have multiple empty fields: 
+
+```json
+{
+  "name": "",
+  "password": "secretPassword",
+  "email":""
+}
+```
+
+Our error object is:
+
+```json
+{
+    "msg": {
+        "errors": {
+            "name": {
+                "name": "ValidatorError",
+                "message": "Please provide name",
+                "properties": {
+                    "message": "Please provide name",
+                    "type": "required",
+                    "path": "name",
+                    "value": ""
+                },
+                "kind": "required",
+                "path": "name",
+                "value": ""
+            },
+            "email": {
+                "name": "ValidatorError",
+                "message": "Please provide email",
+                "properties": {
+                    "message": "Please provide email",
+                    "type": "required",
+                    "path": "email",
+                    "value": ""
+                },
+                "kind": "required",
+                "path": "email",
+                "value": ""
+            }
+        },
+        "_message": "User validation failed",
+        "name": "ValidationError",
+        "message": "User validation failed: name: Please provide name, email: Please provide email"
+    }
+}
+```
+
+We can go through each property key in `errors` and extract out the `message` for each.
+
+First we get the value of `errors` which is the object that contains the properties with the missing fields: `name`, `email` and `password`. We do this with `Object.values()`.
+
+Then we should map each missing field to its `message` property. 
+
+Let's join each string. 
+
+```js
+    defaultError.msg = Object.values(err.errors)
+      .map( (field) => field.message)
+      .join(","); 
+```
