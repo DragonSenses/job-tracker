@@ -2958,3 +2958,29 @@ Let's join each string.
       .map( (field) => field.message)
       .join(","); 
 ```
+
+Now make sure to restart the server:
+
+1. Ctrl + C -> to stop the server
+2. node server.js -> to run the server
+
+Now in Postman, run the request with empty fields and we should get:
+
+```json
+{
+    "msg": "Please provide name,Please provide email,Please provide password"
+}
+```
+It should also give us a `400 Bad Request`.
+
+### Email Validation
+
+```json
+{
+  "name": "Luna",
+  "password": "LunaBerry",
+  "email":"notAValidEmail"
+}
+```
+
+Because we had the `validate` set-up, the error handling also covers valid emails and passwords. 

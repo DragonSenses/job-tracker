@@ -12,7 +12,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     defaultError.statusCode = StatusCodes.BAD_REQUEST;
     // defaultError.msg = err.message;
     defaultError.msg = Object.values(err.errors)
-      .map( (field) => field.message)
+      .map((field) => field.message)
       .join(","); 
   }
 
