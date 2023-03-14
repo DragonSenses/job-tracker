@@ -2984,3 +2984,68 @@ It should also give us a `400 Bad Request`.
 ```
 
 Because we had the `validate` set-up, the error handling also covers valid emails and passwords. 
+
+## Error - Unique Email
+
+Let's print out the error object when we have a non-unique email (signing up with an email in the database but different user).
+
+```js
+  res.status(defaultError.statusCode).json({msg: err});
+```
+
+The `POST` request:
+
+```json
+{
+  "name": "Luna",
+  "password": "LunaBerry",
+  "email":"1@2.com"
+}
+```
+
+The error object we get:
+
+```json
+{
+    "msg": {
+        "index": 0,
+        "code": 11000,
+        "keyPattern": {
+            "email": 1
+        },
+        "keyValue": {
+            "email": "1@2.com"
+        }
+    }
+}
+```
+
+- Has a `code` of `11000`
+- We have the offending field stored in `keyValue`
+
+Let's change it back so we can have a custom error message:
+
+```js
+  res.status(defaultError.statusCode).json({msg: defaultError.msg});
+```
+
+Then we have to check if the `err.code` exists, and it is equal to 11000 then:
+
+- Respond with a bad request
+- Create a template string for the error message, that it is a non-unique value
+- We can get the `email` field if we access the objects key using `Object.keys()`
+
+```js
+  if(err.code && (err.code === 11000)){
+    defaultError.statusCode = StatusCodes.BAD_REQUEST;
+    defaultError.msg = `${Object.keys(err.keyValue)} field has to be unique`;
+  }
+```
+
+Restart the server, send the request with non-unique email to Postman, and we get:
+
+```json
+{
+    "msg": "email field has to be unique"
+}
+```
