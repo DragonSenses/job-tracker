@@ -3049,3 +3049,35 @@ Restart the server, send the request with non-unique email to Postman, and we ge
     "msg": "email field has to be unique"
 }
 ```
+
+## Error Checking in the Controller - Empty input fields 
+
+Let's check for errors in the `Register` controller (i.e., `authController.js`). 
+
+Checking for errors before it hits the middleware makes it less error-prone and allows for checking for specific errors. 
+
+We can access those input fields in the `req.body` so we can destructure it for the fields we check for. Let's add this to the `register` function. 
+
+```js
+const register = async (req, res) => {
+  const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    // next(error);
+    throw new Error("Please provide all values");
+  }
+
+  // Instead of req.body, pass in the input fields
+  const user = await User.create({ name, email, password });
+  res.status(StatusCodes.CREATED).json({user});
+}
+```
+
+Now when the error is passed to the error middleware, we can have add it as a message to the `defaultError`. 
+
+```js
+  const defaultError = {
+    statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+    msg: err.message | '500 - Something went wrong, try again later',
+  }
+```
