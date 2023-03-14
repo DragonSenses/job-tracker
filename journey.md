@@ -2509,7 +2509,7 @@ So a `try..catch` is involved. For positive we send a `201` status and error is 
 [MDN's HTTP Response Status Codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
 
 ```js
-import User from '..models/User.js'
+import User from '../models/User.js'
 
 const register = async (req, res) => {
   try {
@@ -2532,3 +2532,39 @@ app.use(express.json());
 ```
 
 ## Go to Postman to test
+
+Go to Auth > Register User > Body > Raw Checkbox > From Text to JSON
+
+**What are we looking for?**
+***The properties that are required in User*** see `User.js`
+
+```json
+{
+  "name": "Tatsuya",
+  "password": "secretPassword",
+  "email":"1@2.com"
+}
+```
+
+Send the request, and we should see that in the Body the user is created. 
+
+WE can also see it in the MongoDB. 
+
+Submitting it by omitting a required value returns a 500 error, so lets remove the email. 
+
+Here is what we get after sending the request: 
+```json
+{
+    "user": {
+        "name": "Tatsuya",
+        "email": "1@2.com",
+        "password": "secretPassword",
+        "lastName": "lastName",
+        "location": "my location",
+        "_id": "640fe8ea9284cf58998d2b39",
+        "__v": 0
+    }
+}
+```
+
+Now in our MongoDB Database, we can see a directory called `test` and see a document logged under `users`.
