@@ -2735,3 +2735,98 @@ And just import the package in `server.js`
 ```js
 import 'express-async-errors';
 ```
+
+Let's run the server, and this time send a POST request with an empty name (in Postman):
+
+```sh
+node server
+```
+
+```json
+{
+  "name": "",
+  "password": "secretPassword",
+  "email":"1@2.com"
+}
+```
+
+A `POST` request yields this:
+
+```json
+{
+    "msg": {
+        "errors": {
+            "name": {
+                "name": "ValidatorError",
+                "message": "Please provide name",
+                "properties": {
+                    "message": "Please provide name",
+                    "type": "required",
+                    "path": "name",
+                    "value": ""
+                },
+                "kind": "required",
+                "path": "name",
+                "value": ""
+            }
+        },
+        "_message": "User validation failed",
+        "name": "ValidationError",
+        "message": "User validation failed: name: Please provide name"
+    }
+}
+```
+
+So the errors still pass on to the `errorHandleMiddleware`.
+
+# Optional - Using `http-status-codes` package
+
+[http-status-codes](https://www.npmjs.com/package/http-status-codes).
+
+We install the library, but this time we `import` the specific **constants** for each Response Code.
+
+**Why should I install it?**
+
+- Cleaner to read, debug and maintain
+- No need to remember the HTTP status codes
+
+```sh
+npm install http-status-codes
+```
+
+Now in `authController.js`, we import `StatusCodes and replace:
+
+```js
+  res.status(201).json({user});
+```
+
+with:
+
+```js
+import { StatusCodes } from 'http-status-codes';
+```
+
+Now head over to `error-handler.js` and import it and use the status code constant for 500: `INTERNAL_SERVER_ERROR`
+
+
+```js
+import { StatusCodes } from 'http-status-codes';
+
+const errorHandlerMiddleware = (err, req, res, next) => {
+  console.log(err);
+
+  const defaultError = {
+    statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+    msg: '500 - Something went wrong, try again later',
+  }
+
+  res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({msg: err});
+}
+
+export default errorHandlerMiddleware
+```
+
+Now we created an object called `defaultError` with the constant, and an error msg. 
+
+Notice right now we have `{msg: err}` instead of `{defaultError.msg}`, because right now we want to see the error printed out in Postman. This will be changed later.
+
