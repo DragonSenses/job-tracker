@@ -4,7 +4,20 @@ import { StatusCodes } from 'http-status-codes';
 class CustomError extends Error {
   constructor(message){
     super(message);
+  }
+}
+
+class BadRequestError extends CustomError {
+  constructor(message){
+    super(message);
     this.statusCode = StatusCodes.BAD_REQUEST;
+  }
+}
+
+class NotFoundError extends CustomError {
+  constructor(message){
+    super(message);
+    this.statusCode = StatusCodes.NOT_FOUND;
   }
 }
 
@@ -13,7 +26,7 @@ const register = async (req, res) => {
 
   if (!name || !email || !password) {
     // next(new Error());  // If not using http-status-codes
-    throw new CustomError("Please provide all values");
+    throw new BadRequestError("Please provide all values");
   }
 
   // Instead of req.body, pass in the input fields

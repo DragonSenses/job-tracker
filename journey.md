@@ -3127,4 +3127,29 @@ Now we see a 400 Bad Request.
     "msg": "Please provide all values"
 }
 ```
-We invoke a CustomError for our API
+We invoke a CustomError for our API.
+
+## Adding more Custom Errors
+
+```js
+class CustomError extends Error {
+  constructor(message){
+    super(message);
+  }
+}
+
+class BadRequestError extends CustomError {
+  constructor(message){
+    super(message);
+    this.statusCode = StatusCodes.BAD_REQUEST;
+  }
+}
+
+class NotFoundError extends CustomError {
+  constructor(message){
+    super(message);
+    this.statusCode = StatusCodes.NOT_FOUND;
+  }
+}
+```
+
