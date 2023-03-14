@@ -1,12 +1,19 @@
 import User from '../models/User.js';
 import { StatusCodes } from 'http-status-codes';
 
+class CustomError extends Error {
+  constructor(message){
+    super(message);
+    this.statusCode = StatusCodes.BAD_REQUEST;
+  }
+}
+
 const register = async (req, res) => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
-    // next(error);
-    throw new Error("Please provide all values");
+    // next(new Error());  // If not using http-status-codes
+    throw new CustomError("Please provide all values");
   }
 
   // Instead of req.body, pass in the input fields

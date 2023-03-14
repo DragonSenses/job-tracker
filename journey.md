@@ -3078,6 +3078,53 @@ Now when the error is passed to the error middleware, we can have add it as a me
 ```js
   const defaultError = {
     statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-    msg: err.message | '500 - Something went wrong, try again later',
+    msg: err.message || '500 - Something went wrong, try again later',
   }
 ```
+
+## Custom Error Class
+
+Let's create a custom error class to add on to this instead of the generic 500. 
+
+We create a `CustomError` class and extend from the JavaScript `Error` class. We create a custom class so we can extend the functionality, in this case I want to add the property of `statusCode` to it. Then instead of passing a generic `Error` we can pass in the `CustomError` instead to the middleware. 
+
+In `authController.js`
+```js
+import User from '../models/User.js';
+import { StatusCodes } from 'http-status-codes';
+
+class CustomError extends Error {
+  constructor(message){
+    super(message);
+    this.statusCode = StatusCodes.BAD_REQUEST;
+  }
+}
+
+const register = async (req, res) => {
+  const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    throw new CustomError("Please provide all values");
+  }
+
+// ...
+```
+
+Now check for the custom `statusCode` here:
+
+```js
+  const defaultError = {
+    statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
+    msg: err.message || '500 - Something went wrong, try again later',
+  }
+```
+Let's pass in a `POST` request with an empty field and we should see a `BAD_REQUEST` `401` instead of a 500.
+
+Now we see a 400 Bad Request.
+
+```json
+{
+    "msg": "Please provide all values"
+}
+```
+We invoke a CustomError for our API
