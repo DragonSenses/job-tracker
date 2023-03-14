@@ -1,10 +1,13 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 import express from 'express';
 const app = express();
 
-// Database and AuthenticateUser
+import dotenv from 'dotenv';
+dotenv.config();
+
+// express-async-errors 
+import 'express-async-errors';
+
+// Database and Authentication
 import connectDB from './db/connect.js';
 
 // Routers

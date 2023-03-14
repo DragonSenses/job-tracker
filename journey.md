@@ -2602,8 +2602,6 @@ const register = async (req, res) => {
     // Empty email will move control flow here
     res.status(500).json({ msg:'there was an error' });
   }
-  
-  res.send('register user');
 }
 ```
 
@@ -2644,7 +2642,6 @@ const register = async (req, res, next) => {
     next(error);
   }
   
-  res.send('register user');
 }
 ```
 
@@ -2697,3 +2694,44 @@ The `errorHandlerMiddleware` is located at the end of our routes.
 # Replacing `try..catch` with `express-async-errors` package
 
 Check out [express-async-errors](https://www.npmjs.com/package/express-async-errors) npm package. 
+
+In terminal, root directory of our project
+
+```sh
+npm install express-async-errors
+```
+
+So now we can replace our `try..catch`, let's remove it in `authController.js` 
+
+We change this:
+
+```js
+import User from '../models/User.js';
+
+const register = async (req, res, next) => {
+  try {
+    const user = await User.create(req.body);
+    res.status(201).json({user});
+  } catch(error){
+    next(error);
+  }
+  
+}
+```
+
+to this:
+
+```js
+import User from '../models/User.js';
+
+const register = async (req, res) => {
+  const user = await User.create(req.body);
+  res.status(201).json({user});
+}
+```
+
+And just import the package in `server.js`
+
+```js
+import 'express-async-errors';
+```
