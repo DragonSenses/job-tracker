@@ -2568,3 +2568,132 @@ Here is what we get after sending the request:
 ```
 
 Now in our MongoDB Database, we can see a directory called `test` and see a document logged under `users`.
+
+Likewise, if we send a json where "email" value is an empty string
+
+```json
+{
+  "name": "Tatsuya",
+  "password": "secretPassword",
+  "email":""
+}
+```
+
+We get
+
+```json
+{
+    "msg": "there was an error"
+}
+```
+
+The error was `500 Internal Server Error`. 
+
+We have `name`, `email` and `password` fields as required along with the email `validate` function as our validators. Any missing values provides us the error. 
+
+So when the email field was empty and is run through the `validate` function, we trigger the `res.status(500).json({msg:'there as an error'})` line.
+
+```js
+const register = async (req, res) => {
+  try {
+    const user = await User.create(req.body);
+    res.status(201).json({user});
+  } catch(error){
+    // Empty email will move control flow here
+    res.status(500).json({ msg:'there was an error' });
+  }
+  
+  res.send('register user');
+}
+```
+
+But that is just hardcoded error msg, we need to pass our `Error` to our controller, and then to our `errorHandlerMiddleware`. 
+
+The way we can pass our error (from our route) to our controller
+
+# Passing our error, from our route, to our controller and finally the Error Handler Middleware
+
+Express docs on [Error Handling](https://expressjs.com/en/guide/error-handling.html).
+
+And here is TPO's [Express 101](https://www.theodinproject.com/lessons/nodejs-express-101#middleware) on middleware. 
+
+We have a middleware function:
+```js
+function(req, res, next) {
+  // do stuff!
+}
+```
+
+Where 
+
+- `req` or `request` is an object that has data about the incoming request such as the exact URL that was visited, any parameters in the URL, the `body` of the request (useful if the user is submitting a form with some data in it) and many other things. 
+
+- `res` or `response` is an object that represents the response that Express is going to send back to the user. Typically, you use the information in the req to determine what you’re going to do with the res by calling res.send() or another method on the object.
+
+- `next` is a function that you see a little less often, but is very important to the functioning of your app. If you are writing or using some middleware that does not send a response back to the user’s client then you *must* call the `next` function at the end of your middleware function. The next function simply tells express to move to the next middleware in the stack, but if you forget to call it then your app will pause and nothing will happen!
+
+So inside the `register` function in `authController`, instead of the `res.status(500).json({ msg:'there was an error' });` we remove it, go with `next` and pass the error in to the Error Handler.
+
+```js
+const register = async (req, res, next) => {
+  try {
+    const user = await User.create(req.body);
+    res.status(201).json({user});
+  } catch(error){
+    // Pass the error using next
+    next(error);
+  }
+  
+  res.send('register user');
+}
+```
+
+
+Then the `errorHandlerMiddleware` can take the error and send it back, like this:
+
+```js
+const errorHandlerMiddleware = (err, req, res, next) => {
+  res.status(500).json({msg: err});
+}
+
+export default errorHandlerMiddleware
+```
+
+Now let's try sending a request with a missing email field again (in Postman).
+
+We get this:
+
+```json
+{
+    "msg": {
+        "errors": {
+            "email": {
+                "name": "ValidatorError",
+                "message": "Please provide email",
+                "properties": {
+                    "message": "Please provide email",
+                    "type": "required",
+                    "path": "email",
+                    "value": ""
+                },
+                "kind": "required",
+                "path": "email",
+                "value": ""
+            }
+        },
+        "_message": "User validation failed",
+        "name": "ValidationError",
+        "message": "User validation failed: email: Please provide email"
+    }
+}
+```
+
+## Takeaway: If you have an error in the controllers, to handle that we go with `next`
+
+Using `try..catch` approach, instead of hardcoding those errors for each controller. Add `next` and pass the error in, set up errorHandler which will have the logic to deal with the error. Whether it is our error, a Mongoose error, etc.
+
+The `errorHandlerMiddleware` is located at the end of our routes. 
+
+# Replacing `try..catch` with `express-async-errors` package
+
+Check out [express-async-errors](https://www.npmjs.com/package/express-async-errors) npm package. 
