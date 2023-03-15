@@ -39,4 +39,8 @@ const UserSchema = new Schema({
   },
 });
 
+UserSchema.pre('save', function(){
+  console.log(this.password);
+});
+
 export default mongoose.model('User', UserSchema);

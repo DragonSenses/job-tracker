@@ -3174,3 +3174,39 @@ So in `authController.js`,
     throw new BadRequestError(`The email: ${email} is already in use.`);
   }
 ```
+
+# Hashing Passwords
+
+We hash passwords for more security. It defends against passwords from being exposed to danger when a databased is compromised. 
+
+We can only compare the hashed values, we do not save the passwords.
+
+Going to use [bcrypt.js](https://www.npmjs.com/package/bcryptjs) to aid us.
+
+```sh
+npm install bcryptjs
+```
+
+Then we will use [mongoose middleware](https://mongoosejs.com/docs/middleware.html), which allows us to perform some operations on the data before we save it as a document. In this case, we will hash the passwords (so using the `pre` middleware functions). [mongoose pre middleware](https://mongoosejs.com/docs/middleware.html#pre).
+
+The methods we will be using from `bcryptjs` will be `async`. 
+
+## 
+
+Before we save the document (under `User Schema`), we want a pre middleware to hash the password. 
+
+```js
+UserSchema.pre('save');
+```
+
+This will be invoked in two cases in the `authController.js` where we create the user with `User.create()` and updating the user in `updateUser` (when we have `User.save()`) but `User.findOneAndUpdate()` is a method that does not trigger the hook `UserSchema.pre('save')`.
+
+Let's pass in a callback function in there (with `function` keyword because we will use `this`).
+
+```js
+UserSchema.pre('save', function(){
+  console.log(this.password);
+});
+```
+
+Now in Postman send a `POST` request in `register user` and we should have the JSON of the user's info, and in the sever we should see the password logged in the console.
