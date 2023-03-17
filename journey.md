@@ -11,7 +11,8 @@ Just going to make a working list of my the tools, environment, etc.
   - vscode-styled-components
 - Windows Terminal
 - Node.js (along with `npm`)
-
+- Dotenv Official +Vault
+- MongoDB 
 
 # 2. Create README.md
 
@@ -3321,4 +3322,27 @@ UserSchema.methods.createToken = function () {
 
 Now instead of invoking `createToken`, assign the newly minted JWT to a variable named `token` in the Controller.
 
-Also we send the status code and a json `user` we should also send back `token`
+Also we send the status code and a json `user` we should also send back `token`.
+
+Now in Postman send a `POST` request to register a user, and see the newly created json of user and token. This is what we will use for communication between front-end and server.
+
+Every time a user makes a request in the front-end, the request will have the `JWT`, otherwise server sends an error response. 
+
+## Added security to JWT
+
+Instead of a string `secretPrivateKey`, let's store them as variables in our `.env` file.
+
+Go to [All Keys Generator](https://allkeysgenerator.com/) to generate an Encryption Key, 256-bit.
+
+Now let's add it to `.env` file under the variable name `SECRET_KEY`.
+
+Let's also add `LIFETIME` variable and set it to `1d`.
+
+Now let's replace it with these variables in User Model's `createToken` method, like so:
+
+```js
+UserSchema.methods.createToken = function () {
+  return jwt.sign(
+    { userId: this._id }, process.env.SECRET_KEY, { expiresIn: process.env.LIFETIME });
+}
+```
