@@ -3346,3 +3346,54 @@ UserSchema.methods.createToken = function () {
     { userId: this._id }, process.env.SECRET_KEY, { expiresIn: process.env.LIFETIME });
 }
 ```
+
+# Removing `password` from the response
+
+Now in order to complete our secure response we have to remove the `password` property.
+
+In mongoose, we can use the `select` property in the `SchemaType`, see the [docs](https://mongoosejs.com/docs/api/schematype.html#schematype_SchemaType-select). 
+
+In `User.js`, here's how we do that:
+
+1. Go into the user controller, and where we create the `UserSchema`
+2. Add `select` property and set it to `false`, this will make it such that the property will be excluded from the results
+
+```js
+const UserSchema = new Schema({
+  /* ... */
+  password: {
+    type: String,
+    required: [true, 'Please provide password'],
+    minlength: 6,
+    // Set the select property to false
+    select: false,
+  },
+  /* ... */
+```
+
+## Issue: using `select` didn't work
+
+Now if we use a method like `findOne` (i.e., `user.findOne()`) then `password` will be excluded.
+
+But since we are using `User.create()` in the `authController.js`, the `password` was not excluded.
+
+## Solution: specify what to respond inside the first parameter or `user` 
+
+In the `authController.js` we have the line
+
+```js
+  res.status(StatusCodes.CREATED).json({user, token});
+```
+
+So instead we set user to an object with the properties we want to send.
+
+```js
+  res.status(StatusCodes.CREATED).json({user:{
+    email: user.email,
+    lastName: user.lastName,
+    location: user.location,
+    name: user.name
+  }, token});
+```
+
+We excluded `password` but did include `location` (we will have a use for it soon so might as well).
