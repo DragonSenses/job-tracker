@@ -30,6 +30,7 @@
     "validator": "^13.9.0"
   },
   "devDependencies": {
+    "concurrently": "^7.6.0",
     "nodemon": "^2.0.21"
   }
 }
