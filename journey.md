@@ -3397,3 +3397,55 @@ So instead we set user to an object with the properties we want to send.
 ```
 
 We excluded `password` but did include `location` (we will have a use for it soon so might as well).
+
+# Connecting the Front-End & Back-End
+
+First we want to be able to run both the back-end server and front-end application at the same time.
+
+We want to connect the React front-end app & the back-end Express server.
+
+Of course, we can just open up two terminals and have one in the `client` and one one the `server`.
+
+Though a more convenient way is this dev dependency called [concurrently](https://www.npmjs.com/package/concurrently) that runs both `server` and `client` at the same time.
+
+To make it work we have to go into our `package.json` and change the `scripts`.
+
+Let's install some packages on the local scope (as a dev dependency).
+
+1. Let's install [nodemon](https://www.npmjs.com/package/nodemon) so it can listen to changes to our server and restart it
+
+```sh
+npm install --save-dev nodemon
+```
+
+2. Next install [concrruently](https://www.npmjs.com/package/concurrently)
+
+```sh
+npm i concurrently -D
+```
+
+3. Now set-up the scripts
+
+First let's create the npm command for server and client separately, then combine them with concurrently. The combination will be our `npm run start`. Put this in the `package.json` in the root project directory.
+
+```json
+  "scripts": {
+    "server": "nodemon server --ignore client",
+    "client": "npm start --prefix client",
+    "start": "concurrently --kill-others-on-fail \" npm run server\" \" npm run client\"" 
+  },
+```
+
+This was the old `scripts`:
+
+```json
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+```
+
+Notes: 
+* the `--ignore client` prevents nodemon from spinning up the server for every change on the front-end
+* the `--prefix client` tells react where to run it
+* the `--kill-others-on-fail` just ends the entire process if just one of the servers fail
