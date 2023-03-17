@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 import validator from 'validator';
+import bcryptjs from 'bcryptjs';
 
 const UserSchema = new Schema({
   name: {
@@ -39,8 +40,9 @@ const UserSchema = new Schema({
   },
 });
 
-UserSchema.pre('save', function(){
-  console.log(this.password);
+UserSchema.pre('save', async function(){
+  const salt = await bcryptjs.genSalt(10);
+  this.password = await bcryptjs.hash(this.password, salt);
 });
 
 export default mongoose.model('User', UserSchema);

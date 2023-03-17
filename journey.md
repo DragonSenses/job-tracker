@@ -3191,7 +3191,7 @@ Then we will use [mongoose middleware](https://mongoosejs.com/docs/middleware.ht
 
 The methods we will be using from `bcryptjs` will be `async`. 
 
-## 
+## Mongoose middleware, saving password before it is saved to the database
 
 Before we save the document (under `User Schema`), we want a pre middleware to hash the password. 
 
@@ -3210,3 +3210,58 @@ UserSchema.pre('save', function(){
 ```
 
 Now in Postman send a `POST` request in `register user` and we should have the JSON of the user's info, and in the sever we should see the password logged in the console.
+
+## Securing the passwords using bcryptjs
+
+Import `bcryptjs` in User Model, then in pre-save hook set up the functionality in there.
+
+First we:
+
+1. Generate the "Salt" 
+
+- Salt is random data used as additional input to a one-way function that hashes data, such as a password
+- More rounds of "Salt" means more security but also means longer processing time
+- `await genSalt(10)`
+
+2. Pass in the salt and password to the hash function
+
+- Remember that in pre-save hook we can `console.log(this.password)` meaning we have access to whatever password the user is passing in
+- `this.password = await bcryptjs.hash(this.password, salt);` will allow us re-assign the password to a hashed and salted version of it
+
+```js
+UserSchema.pre('save', async function(){
+  const salt = await bcryptjs.genSalt(10);
+  this.password = await bcryptjs.hash(this.password, salt);
+});
+```
+
+Later we will remove the `password` property from the response, but for now we are just testing the functionality. 
+
+3. In Postman, send a request and see if the password we get as a response is hashed and salted. 
+
+I send this as the `POST` request on the register
+
+```json
+{
+  "name": "Luna",
+  "password": "LunaBerry",
+  "email":"LunaBerry@gmail.com"
+}
+```
+
+Here is the response:
+
+```json
+{
+    "user": {
+        "name": "Luna",
+        "email": "LunaBerry@gmail.com",
+        "password": "$2a$10$NX1mJKKq927f6DpOyOZmcOI/rnejRbh.YRXKMvARetbZ/2f48V3ju",
+        "lastName": "lastName",
+        "location": "my location",
+        "_id": "6413bc3372ae6c23df387a9a",
+        "__v": 0
+    }
+}
+```
+
