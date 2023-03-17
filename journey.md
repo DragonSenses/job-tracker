@@ -3265,3 +3265,26 @@ Here is the response:
 }
 ```
 
+# Mongoose instance methods
+
+[Mongoose instance methods](https://mongoosejs.com/docs/guide.html#methods) will be our own custom document instance methods. We can use the `Schema.methods` object directly to save an instance method. Note: do **not** declare methods using ES6 arrow functions as they explicitly prevent binding `this`, so method will **not** have access to the document. 
+
+In this function we can access our document using `this`.
+
+### Authenticate users with JWT
+
+Another strategy to authenticate users and secure our app is to generate and pass a secure token between our back-end and front-end code. Doing so will make sure that our user’s username and password are not compromised and will also give us the ability to expire our user’s session for added security. The basic idea is that when a user signs in to our app, a secure token is created, and then for all subsequent requests that token is passed in the header of our request object.
+
+We want to add a method that creates a JSON Web Token.
+
+1. Create custom instance method `createToken` to our User Model
+
+```js
+UserScema.methods.createToken = function () {
+  console.log(this);
+}
+```
+
+2. In the controller, invoke the `createToken()` method before we send an OK Status code
+
+For now the `createToken()` just logs the user so we can access all the values, which we will use to pass on to JSON Web Token.
