@@ -19,13 +19,13 @@ const register = async (req, res) => {
 
   // Instead of req.body, pass in the input fields
   const user = await User.create({ name, email, password });
-  user.createToken();
-  res.status(StatusCodes.CREATED).json({user});
+  const token = user.createToken();
+  res.status(StatusCodes.CREATED).json({user, token});
 }
 
 const login = (req, res) => {
   res.send('login user');
-} 
+}
 
 const updateUser = (req, res) => {
   res.send('updateUser');

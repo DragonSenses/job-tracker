@@ -3288,3 +3288,37 @@ UserScema.methods.createToken = function () {
 2. In the controller, invoke the `createToken()` method before we send an OK Status code
 
 For now the `createToken()` just logs the user so we can access all the values, which we will use to pass on to JSON Web Token.
+
+# JSON Web Token
+
+Install the [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken) package.
+
+```sh
+npm install jsonwebtoken
+```
+
+Then go into the User Model, import the package and call the `sign()` method.
+
+Here is the usage from the docs: 
+
+```js
+jwt.sign(payload, secretOrPrivateKey, [options, callback])
+```
+
+We are going to use the user's `id` property to help create it, and have a secret key as a string, and also set the expiration to 1 day. 
+
+```js
+jwt.sign({ userId: this._id }, 'secretPrivateKey', { expiresIn: '1d' });
+```
+
+We will `return` this JWT in the `createToken` method. Why `this._id` ? because its a private property, and when the User is created that is a property created before being saved to a database (when we logged it).
+
+```js
+UserSchema.methods.createToken = function () {
+  return jwt.sign({ userId: this._id }, 'secretPrivateKey', { expiresIn: '1d' });
+}
+```
+
+Now instead of invoking `createToken`, assign the newly minted JWT to a variable named `token` in the Controller.
+
+Also we send the status code and a json `user` we should also send back `token`
