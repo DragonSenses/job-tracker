@@ -3682,11 +3682,75 @@ We can now access the data without [CORS issues](https://stackoverflow.com/quest
 
 ## Issue with Proxy to be aware of
 
-When setting up the Proxy, we are talking about the fallback, the forward slash `/` will be the static server serving up our own `index.html`. See the production setup in [create-react-app proxy docs](https://create-react-app.dev/docs/proxying-api-requests-in-development/).
+When setting up the Proxy, we are talking about the **fallback**, the forward slash `/` will be the static server serving up our own `index.html`.
+
+So if you do not have that resource on your React server, then you get back 404 and JSON error (not able to convert the resource to JSON).
+
+See the production setup in [create-react-app proxy docs](https://create-react-app.dev/docs/proxying-api-requests-in-development/).
 
 ```sh
 /             - static server returns index.html with React app
 /todos        - static server returns index.html with React app
 /api/todos    - server handles any /api/* requests using the backend implementation
 ```
+
+So when we run the server with proxy we get this error in the console:
+
+```sh
+Dashboard.js:11 SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+```
+
+There is a successful response, but it is just trying to convert the response data into a JSON.
+
+```js
+  const response = await fetch('/');
+  const data = await response.json();
+```
+
+## Server Response
+
+Back to the server, instead of the forward slash route `/`, the route will be `/api/v1` because all the routes start in the same manner.
+
+This: 
+
+```js
+app.get('/', (req, res) => {
+  res.send('Hello');
+})
+```
+
+Turns into:
+```js
+app.get('/api/v1', (req, res) => {
+  res.send('Hello');
+})
+```
+
+and in the `Dashboard` let's fetch this route:
+
+```js
+import React, { useEffect }  from 'react';
+
+export default function Dashboard() {
+  const fetchData = async () => {
+    try{
+      const response = await fetch('/api/v1');
+      const data = await response.json();
+      console.log(data);
+    } catch (error){
+      console.log(error);
+    }
+  }
+
+  useEffect( () => {
+    fetchData();
+  },[]);
+
+  return (
+    <h1>Dashboard</h1>
+  )
+}
+```
+
+Now it works but if you were to put a route like `/api/v1/something` a resource not on React server, then you get the same error where it cannot convert data to JSON.
 
