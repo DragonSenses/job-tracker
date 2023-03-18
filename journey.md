@@ -3817,3 +3817,60 @@ export default function Dashboard() {
 }
 ```
 
+Next, update the initialState with 3 more properties in `appContext.js`
+- `user`, `token`, user`Location
+
+```js
+const initialState = {
+  isLoading: false,
+  showAlert: false,
+  alertText: '',
+  alertType: '',
+  user: null,
+  token: null,
+  userLocation: '',
+}
+```
+
+Let's create the actions for Register. Add these in `actions.js`
+
+```js
+export const REGISTER_USER_BEGIN = 'REGISTER_USER_BEGIN';
+export const REGISTER_USER_SUCCESS = 'REGISTER_USER_SUCCESS';
+export const REGISTER_USER_ERROR = 'REGISTER_USER_ERROR';
+```
+
+These will be the actions that will be dispatched. 
+
+Let's import these actions into the `reducer`
+
+```js
+import { 
+  DISPLAY_ALERT,
+  CLEAR_ALERT,
+  REGISTER_USER_BEGIN,
+  REGISTER_USER_SUCCESS,
+  REGISTER_USER_ERROR,
+} from "./actions";
+```
+
+Now let's setup the register function in the global context so that we can keep track of the user.'
+
+In `appContext.js`
+
+```js
+  const registerUser = async (currentUser) => {
+    console.log(currentUser);
+  };
+```
+
+and also export it
+
+```js
+  return (
+    <AppContext.Provider value = {{...state, 
+    displayAlert, registerUser }}>
+      {children}
+    </AppContext.Provider>
+  )
+```
