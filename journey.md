@@ -3448,4 +3448,118 @@ This was the old `scripts`:
 Notes: 
 * the `--ignore client` prevents nodemon from spinning up the server for every change on the front-end
 * the `--prefix client` tells react where to run it
-* the `--kill-others-on-fail` just ends the entire process if just one of the servers fail
+* the `--kill-others-on-fail` kills all the servers (ends the entire process) if just one of the servers fail
+
+## Problem - both servers have no way to communicate with each other
+
+localhost:3000 
+- React front-end application
+
+localhost:4000
+- Express server
+- Go to browser and make a `GET` request, should see `Hello`
+
+Now go to Postman and set-up a route
+- `GET` request
+- localhost:4000
+- you should get `Hello` response 
+
+Now if you set-up a `fetch` request in dashboard page, or any of the pages what will we get?
+
+Let's 
+1. import `useEffect` from react
+2. Create function `fetchData` which fetches the `localhost:4000` or the port that **Express server** is listening to
+3. Use the `useEffect`, once application (or dashpage) is navigated to, then you want to invoke it only when the component mounts. So set up dependency array as empty. 
+4. Inside callback function in `useEffect` go `fetchData`
+5. Now in the terminal run `npm run start` and go to the browser for `localhost:3000` to the Dashboard main page. 
+
+In `Dashboard.js`
+
+```js
+import React, { useEffect } from 'react';
+
+export default function Dashboard() {
+  const fetchData = async () => {
+    const response = await fetch('http://localhost:4000');
+    const data = await response.json();
+    console.log(data);
+  }
+
+  useEffect( () => {
+    fetchData();
+  },[]);
+    
+  return (
+    <h1>Dashboard</h1>
+  )
+}
+```
+
+We still do not have access to the server data or the `Hello` response, if we check the developer tools and console.
+
+**Does not work because both applications live on *separate* servers!**
+
+Here is the errors you see in the console:
+
+```sh
+Access to fetch at 'http://localhost:4000/' from origin 'http://localhost:3000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.
+
+Failed to load resource: net::ERR_FAILED
+
+Uncaught (in promise) TypeError: Failed to fetch
+    at fetchData (Dashboard.js:6:1)
+    at Dashboard.js:12:1
+    at commitHookEffectListMount (react-dom.development.js:23150:1)
+    at commitPassiveMountOnFiber (react-dom.development.js:24926:1)
+    at commitPassiveMountEffects_complete (react-dom.development.js:24891:1)
+    at commitPassiveMountEffects_begin (react-dom.development.js:24878:1)
+    at commitPassiveMountEffects (react-dom.development.js:24866:1)
+    at flushPassiveEffectsImpl (react-dom.development.js:27039:1)
+    at flushPassiveEffects (react-dom.development.js:26984:1)
+    at react-dom.development.js:26769:1
+
+Access to fetch at 'http://localhost:4000/' from origin 'http://localhost:3000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.
+
+Failed to load resource: net::ERR_FAILED
+
+Uncaught (in promise) TypeError: Failed to fetch
+    at fetchData (Dashboard.js:6:1)
+    at Dashboard.js:12:1
+    at commitHookEffectListMount (react-dom.development.js:23150:1)
+    at invokePassiveEffectMountInDEV (react-dom.development.js:25154:1)
+    at invokeEffectsInDev (react-dom.development.js:27351:1)
+    at commitDoubleInvokeEffectsInDEV (react-dom.development.js:27330:1)
+    at flushPassiveEffectsImpl (react-dom.development.js:27056:1)
+    at flushPassiveEffects (react-dom.development.js:26984:1)
+    at react-dom.development.js:26769:1
+    at workLoop (scheduler.development.js:266:1
+```
+
+WE can wrap it in a `try..catch` but it is only a stop-gap solution that just makes the application work but the problems still persist. 
+```js
+import React, { useEffect } from 'react';
+
+export default function Dashboard() {
+  const fetchData = async () => {
+    try{
+      const response = await fetch('http://localhost:4000');
+      const data = await response.json();
+      console.log(data);
+    } catch (error){
+      console.log(error);
+    }
+  }
+
+  useEffect( () => {
+    fetchData();
+  },[]);
+
+  return (
+    <h1>Dashboard</h1>
+  )
+}
+```
+
+There is no access to the data passed across the servers. We still won't see the `Hello` from the server. Opening the console developer tools we still see the same errors.
+
+## 
