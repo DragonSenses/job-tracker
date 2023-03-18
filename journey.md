@@ -3776,4 +3776,44 @@ If it is not a resource in the server, then use the proxy.
 
 2. If hosting on different platforms, front-end app and server app, then you need configuration options provided by the hosting provider.
 
-# 
+# Register Logic
+
+Finally we can go back to our app and start working on the logic. First let's clean out our `Dashboard` and remove `fetchData` and `useEffect`. 
+
+```js
+import React from 'react';
+import { useEffect } from 'react';
+
+export default function Dashboard() {
+  const fetchData = async () => {
+    try{
+      const response = await fetch('/api/v1');
+      const data = await response.json();
+      console.log(data);
+    } catch (error){
+      console.log(error);
+    }
+  }
+
+  useEffect( () => {
+    fetchData();
+  },[]);
+
+  return (
+    <h1>Dashboard</h1>
+  )
+}
+```
+
+to
+
+```js
+import React from 'react';
+
+export default function Dashboard() {
+  return (
+    <h1>Dashboard</h1>
+  )
+}
+```
+
