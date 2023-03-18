@@ -3925,3 +3925,28 @@ npm run start
 
 Now in the console we can see all the values submitted.
 
+Now also test the `isLoading` disabled functionality. 
+
+Chrome dev tools > Components > AppProvider > hooks > toggle isLoading
+
+Now try clicking the Submit button. It changes the cursor to disabled. 
+
+This prevents the user from submitting values making too many requests as we `fetch`. During the register or log-in request, user should not be able to click the Submit button.
+
+## Making our fetch requests. Using `Axios`.
+
+We can use `fetch` to make HTTP requests, but we will be using another library called `Axios`. It has become a standard as it speeds up development. 
+
+[Axios docs](https://axios-http.com/docs/intro). 
+
+First navigate to `client` directory.
+
+```sh
+cd client
+```
+
+Let's install Axios. 
+
+```sh
+npm install axios
+```
