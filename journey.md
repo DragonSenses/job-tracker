@@ -3608,3 +3608,85 @@ Changing the string we `send` wrapped as an object with a property msg of "Hello
 
 ---
 
+## Solution 2: Proxy 
+
+When we push server into production, any front-end application can access the API and data.
+
+If you want the app to be publicly available then that's ok. BUT for this job tracking app, you do NOT want this app to have that data available to any other front-end app.
+
+In CORS, it can be configured where only the front-end of the app can access the code. The config with origin where it is explicitly stated which domain has access to the data.
+
+But if you do not want to use full URL when building full URL (from `localhost:5000` and refactored to another URL). 
+
+What if you can fetch the response in such a way that it doesn't have to be `http://localhost:5000/` but rather `/data.json`. 
+
+Two issues we solved: reduce access from anywhere and not having to use the full URL
+
+1. front-end we can fetch usomg forward slash '/' and the endpoint (e.g., `/.../auth.js`).
+We can write code like this:
+
+```js
+const response = await fetch('/data.json')
+```
+
+2. No need to use `CORS` package, where we have to configure and explicity state which domain has access to the data
+
+### Eventually, our front-end application will be hosted on the server 
+
+The front-end app will be static assets, so it will have full access to the API.
+
+We will use `build` script to build a production-ready React app, which is a bunch of static assets.
+Then on express server, we use express `static` to server it as a static asset.
+
+## Implementing the Proxy
+
+[Create-React-App Proxying API](https://create-react-app.dev/docs/proxying-api-requests-in-development/)
+
+Navigate to the `client`'s `package.json` and add the following:
+
+```js
+"proxy":"http://localhost:4000"
+```
+
+Now in `Dashboard` we can just `fetch` the `/` route.
+
+```js
+export default function Dashboard() {
+  const fetchData = async () => {
+    try{
+      const response = await fetch('/');
+      const data = await response.json();
+      console.log(data);
+    } catch (error){
+      console.log(error);
+    }
+  }
+
+  useEffect( () => {
+    fetchData();
+  },[]);
+
+  return (
+    <h1>Dashboard</h1>
+  )
+}
+```
+
+Restart the app with
+
+```sh
+npm run start
+```
+
+We can now access the data without [CORS issues](https://stackoverflow.com/questions/21854516/understanding-ajax-cors-and-security-considerations), and skip the `localhost:4000`.
+
+## Issue with Proxy to be aware of
+
+When setting up the Proxy, we are talking about the fallback, the forward slash `/` will be the static server serving up our own `index.html`. See the production setup in [create-react-app proxy docs](https://create-react-app.dev/docs/proxying-api-requests-in-development/).
+
+```sh
+/             - static server returns index.html with React app
+/todos        - static server returns index.html with React app
+/api/todos    - server handles any /api/* requests using the backend implementation
+```
+
