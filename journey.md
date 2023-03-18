@@ -3874,3 +3874,54 @@ and also export it
     </AppContext.Provider>
   )
 ```
+
+Now destructure that method from the global context in `Register.js`:
+
+```js
+  const {isLoading, showAlert, displayAlert, registerUser} = useAppContext();
+```
+
+Now in the `onSubmit` handler, once we are done check if any of the values are empty, then we setup the user. Check first if user is already a member (log-in function), else pass in `currentUser` object that contains those values.
+
+```js
+  const onSubmit = (e) => {
+    e.preventDefault(); 
+    const { name, email, password, isMember } = values;
+
+    if( !email || !password || (!isMember && !name)){
+      displayAlert();
+      return; 
+    }
+
+    const currentUser = { name, email, password };
+
+    if(isMember){
+      // log in function here
+      console.log('Already a Member');
+    } else {
+      registerUser(currentUser);
+    }
+    console.log(values);
+  }
+```
+
+Next, set the `disabled` attribute of submit button to `isLoading`. We do not want to allow the user to click submit again during an asynchronous request.
+
+```js
+  <button type="submit" className="btn btn-block" disabled={isLoading}>submit</button>
+```
+
+We will toggle the `isLoading` later in the reducer.
+
+## Making the User on the Register Page
+
+```sh
+npm run start
+```
+
+- localhost:3000/register
+- Click Register button
+- Fill out the form
+
+Now in the console we can see all the values submitted.
+

@@ -12,7 +12,7 @@ const initialState = {
 
 export default function Register() {
   const [values, setValues] = useState(initialState);
-  const {isLoading, showAlert, displayAlert} = useAppContext();
+  const {isLoading, showAlert, displayAlert, registerUser} = useAppContext();
 
   const handleChange = (e) => {
     setValues({...values, [e.target.name]: e.target.value });
@@ -26,12 +26,20 @@ export default function Register() {
       displayAlert();
       return; 
     }
+
+    const currentUser = { name, email, password };
+
+    if(isMember){
+      console.log('Already a Member');
+    } else {
+      registerUser(currentUser);
+    }
     console.log(values);
   }
 
-  const toggleMember = () => [
+  const toggleMember = () => {
     setValues({ ...values, isMember: !values.isMember })
-  ]
+  }
 
   return (
     <Wrapper className='full-page'>
@@ -63,7 +71,7 @@ export default function Register() {
           handleChange={handleChange}
         />
 
-        <button type="submit" className="btn btn-block">submit</button>
+        <button type="submit" className="btn btn-block" disabled={isLoading}>submit</button>
 
         <p>
           {values.isMember ? "Not a member yet?" : "Already a member?"}
