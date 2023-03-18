@@ -3562,4 +3562,49 @@ export default function Dashboard() {
 
 There is no access to the data passed across the servers. We still won't see the `Hello` from the server. Opening the console developer tools we still see the same errors.
 
-## 
+## Solution 1: Install `CORS package`
+
+Notice how one of the issues is that `CORS policy` has blocked the `fetch` request. 
+
+1. Install cors package
+2. Set up cors as middleware in our server 
+3. On the front-end, fetch the data from server
+4. Convert response data as JSOn
+
+Let's install [cors package](https://www.npmjs.com/package/cors), an Express middleware that can be used to enable `CORS`. 
+
+```sh
+npm install cors
+```
+
+In the `server.js`
+
+```js
+let express = require('express')
+let cors = require('cors')
+let app = express()
+ 
+app.use(cors())
+```
+
+Now in dashboard, we now can get the `data` with `fetchData` but the response is a simple string `Hello`. But in `fetch` we are looking for a `JSON` so in `server.js` we have to change this:
+
+
+```js
+app.get('/', (req, res) => {
+  res.send('Hello');
+})
+```
+
+To this:
+
+```js
+app.get('/', (req, res) => {
+  res.send({ msg: 'Hello' });
+})
+```
+
+Changing the string we `send` wrapped as an object with a property msg of "Hello".
+
+---
+
