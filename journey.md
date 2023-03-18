@@ -3754,3 +3754,26 @@ export default function Dashboard() {
 
 Now it works but if you were to put a route like `/api/v1/something` a resource not on React server, then you get the same error where it cannot convert data to JSON.
 
+WE still have access to the data so if we switch the response:
+
+```js
+  const response = await fetch('/api/v1');
+```
+
+to our fallback
+
+```js
+  const response = await fetch('/data.json');
+```
+
+Then we still have access to the data.
+
+If it is not a resource in the server, then use the proxy. 
+
+## Production Options:
+
+1. React `build` to build up as static assets and serve them on the Express server
+
+2. If hosting on different platforms, front-end app and server app, then you need configuration options provided by the hosting provider.
+
+# 
