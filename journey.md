@@ -2033,6 +2033,7 @@ Get your specific URL from `MongoDB Atlas Interface` Under Deployment > Database
 
 - Connect your Application > Node.js 4.1 or later
 - Get the connection string into application code, copy it and paste it in `MONGO_URL=YOUR_CONNECTION_STRING` in `.env`
+- ***To name your collection in the database:*** right after `/` in the `mongodb.net/?` type the name of database collection you want, like so: `mongodb.net/job-tracker?`. Otherwise keeping it as is will store values in the collection under `test`
 
 7. npm run start
 
@@ -3950,3 +3951,4 @@ Let's install Axios.
 ```sh
 npm install axios
 ```
+
