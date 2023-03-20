@@ -26,6 +26,7 @@ const UserSchema = new Schema({
     type: String,
     required: [true, 'Please provide password'],
     minlength: 3,
+    select: false,
   },
   lastName: {
     type: String,
