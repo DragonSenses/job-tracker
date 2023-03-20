@@ -4245,14 +4245,14 @@ So what we should create this Authentication Error, a 401 Unauthorized Status Co
 import { StatusCodes } from "http-status-codes";
 import CustomAPIError from "./custom-api";
 
-class UnauthenticatedError extends CustomAPIError {
+class UnAuthenticatedError extends CustomAPIError {
   constructor(messsage){
     super(message);
     this.statusCode = StatusCodes.UNAUTHORIZED;
   }
 }
 
-export default UnauthenticatedError
+export default UnAuthenticatedError
 ```
 
 Now update the index.js file within `errors`. We do not need to import/export `custom-api` as that will not be exposed elsewhere other than errors
@@ -4260,12 +4260,12 @@ Now update the index.js file within `errors`. We do not need to import/export `c
 ```js
 import BadRequestError from "./bad-request.js";
 import NotFoundError from "./not-found.js";
-import UnauthenticatedError from "./unauthenticated.js";
+import UnAuthenticatedError from "./unauthenticated.js";
 
 export {
   BadRequestError,
   NotFoundError,
-  UnauthenticatedError,
+  UnAuthenticatedError,
 }
 ```
 
