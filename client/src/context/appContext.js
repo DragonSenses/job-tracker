@@ -32,7 +32,7 @@ export default function AppProvider(props) {
       dispatch({
         type: CLEAR_ALERT,
       })
-    }, 3000)
+    }, 7000)
   };
 
   const displayAlert = () => {

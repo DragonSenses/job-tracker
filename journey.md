@@ -4070,3 +4070,15 @@ else if(action.type === REGISTER_USER_ERROR){
     };
   }
 ```
+
+Should return the current `state`, `isLoading` will be false, and `showAlert` is still `true` but the type is `danger` and the msg is sitting inside the `action.payload.msg`.
+
+## Submit the Register
+
+Go to register page, submit a sample user. Open the developer tools in the console and we should see the data. Within the data, data is located in the `data` property with token, user, lastName, etc. 
+
+Head over to the components tab > AppProvider > hooks
+
+We can see the user, name, lastName, location, token. All these values we set-up in our state.
+
+If there is an error, we will see an error response with status 400 in the console. We can see more in the `data` property. 
