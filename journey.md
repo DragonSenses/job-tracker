@@ -4217,4 +4217,54 @@ Now in the console we can see the:
 - path
 - response & response time
 
-## 
+## Create the Log-In function in the Authentication Controller
+
+```js
+const login = (req, res) => {
+  res.send('login user');
+}
+```
+
+So what do we want to do during the log-in? 
+
+1. Check inputs
+  - missing inputs lead to a `BadRequestError`
+2. Match email to password
+  - If user does not exist, Authentication Error
+  - If password does not match, Authentication Error
+
+So what we should create this Authentication Error, a 401 Unauthorized Status Code.
+
+## Creating the Authentication Error
+
+- `unauthenticated.js` in errors
+- import statuscodes, and custom-api error
+- export the newly created error
+
+```js
+import { StatusCodes } from "http-status-codes";
+import CustomAPIError from "./custom-api";
+
+class UnauthenticatedError extends CustomAPIError {
+  constructor(messsage){
+    super(message);
+    this.statusCode = StatusCodes.UNAUTHORIZED;
+  }
+}
+
+export default UnauthenticatedError
+```
+
+Now update the index.js file within `errors`. We do not need to import/export `custom-api` as that will not be exposed elsewhere other than errors
+
+```js
+import BadRequestError from "./bad-request.js";
+import NotFoundError from "./not-found.js";
+import UnauthenticatedError from "./unauthenticated.js";
+
+export {
+  BadRequestError,
+  NotFoundError,
+  UnauthenticatedError,
+}
+```
