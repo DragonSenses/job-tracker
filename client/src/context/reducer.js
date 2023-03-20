@@ -36,7 +36,7 @@ const reducer = (state, action) => {
       jobLocation: action.payload.location,
       showAlert: true,
       alertType: 'success',
-      alertText: 'Register Successful. User Created! Redirecting...'
+      alertText: 'Register Successful! Redirecting...'
     };
   } else if(action.type === REGISTER_USER_ERROR){
     return {
