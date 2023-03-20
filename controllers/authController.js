@@ -1,7 +1,7 @@
 import User from '../models/User.js';
 import { StatusCodes } from 'http-status-codes';
-import { BadRequestError } from '../errors/index.js'
-
+import { BadRequestError } from '../errors/index.js';
+import { UnAuthenticatedError } from '../errors/index.js';
 
 const register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -28,7 +28,30 @@ const register = async (req, res) => {
   }, token});
 }
 
-const login = (req, res) => {
+const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  if(!email || !password) {
+    throw new BadRequestError("Please provide all values");
+  }
+
+  // Get the user in db whose email matches with the one from request
+  const user = await User.findOne({ email });
+
+  if(!user) {
+    throw new UnAuthenticatedError("Invalid Credentials");
+  }
+
+  console.log(user);
+  
+  // Compare password
+  const isPasswordCorrect = await user.comparePassword(password);
+
+  if(!isPasswordCorrect) {
+    throw new UnAuthenticatedError("Invalid Credentials");
+  }
+
+  // Match email to password
   res.send('login user');
 }
 

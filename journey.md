@@ -4277,10 +4277,56 @@ Since we are interacting with the databse, we head over to `User.js` in `models`
 
 ```js
 UserSchema.methods.comparePassword = async function (candidatePassword) {
-  const isMatch = await bcrypt.compare(candidatePassword, this.password);
+  const isMatch = await bcryptjs.compare(candidatePassword, this.password);
   return isMatch;
 }
 ```
 
 - `candidatePassword` is the value passed in from the request body
 - Check it against the password within the database
+
+Here is our log-in function is far:
+
+```js
+const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  if(!email || !password) {
+    throw new BadRequestError("Please provide all values");
+  }
+
+  // Get the user in db whose email matches with the one from request
+  const user = await User.findOne({ email });
+
+  if(!user) {
+    throw new UnAuthenticatedError("Invalid Credentials");
+  }
+
+  console.log(user);
+  
+  // Compare password
+  const isPasswordCorrect = await user.comparePassword(password);
+
+  if(!isPasswordCorrect) {
+    throw new UnAuthenticatedError("Invalid Credentials");
+  }
+
+}
+```
+
+Now let's try out a `POST` request in Postman. Go to login request under Auth
+- Body Tab
+- raw
+- Select JSON from dropdown menu
+
+Let's login our user:
+
+```json
+{
+  "email":"MiyukiShiba@gmail.com",
+  "password": "Tatsuya"
+}
+```
+
+We now get our response form send request -> login user
+
