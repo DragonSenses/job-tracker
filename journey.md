@@ -4146,3 +4146,48 @@ Optionally, we can add the delay here so that user can see the success alert.
 ```
 
 Run the app and server and once the user registers successfully (or logs-in) they will navigate away from the register page and into the dashboard (the main home page).
+
+# Problem: In Register, if user refreshes the page the values for user do not persist
+
+In the dashboard, we need to check for user so if user does not exist, they will be logged out. 
+
+Lets register a new user. Once we are redirected to the Dashboard page, check Developer Tools and under Components > hooks > user
+
+We can see the users information. 
+
+Let us hit F5 or refresh the page. Check the hook again and can see that `user: null`.
+
+## Solution: Let's persist the data in localStorage. Add it to the Global Context.
+
+In `appContext.js`
+
+```js
+const addUserToLocalStorage = ({ user, token, location }) => {
+  localStorage.setItem('user', JSON.stringify(user));
+  localStorage.setItem('token', token);
+  localStorage.setItem('location', location);
+}
+
+const removeUserFromLocalStorage = ({ user, token, location }) => {
+  localStorage.removeItem('user');
+  localStorage.removeItem('token');
+  localStorage.removeItem('location');
+}
+```
+
+Now right inside `registerUser` lets invoke these functions.
+
+```js
+  const registerUser = async (currentUser) => {
+    try{
+      addUserToLocalStorage({ user, token, location });
+    } catch(error) {
+
+    }
+  }
+```
+
+Now when application loads, let's extract these values from localStorage. Let's do this right above `initialState` as it should happen before it. Because in `initalState` we will set the default values to to what is in `localStorage`. 
+
+NOW when we sign up a new user we can see the data persist in Components > hook > user on refresh and it persists on localStorage as we can see in Application > Storage > Local Storage > http://localhost:3000/.
+
