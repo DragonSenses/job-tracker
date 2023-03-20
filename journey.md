@@ -3952,3 +3952,70 @@ Let's install Axios.
 npm install axios
 ```
 
+## Implementing `registerUser` within Global Context
+
+In `appContext.js`
+
+- import Axios in `appContext.js`
+- dispatch action `register_user_begin`, first thing within `registerUser`
+- which will set `isLoading` hook to true (indicates that we are performing HTTP request)
+- Need `async` & `await` since an `axios.post(url,[data])` returns a promise
+
+Should also save `jobLocation` to the `initalState` in global context.
+
+So let's take it step-by-step,
+
+```js
+  const registerUser = async (currentUser) => {
+    dispatch({ type: REGISTER_USER_BEGIN });
+  };
+```
+
+Handle this in the `reducer` (i.e., add the conditional statement within reducer)
+
+```js
+else if(action.type === REGISTER_USER_BEGIN) {
+    return {
+      ...state,
+      isLoading: true
+    };
+  }
+```
+
+Return the current state and set `isLoading` to `true` which indicates that we start up the HTTP request.
+
+Back to `appContext.js` we import `axios` then send our request. We have to wrap this in a `try..catch` block. We invoke an asynchronous function from axios we call `post()`, with the URL being `/api/v1/auth/register`. Here is the [Axios API](https://axios-http.com/docs/api_intro).
+
+`axios.post(url[, data[, config]])`, first argument is the URL and 2nd argument is the object we are sending. In this case, we are sending the `currentUser`. 
+
+```js
+  const registerUser = async (currentUser) => {
+    dispatch({ type: REGISTER_USER_BEGIN });
+    try{
+      const response = await axios.post('/api/v1/auth/register', currentUser);
+      console.log(response);
+      const { user, token, location } = response.data;
+    } catch(error){
+
+    }
+```
+
+If there is an error in the response, it would go into the `catch` block. If all things work, then we can destructure out the `user`, `token` & `location`. 
+
+Then we can dispatch the action `REGISTER_USER_SUCESS`. Let's also pass in the payload object within the dispatch.
+
+```js
+  const registerUser = async (currentUser) => {
+    dispatch({ type: REGISTER_USER_BEGIN });
+    try{
+      const response = await axios.post('/api/v1/auth/register', currentUser);
+      console.log(response);
+      const { user, token, location } = response.data;
+      dispatch({
+        type: REGISTER_USER_SUCCESS,
+        payload: { user, token, location },
+      });
+    } catch(error){
+
+    }
+```
