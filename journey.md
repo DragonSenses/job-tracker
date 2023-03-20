@@ -4082,3 +4082,67 @@ Head over to the components tab > AppProvider > hooks
 We can see the user, name, lastName, location, token. All these values we set-up in our state.
 
 If there is an error, we will see an error response with status 400 in the console. We can see more in the `data` property. 
+
+# Transferring the User from Register page to Dashboard
+
+In the `Register` page, lets use `useEffect` and `useNavigate` hooks
+
+[React Router's useNavigate](https://reactrouter.com/en/main/hooks/use-navigate) docs.
+
+- import `useEffect` from `react`
+- import `useNavigate` from `react-router-dom`
+- Extract user from state using global context
+- Invoke `useNavigate` hook which will return a `navigate` which is a function that lets you navigate programmatically
+- Use the `navigate` within `useEffect`, also delay it so user can see the success alert
+
+```js
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+const navigate = useNavigate();
+const {user, ...more variables} = useAppContext();
+
+export default function Register() {
+  useEffect( () => {
+    if(user) {
+      setTimeout( () => {
+        navigate('/');
+      }, 3000);
+    }
+  }, [user, navigate]);
+}
+```
+
+- The `useEffect` hook is in this form:
+
+```js
+  useEffect(() => {
+
+  }, [user, navigate]);
+```
+
+It has the callback function as the first argument, and the dependency array which we will pass the `user` and `navigate`. This means that it will be **invoked on *initial render* and when *user* or *navigate* changes**. 
+
+Now check if the `user` exists, then we navigate to the `dashboard` which is the `/` route.
+
+```js
+  useEffect(() => {
+    if(user){
+      navigate('/');
+    }
+  }, [user, navigate]);
+```
+
+Optionally, we can add the delay here so that user can see the success alert. 
+
+```js
+  useEffect(() => {
+    if(user){
+      setTimeout(() => {
+        navigate('/');
+      }, 3000);
+    }
+  }, [user, navigate]);
+```
+
+Run the app and server and once the user registers successfully (or logs-in) they will navigate away from the register page and into the dashboard (the main home page).
