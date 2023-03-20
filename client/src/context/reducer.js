@@ -38,6 +38,14 @@ const reducer = (state, action) => {
       alertType: 'success',
       alertText: 'Register Successful. User Created! Redirecting...'
     };
+  } else if(action.type === REGISTER_USER_ERROR){
+    return {
+      ...state,
+      isLoading: false,
+      showAlert: true,
+      alertType: 'danger',
+      alertText: action.payload.msg,
+    };
   }
   throw new Error(`No such action: ${action.type}`);
 }

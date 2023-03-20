@@ -4057,3 +4057,16 @@ clearAlert();
 
 Also when both actions the `showAlert` is true, so we should hide it afterwards
 
+Now to handle the `REGISTER_USER_ERROR` actiton in the reducer
+
+```js
+else if(action.type === REGISTER_USER_ERROR){
+    return {
+      ...state,
+      isLoading: false,
+      showAlert: true,
+      alertType: 'danger',
+      alertText: action.payload.msg,
+    };
+  }
+```
