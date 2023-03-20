@@ -13,14 +13,31 @@ const reducer = (state, action) => {
       showAlert: true,
       alertType: 'danger',
       alertText: 'Please provide all values!',
-    }
+    };
   } else if(action.type === CLEAR_ALERT){
     return {
       ...state,
       showAlert: false,
       alertType: '',
       alertText: '',
-    }
+    };
+  } else if(action.type === REGISTER_USER_BEGIN) {
+    return {
+      ...state,
+      isLoading: true
+    };
+  } else if(action.type === REGISTER_USER_SUCCESS){
+    return {
+      ...state,
+      isLoading: false,
+      token: action.payload.token,
+      user: action.payload.user,
+      userLocation: action.payload.location,
+      jobLocation: action.payload.location,
+      showAlert: true,
+      alertType: 'success',
+      alertText: 'Register Successful. User Created! Redirecting...'
+    };
   }
   throw new Error(`No such action: ${action.type}`);
 }

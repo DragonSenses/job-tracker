@@ -4019,3 +4019,23 @@ Then we can dispatch the action `REGISTER_USER_SUCESS`. Let's also pass in the p
 
     }
 ```
+
+Now let's go into the reducer and handle `REGISTER_USER_SUCCESS`
+
+```js
+else if(action.type === REGISTER_USER_SUCCESS){
+    return {
+      ...state,
+      isLoading: false,
+      token: action.payload.token,
+      user: action.payload.user,
+      userLocation: action.payload.location,
+      jobLocation: action.payload.location,
+      showAlert: true,
+      alertType: 'success',
+      alertText: 'User Created! Redirecting ...'
+    };
+  }
+```
+
+Notice how we take the values we passed in from the `payload` object `user`, `token` and `location`. Also went with `showAlert` along with a type `success` to indicate User was created.
