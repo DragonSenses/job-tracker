@@ -4268,3 +4268,19 @@ export {
   UnauthenticatedError,
 }
 ```
+
+## Comparing passwords
+
+Part of the Authentication process is to confirm that passwords match. Let's create a [mongoose instance method](https://mongoosejs.com/docs/guide.html#methods) that will compare the passwords passed in to the hashed password that the user has in the database. 
+
+Since we are interacting with the databse, we head over to `User.js` in `models` and define custom document instance method `comparePassword` which uses [bcryptjs](https://www.npmjs.com/package/bcryptjs)'s `compare` method in [bcryptjs - Usage - Async](https://www.npmjs.com/package/bcryptjs#usage---async).
+
+```js
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+  const isMatch = await bcrypt.compare(candidatePassword, this.password);
+  return isMatch;
+}
+```
+
+- `candidatePassword` is the value passed in from the request body
+- Check it against the password within the database
