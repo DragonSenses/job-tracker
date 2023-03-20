@@ -19,8 +19,10 @@ const register = async (req, res) => {
 
   // Instead of req.body, pass in the input fields
   const user = await User.create({ name, email, password });
+
   const token = user.createToken();
-  res.status(StatusCodes.CREATED).json({user:{
+
+  res.status(StatusCodes.CREATED).json({ user: {
     email: user.email,
     lastName: user.lastName,
     location: user.location,
@@ -36,7 +38,7 @@ const login = async (req, res) => {
   }
 
   // Get the user in db whose email matches with the one from request
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).select('+password');
 
   if(!user) {
     throw new UnAuthenticatedError("Invalid Credentials");

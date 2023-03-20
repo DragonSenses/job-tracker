@@ -4330,3 +4330,110 @@ Let's login our user:
 
 We now get our response form send request -> login user
 
+### Adding an extra requirement: adding `select: false` property to password
+
+In Mongoose, `select: false` is used to exclude a field from the query results by default. It means that the field will not be returned by default in the data when you fetch the document. You can specify if this path should be included or excluded from query results by default. 
+
+In User Model let's add one extra property `select: false` to password:
+
+```js
+const UserSchema = new Schema({
+
+  password: {
+    type: String,
+    required: [true, 'Please provide password'],
+    minlength: 3,
+    select: false,
+  },
+
+});
+```
+
+Now in Postman we send a login request with the same credentials, this is the response:
+
+```json
+{
+    "msg": "Illegal arguments: string, undefined"
+}
+```
+
+What's going on? In `login` function we logged the `user` we got from the database, so in the nodejs express server the console outpuuted this:
+
+```js
+[0] {
+[0]   _id: new ObjectId("6418d6ab92ff594a02b6f24a"),
+[0]   name: 'Miyuki',
+[0]   email: 'MiyukiShiba@gmail.com',
+[0]   lastName: 'lastName',
+[0]   location: 'my location',
+[0]   __v: 0
+[0] }
+```
+Along with the error:
+
+```sh
+Error: Illegal arguments: string, undefined
+```
+
+This error is coming from the `bcrypt` library, if we trace the stack. The reason is that the `user` object we logged does not have a property of password. 
+
+Let's go to User model, and check the method `comparePassword` again:
+
+```js
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+  const isMatch = await bcryptjs.compare(candidatePassword, this.password);
+  return isMatch;
+}
+```
+
+Because we added `select: false` property to the UserSchema, the `this.password` is undefined. Its looking for password, in the document, which isn't there. 
+
+Recall: when setting up the register function and `User.create` along with `user.createToken` 
+
+```js
+  // Instead of req.body, pass in the input fields
+  const user = await User.create({ name, email, password });
+  
+  const token = user.createToken();
+
+  res.status(StatusCodes.CREATED).json({user:{
+    email: user.email,
+    lastName: user.lastName,
+    location: user.location,
+    name: user.name
+  }, token});
+```
+
+The response shows how we were circumventing a way to not send the password to the front-end. We just hard-coded the values to send back. The alternative is set up a `utils` folder and create function(s) that gets the values we are looking for.
+
+Originally the response was like this:
+
+```js
+res.status(StatusCodes.CREATED).json({user, token, location: user.location });
+```
+
+### Solution: accessing the property set to `select: false` in a Schema method
+
+Now that we have the password field excluded from the query results, how do we access it for comparison in `comparePassword`?
+
+In `User.create()` we will still get the password, and try to circumvent the response in a way so that password will be omitted. But in the login function we have
+
+```js
+const user = await User.findOne({ email });
+```
+
+and here we actually need the password. 
+
+The fix? Use `select()` in query. 
+
+Here is a similar situation in this [Stack Overflow Response](https://stackoverflow.com/questions/28838640/mongoose-how-can-i-access-a-selectfalse-property-in-a-schema-method).
+
+```js
+const user = await User.findOne({ email }).select('+password');
+```
+
+Now send the login request to Postman and we now should see the response 200 OK "login user".
+
+Also check the express server logging the `user` object with all the values (along with the password).
+
+**Takeaway** `select: false` excludes that property from our response in document. But adding it we need go with `select(propertyName)`
