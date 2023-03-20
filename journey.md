@@ -4191,3 +4191,30 @@ Now when application loads, let's extract these values from localStorage. Let's 
 
 NOW when we sign up a new user we can see the data persist in Components > hook > user on refresh and it persists on localStorage as we can see in Application > Storage > Local Storage > http://localhost:3000/.
 
+# Login User in the Backend server
+
+Let's install [morgan](https://www.npmjs.com/package/morgan) a HTTP request logger middleware.
+
+```sh
+npm i morgan
+```
+
+This is a package useful for development, so only make the app use it if the environment is still in development (i.e., not in `production`). 
+
+We can pass a predefined format string, format string of predefined tokens, or custom format function to `morgan`. We will be using predefined format string `'dev'` which gives colored output based on response status for development use. 
+
+```js
+import morgan from 'morgan';
+
+if(process.env.NODE_ENV !== 'production'){
+  app.use(morgan('dev'));
+}
+```
+
+Now in the console we can see the: 
+
+- HTTP method
+- path
+- response & response time
+
+## 
