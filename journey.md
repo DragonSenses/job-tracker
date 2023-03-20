@@ -4039,3 +4039,21 @@ else if(action.type === REGISTER_USER_SUCCESS){
 ```
 
 Notice how we take the values we passed in from the `payload` object `user`, `token` and `location`. Also went with `showAlert` along with a type `success` to indicate User was created.
+
+### Decision: Store User data, token, etc. in localStorage
+
+## Error handling in registerUser
+
+```js
+catch(error){
+      console.log(error.response);
+      dispatch( {
+        type: REGISTER_USER_ERROR,
+        payload: { msg: error.response.data.msg },
+      })
+    }
+clearAlert();
+```
+
+Also when both actions the `showAlert` is true, so we should hide it afterwards
+
