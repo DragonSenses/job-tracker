@@ -4437,3 +4437,81 @@ Now send the login request to Postman and we now should see the response 200 OK 
 Also check the express server logging the `user` object with all the values (along with the password).
 
 **Takeaway** `select: false` excludes that property from our response in document. But adding it we need go with `select(propertyName)`
+
+### Finally, create JWT for the user during the login session
+
+1. Create the JWT for the user at login
+2. Make the response, send the status
+
+```js
+const token = user.createToken();
+
+res.status( StatusCodes.OK ).json({ user, token, location: user.location });
+```
+
+In Postman, send that login request:
+
+```json
+{
+  "email":"MiyukiShiba@gmail.com",
+  "password": "Tatsuya"
+}
+```
+
+Response:
+
+```json
+{
+    "user": {
+        "_id": "6418d6ab92ff594a02b6f24a",
+        "name": "Miyuki",
+        "email": "MiyukiShiba@gmail.com",
+        "password": "$2a$10$LK1joDA538wvqdcawIRkQe8WVlOmmeBzmvKh3qlDjRL2VpBpFku9C",
+        "lastName": "lastName",
+        "location": "my location",
+        "__v": 0
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDE4ZDZhYjkyZmY1OTRhMDJiNmYyNGEiLCJpYXQiOjE2NzkzNTMzNjYsImV4cCI6MTY3OTQzOTc2Nn0.fhJ0sa1kEpjNhysZeFwBM-NWAzJRhoWUrQPxR0xaFnQ",
+    "location": "my location"
+}
+```
+
+Here is the issue: we are sending *sensitive* data back to the front-end (i.e., `password`).
+
+Now how can we **remove the *password* from the response**? We can either hardcode it like in the register function. Or we can set the `password` property to `undefined`. 
+
+
+```js
+const token = user.createToken();
+user.password = undefined;
+res.status( StatusCodes.OK ).json({ user, token, location: user.location });
+```
+
+Let's send that Login request from Postman again. Here is the response:
+
+```json
+{
+    "user": {
+        "_id": "6418d6ab92ff594a02b6f24a",
+        "name": "Miyuki",
+        "email": "MiyukiShiba@gmail.com",
+        "lastName": "lastName",
+        "location": "my location",
+        "__v": 0
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDE4ZDZhYjkyZmY1OTRhMDJiNmYyNGEiLCJpYXQiOjE2NzkzNTM0NTgsImV4cCI6MTY3OTQzOTg1OH0.6qlfmsVbem-BWCTmDxBaPjSnfcjaPstSPQsKeNT1Zas",
+    "location": "my location"
+}
+```
+
+We get back the `use` object as our response, and the `password` is no longer there! Unlike register however, we have more information we are sending to the front-end. That's not a problem since in the front-end we look for *specific* properties anyways.
+
+## Recap: Login controller
+
+1. Checks for empty values
+2. Check if user exist in database
+3. Check password
+4. Create JWT (JSON Web Token) for user login session
+5. Remove password from response
+6. Send the response, containing `user`, `token`, `location`
+

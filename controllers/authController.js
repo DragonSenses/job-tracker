@@ -44,8 +44,6 @@ const login = async (req, res) => {
     throw new UnAuthenticatedError("Invalid Credentials");
   }
 
-  console.log(user);
-  
   // Compare password
   const isPasswordCorrect = await user.comparePassword(password);
 
@@ -53,8 +51,9 @@ const login = async (req, res) => {
     throw new UnAuthenticatedError("Invalid Credentials");
   }
 
-  // Match email to password
-  res.send('login user');
+  const token = user.createToken();
+  user.password = undefined;
+  res.status( StatusCodes.OK ).json({ user, token, location: user.location });
 }
 
 const updateUser = (req, res) => {
