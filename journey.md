@@ -4777,3 +4777,33 @@ We replace them, by passing in the object:
 ```
 
 Now we refactored the login/register and reduced code duplication. This is a good approach. But for now, since the application isn't fully complete, I won't refactor it. I'll keep this here as a reference for later. One can certainly refactor now, the downside is that perhaps maybe a new featuire requires that login and register have different behaviors and must be separate.
+
+Refactoring only works if the functionalities are similar. Once more features are added: (e.g., email verification) its easier to have two setups in place.
+
+# Nested Pages
+
+Our dashboard is the main route. We will have nested pages within our dashboard, which all have the same layout. 
+
+- Stats
+- All Jobs
+- Add Job
+- Profile
+
+Right now we have a `Dashboard.js` or Dashboard component. Then it is rendered in `App.js`. Let's delete `Dashboard.js`, fix imports/exports, replace it with a simple div in home route:
+
+```js
+<Route path="/" element={<div>Dashboard</div>}/>
+```
+
+Then we create a `Dashboard` directory in `pages`
+- Create an index.js
+- Create AddJob, AllJobs, Profile, Stats
+- Also create SharedLayout
+- Basic returns
+
+```js
+return <h1>Add Job Page</h1>
+```
+
+- Export all with `index.js`
+- import all pages in `App.js`
