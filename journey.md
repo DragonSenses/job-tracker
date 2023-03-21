@@ -4515,3 +4515,15 @@ We get back the `use` object as our response, and the `password` is no longer th
 5. Remove password from response
 6. Send the response, containing `user`, `token`, `location`
 
+# Login - Front-End
+
+Quite similar to the Register User
+
+Create the actions that we will dispatch
+- LOGIN_USER_BEGIN
+- LOGIN_USER_SUCESS
+- LOGIN_USER_ERROR
+
+Import reducer, appContext
+
+Create the `loginUser` function in `appContext`
