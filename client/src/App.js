@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Error, Landing, Register } from './pages';
+import { AddJob, AllJobs, Profile, SharedLayout, Stats } from './pages/Dashboard';
 
 function App() {
   return (

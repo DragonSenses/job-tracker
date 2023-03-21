@@ -4807,3 +4807,6 @@ return <h1>Add Job Page</h1>
 
 - Export all with `index.js`
 - import all pages in `App.js`
+
+So what is `SharedLayout`? This will have the `navbar` and provide the pages the structure. The layout (top portion and sidebar) stays the same among the nested pages. The only changes are the content within the pages.
+
