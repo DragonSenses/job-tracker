@@ -4524,6 +4524,256 @@ Create the actions that we will dispatch
 - LOGIN_USER_SUCESS
 - LOGIN_USER_ERROR
 
-Import reducer, appContext
+```js
+export const LOGIN_USER_BEGIN = 'LOGIN_USER_BEGIN';
+export const LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
+export const LOGIN_USER_ERROR = 'LOGIN_USER_ERROR';
+```
 
-Create the `loginUser` function in `appContext`
+Import it to reducer and appContext.
+
+Create the `loginUser` function in `appContext`. Pass it down to value. 
+
+```js
+import { 
+  DISPLAY_ALERT,
+  CLEAR_ALERT,
+  REGISTER_USER_BEGIN,
+  REGISTER_USER_SUCCESS,
+  REGISTER_USER_ERROR,
+  LOGIN_USER_BEGIN,
+  LOGIN_USER_SUCCESS,
+  LOGIN_USER_ERROR,
+} from "./actions";
+
+export default function AppProvider(props) {
+  //...
+  const loginUser = async (currentUser) => {
+    console.log(currentUser);
+  };
+
+  return (
+    <AppContext.Provider value = {{...state, 
+    displayAlert, registerUser, loginUser }}>
+      {children}
+    </AppContext.Provider>
+  )
+}
+```
+
+In register page, we add it to the `onSubmit` when user `isMember` is true:
+
+```js
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const { name, email, password, isMember } = values;
+
+    if( !email || !password || (!isMember && !name)){
+      displayAlert();
+      return; 
+    }
+
+    const currentUser = { name, email, password };
+
+    if(isMember){
+      loginUser(currentUser);
+    } else {
+      registerUser(currentUser);
+    }
+  };
+```
+
+Now we fill out the `loginUser` function in the `appContext.js`. It is nearly the same as the `registerUser` function, with the only difference being the action dispatch and the URL.
+
+```js
+  const loginUser = async (currentUser) => {
+    dispatch({ type: LOGIN_USER_BEGIN });
+    try{
+      const { data } = await axios.post('/api/v1/auth/login', currentUser);
+      const { user, token, location } = data;
+
+      dispatch({
+        type: LOGIN_USER_SUCCESS,
+        payload: { user, token, location },
+      });
+      
+      addUserToLocalStorage({ user, token, location });
+    } catch(error){
+      dispatch( {
+        type: LOGIN_USER_ERROR,
+        payload: { msg: error.response.data.msg },
+      })
+    }
+    clearAlert();
+  };
+```
+
+The action dispatches are also the same as register, only difference is the `alertText` for `LOGIN_USER_SUCCESS`. Just turn it into: `alertText: 'Login Successful! Redirecting...'`.
+
+In React, a reducer is a function that takes in the current state and an action, and returns a new state. The dispatch function is used to send an action to the reducer. The action is an object that describes what happened, and the reducer uses this information to update the state. The dispatch function is used to send an action to the reducer. The action is an object that describes what happened, and the reducer uses this information to update the state.
+
+Now we should see `Invalid Credentials` when we run the app and Log-In with an existing email but with the wrong password. The error message should limit the amount of information to give for security purposes, that is why `Invalid Credentials` is vague and does not let the user (or potential crook) whether it was an invalid email or password.
+
+# Refactoring the login and register
+
+It is possible to refactor and lower code duplication since login and register seem so similar. This is an optional step.
+
+Let's start with the actions: 
+
+We can remove REGISTER and LOGIN, replace them with just 3 actions named SETUP.
+
+```js
+export const DISPLAY_ALERT = 'SHOW_ALERT';
+export const CLEAR_ALERT = 'CLEAR_ALERT';
+
+export const REGISTER_USER_BEGIN = 'REGISTER_USER_BEGIN';
+export const REGISTER_USER_SUCCESS = 'REGISTER_USER_SUCCESS';
+export const REGISTER_USER_ERROR = 'REGISTER_USER_ERROR';
+
+export const LOGIN_USER_BEGIN = 'LOGIN_USER_BEGIN';
+export const LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
+export const LOGIN_USER_ERROR = 'LOGIN_USER_ERROR';
+
+export const SETUP_USER_BEGIN = 'LOGIN_USER_BEGIN';
+export const SETUP_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
+export const SETUP_USER_ERROR = 'LOGIN_USER_ERROR';
+```
+
+Change the imports in global context to just SETUP instead of LOGIN and REGISTER.
+
+In `appContext.js`, we have the two functions that are similar. The only two differences are the:
+
+- POST URL endpoint
+- dispatch action type
+
+```js
+  const registerUser = async (currentUser) => {
+    dispatch({ type: REGISTER_USER_BEGIN });
+    try{
+      const response = await axios.post('/api/v1/auth/register', currentUser);
+      const { user, token, location } = response.data;
+
+      dispatch({
+        type: REGISTER_USER_SUCCESS,
+        payload: { user, token, location },
+      });
+
+      addUserToLocalStorage({ user, token, location });
+    } catch(error){
+      dispatch( {
+        type: REGISTER_USER_ERROR,
+        payload: { msg: error.response.data.msg },
+      })
+    }
+    clearAlert();
+  };
+
+  const loginUser = async (currentUser) => {
+    dispatch({ type: LOGIN_USER_BEGIN });
+    try{
+      const { data } = await axios.post('/api/v1/auth/login', currentUser);
+      const { user, token, location } = data;
+
+      dispatch({
+        type: LOGIN_USER_SUCCESS,
+        payload: { user, token, location },
+      });
+      
+      addUserToLocalStorage({ user, token, location });
+    } catch(error){
+      dispatch( {
+        type: LOGIN_USER_ERROR,
+        payload: { msg: error.response.data.msg },
+      })
+    }
+    clearAlert();
+  };
+```
+
+We can reduce this to just one function `setupUser`. Instead of passing in just one parameter: `currentUser`, we can pass in an object containing the values that are different: the endpoint and dispatch action type.
+
+Actually, we can reduce dispatch action type even further since the only thing different is the `alertText`. SO pass in 3 values: `currentUser`, endpoint, and `alertText`.
+
+```js
+  const setupUser = async ({ currentUser, endPoint, alertText }) => {
+    dispatch({ type: SETUP_USER_BEGIN });
+    try{
+      const { data } = await axios.post('/api/v1/auth/${endpoint}', currentUser);
+      const { user, token, location } = data;
+
+      dispatch({
+        type: SETUP_USER_SUCCESS,
+        payload: { user, token, location, alertText},
+      });
+      
+      addUserToLocalStorage({ user, token, location });
+    } catch(error){
+      dispatch( {
+        type: SETUP_USER_ERROR,
+        payload: { msg: error.response.data.msg },
+      })
+    }
+    clearAlert();
+  };
+```
+
+In the `dispatch` where we send the `payload`, also pass in the `alertText`.
+
+Don't forget to pass in `setupUser` function as a [prop](https://react.dev/learn/passing-props-to-a-component) to `AppProvider`.
+
+Now in reducer, let's use the action we receieved from the dispatch and use the information to update the state. The only thing that's different is the `alertText`, which we passed in as the part of the `payload`. Therefore it would be location in `action.payload.alertText`.
+
+```js
+const reducer = (state, action) => {
+  // ... clearAlert, displayAlert
+  if(action.type === SETUP_USER_BEGIN) {
+    return { ...state, isLoading: true };
+  } else if(action.type === SETUP_USER_SUCCESS){
+    return {
+      ...state,
+      isLoading: false,
+      token: action.payload.token,
+      user: action.payload.user,
+      userLocation: action.payload.location,
+      jobLocation: action.payload.location,
+      showAlert: true,
+      alertType: 'success',
+      alertText: action.payload.alertText,
+    };
+  } else if(action.type === SETUP_USER_ERROR){
+    return {
+      ...state,
+      isLoading: false,
+      showAlert: true,
+      alertType: 'danger',
+      alertText: action.payload.msg,
+    };
+  }
+  throw new Error(`No such action: ${action.type}`);
+}
+```
+
+Now to wrap it all up, let's change how login and register functions are used in the `Register.js` page.
+
+- Import `setupUser` from the `useAppContext()`
+- Where we invoke it:
+
+```js
+    if(isMember){
+      loginUser(currentUser);
+    } else {
+      registerUser(currentUser);
+    }
+```
+
+We replace them, by passing in the object:
+
+```js
+  if(isMember){
+    setupUser({ currentUser, endPoint: 'login', alertText: 'Login Successful! Redirecting...'});
+  } else {
+    setupUser({ currentUser, endPoint: 'register', alertText: 'User Created! Redirecting...'});
+  }
+```
+
+Now we refactored the login/register and reduced code duplication. This is a good approach. But for now, since the application isn't fully complete, I won't refactor it. I'll keep this here as a reference for later. One can certainly refactor now, the downside is that perhaps maybe a new featuire requires that login and register have different behaviors and must be separate.
