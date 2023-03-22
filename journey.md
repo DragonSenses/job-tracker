@@ -4810,3 +4810,89 @@ return <h1>Add Job Page</h1>
 
 So what is `SharedLayout`? This will have the `navbar` and provide the pages the structure. The layout (top portion and sidebar) stays the same among the nested pages. The only changes are the content within the pages.
 
+## Nested Pages in React Router 6
+
+This is how Nested Pages are structured:
+
+```js
+<Route path='/'>
+  <Route path="stats" element={<Stats />}/>
+  <Route path="all-jobs" element={<AllJobs />}/>
+  <Route path="add-job" element={<AddJob />}/>
+  <Route path="profile" element={<Profile />}/>
+</Route>
+```
+
+- A parent route "/"
+- Routes placed inside
+
+All inner routes are relative to the parent. e.g., the URL for `Stats` component would be `/stats`. If the parent route was `/dashboard` instead, then the URL for `Stats` component would be `/dashboard/stats`. 
+
+Also going to setup index page. 
+
+## Configuring our Routes
+
+So now let's work on our Routes. Right now our App component has this:
+
+```js
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<div>Dashboard</div>}/>
+        <Route path="/register" element={<Register />}/>     
+        <Route path="/landing" element={<Landing />}/>     
+        <Route path="*" element={<Error />}/>     
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+
+What we can do is remove the home route's element, and give it a closing tag. Within it we have our nested pages. Notice how we do not need forward slash in front of the nested pages, because they are relative to the parent by default.
+
+```js
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/">
+          <Route path="stats" element={<Stats/>}/>
+          <Route path="all-jobs" element={<AllJobs/>}/>
+          <Route path="add-job" element={<AddJob/>}/>
+          <Route path="profile" element={<Profile/>}/>
+        </Route>
+
+        <Route path="/register" element={<Register />}/>     
+        <Route path="/landing" element={<Landing />}/>     
+        <Route path="*" element={<Error />}/>     
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+
+Now run the app. 
+
+```sh
+npm run start
+```
+
+Open up the browser and open up the following links:
+
+- http://localhost:3000/stats
+- http://localhost:3000/all-jobs
+- http://localhost:3000/add-job
+- http://localhost:3000/profile
+
+WE can now hop from page to page in a nested layout.
+
+Remember that in nested pages, the path is relative to the parent. So if we change the `<Route path="/">` to `<Route path="/dashboard">`
+
+Now the paths are going to be /dashboard/....
+
+-http://localhost:3000/dashboard/stats
+
+**Takeaway**: to setup a nested structure in react router, you need a parent route and its URLs, and routes nested inside it will be relative to the parent route. Set up the path and URL, and pass the element inside of it.
+
+##
