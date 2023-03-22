@@ -4895,4 +4895,69 @@ Now the paths are going to be /dashboard/....
 
 **Takeaway**: to setup a nested structure in react router, you need a parent route and its URLs, and routes nested inside it will be relative to the parent route. Set up the path and URL, and pass the element inside of it.
 
-##
+## Creating the SharedLayout
+
+Pass in `SharedLayout` component as the element to the home route.
+
+```js
+  <Route path="/" element={<SharedLayout/>}>
+```
+
+Then navigate to `SharedLayout.js` and implement it.
+
+```js
+import React from 'react';
+import { Outlet, Link } from "react-router-dom";
+import Wrapper from '../../assets/wrappers/SharedLayout';
+
+export default function SharedLayout() {
+  return (
+    <Wrapper>
+      <nav>
+        <Link to='add-job'>add job</Link>
+        <Link to='all-jobs'>all job</Link>
+      </nav>
+      <Outlet />
+    </Wrapper>
+  )
+}
+```
+
+First we wrap the SharedLayout in a Wrapper with styled components. The layout will also have a navigation bar with links to the other pages. This is where we use [React Router Link](https://reactrouter.com/en/main/components/link). After the `nav` we have the [React Router Outlet](https://reactrouter.com/en/main/components/outlet).
+
+An `<Outlet>` should be used in parent route elements to render their child route elements. This allows nested UI to show up when child routes are rendered. If the parent route matched exactly, it will render a child index route or nothing if there is no index route.
+
+Now with this, we can check the browser for one of the pages with the SharedLayout: http://localhost:3000/profile
+
+We can see the links right above, which will navigate us to the other pages.
+
+## Issue: the home route "/" -> http://localhost:3000/
+
+The home route no longer displays a page, just the navbar. 
+
+- We will set `stats` as the first page to display on the home route. 
+
+To display the page in the home route, we have two options. 
+
+1. In the `Register.js`, when it navigates to the home route "/" instead it could navigate straight to one of the nested pages like /stats.
+
+- The issue with this is that a user may explicitly go to the home page, it will still just display the nav bar.
+
+2. Instead of `path` prop for stats Route, go with `index` prop:
+
+```js
+<Routes>
+  <Route path="/" element={<SharedLayout/>}>
+    <Route index element={<Stats/>}/>
+    <Route path="all-jobs" element={<AllJobs/>}/>
+    <Route path="add-job" element={<AddJob/>}/>
+    <Route path="profile" element={<Profile/>}/>
+  </Route>
+</Routes>
+```
+
+Now navigating to the actual home page, it will be the `stats` page. 
+
+Go to: http://localhost:3000/
+
+Note: if parent path was not "/" but rather "/dashboard" then index is still relative and will reference dashboard instead of home page.
