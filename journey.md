@@ -4972,3 +4972,36 @@ A Protected Route. When the user logs out, it brings them to the landing page. S
 ## Creating ProtectedRoute component
 
 It will use `Navigate` from react-router-dom. Since we want access to the `user`, we also want access to the global context (i.e., if there is no `user` in our state).
+
+Within the component we destructure the `user` from the `appContext`. If user does not exist, then navigate to Landing page. Otherwise, return the `children`. The `children` is the `<SharedLayout />` component we will wrap with `ProtectedRoute` in `App.js`.
+
+```js
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+import { useAppContext } from '../context/appContext';
+
+export default function ProtectedRoute({ children }) {
+  const { user } = useAppContext();
+  if(!user){
+    return <Navigate to='/landing' />
+  }
+  return (
+    children
+  );
+}
+```
+
+Next we got to fix our imports/exports in `index.js` of `pages`.
+
+Now import `ProtectedRoute` in `App.js`, and wrap `SharedLayout` with `ProtectedRoute`:
+
+```js
+<Route
+  path="/"
+  element={
+    <ProtectedRoute>
+      <SharedLayout/>
+    </ProtectedRoute>
+  }
+>
+```
