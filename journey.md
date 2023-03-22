@@ -4961,3 +4961,14 @@ Now navigating to the actual home page, it will be the `stats` page.
 Go to: http://localhost:3000/
 
 Note: if parent path was not "/" but rather "/dashboard" then index is still relative and will reference dashboard instead of home page.
+
+# Make Dashboard a Protected Route
+
+A Protected Route. When the user logs out, it brings them to the landing page. So when a user tries to access the Dashboard without signing in, they will be redirected to the landing page. We programatically navigate them out if there is no user in our state.
+
+- Create ProtectedRoute.js in `pages` folder
+- Then wrap `SharedLayout` with `ProtectedRoute` component in `App.js`
+
+## Creating ProtectedRoute component
+
+It will use `Navigate` from react-router-dom. Since we want access to the `user`, we also want access to the global context (i.e., if there is no `user` in our state).
