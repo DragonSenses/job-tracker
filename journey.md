@@ -5086,4 +5086,18 @@ The only thing that changes is the `dashboard page` displaying one of the nested
 
 ## Using `react-icons`
 
-[React icons](https://react-icons.github.io/react-icons/) is a library which gives us access to mroe libraries of icons. To get icon, we need name and library where its from. 
+[React icons](https://react-icons.github.io/react-icons/) is a library which gives us access to icons. To get icon, we need name and library where its from. WE can also click the icon we want and copy to clipboard.
+
+Here is how to use it:
+
+```js
+import { IconName } from "react-icons/fa";
+
+export default function SharedLayout() {
+  return (
+    <IconName />
+  );
+}
+```
+
+We will be using icons for the rest of the project and for components.
