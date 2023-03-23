@@ -5005,3 +5005,85 @@ Now import `ProtectedRoute` in `App.js`, and wrap `SharedLayout` with `Protected
   }
 >
 ```
+
+Now run the app, clear localStorage of any user, try to access home route and it should redirected to landing page. Try accessing any of the nested pages as well and it will also redirect user to landing page.
+
+# Design Layout
+
+The components we will have for the SharedLayout is:
+
+- Navbar
+- Large Sidebar
+- Small Sidebar
+
+Responsive design.
+
+- 2 column layout:
+- 1st column is Large sidebar/navbar 
+- 2nd column is the page
+- Small sidebar is for mobile/small screens, a one column layout
+
+Lets create those in `components` folder. Import the wrappers, fix the `index.js` for `components`.
+
+`SharedLayout` will be using those components in this order: SmallSidebar, LargeSidebar, Navbar, Outlet
+
+Right now: 
+
+```js
+export default function SharedLayout() {
+  return (
+    <Wrapper>
+      <nav>
+        <Link to='add-job'>add job</Link>
+        <Link to='all-jobs'>all job</Link>
+      </nav>
+      <Outlet />
+    </Wrapper>
+  )
+}
+```
+
+We set it to:
+
+```js
+export default function SharedLayout() {
+  return (
+    <Wrapper>
+      <main className="dashboard">
+        <SmallSidebar />
+        <LargeSidebar />
+        <div>
+          
+        </div>
+      </main>
+      <Outlet />
+    </Wrapper>
+  )
+}
+```
+
+Notice that in the `Wrapper` css for SmallSidebar and LargeSidebar, the LargeSidebar has `display: none` at anything below 992px. Once the width becomes `992px`, the SmallSidebar is hidden and LargeSidebar takes over.
+
+We have the components and a `div` which will be the 2nd column. We have css that controls which sidebar will be displayed.
+
+The only thing that changes is the `dashboard page` displaying one of the nested pages. So an inner `div` with that classname, will also contain the Outlet.
+
+```js
+<Wrapper>
+  <main className="dashboard">
+    <SmallSidebar />
+    <LargeSidebar />
+    <div>
+      <Navbar />
+      <div className="dashboard-page">
+
+        <Outlet />
+      </div>
+    </div>
+  </main>
+</Wrapper>
+```
+
+## Using `react-icons`
+
+[React icons](https://react-icons.github.io/react-icons/) is a library which gives us access to mroe libraries of icons. To get icon, we need name and library where its from. 
