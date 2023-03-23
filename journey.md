@@ -5158,7 +5158,7 @@ export default function Navbar() {
 
 As we can see the Navbar has 3 interactive pieces (the buttons) that will need some functionality.
 
-## Toggling the Sidebar button
+## Toggle Sidebar 
 
 Let's use state to toggle sidebar. We are going to have an action to dispatch to toggle it, we will also add a property to the `initalState`. Then we create a function to dispatch that action. 
 
@@ -5201,3 +5201,53 @@ export default function Navbar() {
 Run the app, check the developer tools > Components > AppProvider > hooks > `showSidebar`
 
 Every time we click it should toggle the hook.
+
+## Toggle Dropdown
+
+Toggling the dropdown will be declared as a [state variable](https://react.dev/learn/state-a-components-memory) using [useState hook](https://react.dev/reference/react/useState#usestate). 
+
+In Navbar we do 3 things: import `useState` and create `showLogout` and `setShowLogout`. Pass the `setShowLogout` to first button in `btn-container` Then conditionally render the 3rd button if the based on `showLogout`.
+
+```js
+import { useState } from 'react';
+
+export default function Navbar() {
+  const { toggleSidebar } = useAppContext();
+  const [showLogout, setShowLogout] = useState(false);
+  return (
+    <Wrapper>
+      <div className="nav-center">
+        <button
+          className="toggle-btn"
+          onClick={ toggleSidebar }>
+          <FaAlignLeft />
+        </button>
+        <div>
+          <Logo />
+          <h3 className="logo-text">Dashboard</h3>
+        </div>
+        <div className="btn-container">
+          <button
+            type="button"
+            className="btn"
+            onClick={() => setShowLogout(!showLogout)}
+          >
+            <FaUserCircle />
+            User's Name
+            <FaCaretDown />
+          </button>
+          <div className={showLogout ? "dropdown show-dropdown" : "dropdown"}>
+            <button
+              type="button"
+              className="dropdown-btn"
+              onClick={() => console.log('log out user')}
+            >
+              logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </Wrapper>
+  )
+}
+```
