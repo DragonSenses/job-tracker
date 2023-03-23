@@ -5101,3 +5101,9 @@ export default function SharedLayout() {
 ```
 
 We will be using icons for the rest of the project and for components.
+
+```sh
+cd client
+
+npm i react-icons
+```
