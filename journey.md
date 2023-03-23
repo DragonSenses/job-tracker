@@ -5161,3 +5161,43 @@ As we can see the Navbar has 3 interactive pieces (the buttons) that will need s
 ## Toggling the Sidebar button
 
 Let's use state to toggle sidebar. We are going to have an action to dispatch to toggle it, we will also add a property to the `initalState`. Then we create a function to dispatch that action. 
+
+In appContext:
+```js
+
+  const toggleSidebar = () => {
+    dispatch({ type: TOGGLE_SIDEBAR });
+  };
+```
+
+In reducer:
+
+```js
+  if(action.type === TOGGLE_SIDEBAR) {
+    return {
+      ...state,
+      showSidebar: !state.showSidebar,
+    };
+  }
+```
+
+We extract the function `toggleSidebar` in `Navbar.js`:
+
+```js
+export default function Navbar() {
+  const { toggleSidebar } = useAppContext();
+
+  return (
+    <Wrapper>
+      <div className="nav-center">
+        <button
+          className="toggle-btn"
+          onClick={ toggleSidebar }>
+          <FaAlignLeft />
+        </button>
+  {/* ... */}
+```
+
+Run the app, check the developer tools > Components > AppProvider > hooks > `showSidebar`
+
+Every time we click it should toggle the hook.
