@@ -5110,7 +5110,11 @@ npm i react-icons
 
 # Navbar component
 
-Navbar will have a 3 column layout. On small screens it will have the logo in the middle, on larger screens it will have Dashboard text.
+Navbar will have a 3 column layout. 
+
+1. 1st Column has a button that toggles the large sidebar
+2. 2nd Column contains the Logo and Dashboard text. On small screens it will have the logo in the middle, on larger screens it will have Dashboard text.
+3. 3rd Column contains two buttons, one for a dropdown the other for logout
 
 ```js
 import React from 'react';
@@ -5151,3 +5155,9 @@ export default function Navbar() {
   )
 }
 ```
+
+As we can see the Navbar has 3 interactive pieces (the buttons) that will need some functionality.
+
+## Toggling the Sidebar button
+
+Let's use state to toggle sidebar. We are going to have an action to dispatch to toggle it, we will also add a property to the `initalState`. Then we create a function to dispatch that action. 
