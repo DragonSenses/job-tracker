@@ -58,7 +58,7 @@ export default function AppProvider(props) {
     localStorage.setItem('location', location);
   };
   
-  const removeUserFromLocalStorage = ({ user, token, location }) => {
+  const removeUserFromLocalStorage = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     localStorage.removeItem('location');
