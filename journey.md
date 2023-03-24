@@ -5374,3 +5374,9 @@ const links = [
 
 export default links;
 ```
+
+## Sidebar button shows sidebar
+
+- imports: Wrapper, FaTimes icon, appContext, links, NavLink, Logo
+- Icon is the close button
+- 
