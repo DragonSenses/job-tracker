@@ -2,9 +2,8 @@ import React from 'react';
 import Wrapper from '../assets/wrappers/SmallSidebar.js';
 import { FaTimes } from 'react-icons/fa';
 import { useAppContext } from '../context/appContext';
-import links from '../utils/links';
-import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
+import NavLinks from './NavLinks.js';
 
 export default function SmallSidebar() {
   const { showSidebar, toggleSidebar } = useAppContext();
@@ -21,7 +20,7 @@ export default function SmallSidebar() {
           <header>
             <Logo />
           </header>
-          <div className="nav-links">nav links</div>
+          <NavLinks toggleSidebar={ toggleSidebar }/>
         </div>
       </div>
     </Wrapper>

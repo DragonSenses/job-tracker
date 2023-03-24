@@ -5417,7 +5417,6 @@ The [useState](https://react.dev/learn/state-a-components-memory) hook provides 
 1. A **state variable** to retain the data between renders.
 2. A **state setter function** to update the variable and trigger React to render the component again.
 
-
 We will also change the div that has `sidebar-container` to conditionally render, if `showSidebar` is true then `show-container show-sidebar` css class will be set, if false then `sidebar-container`.
 
 - from global context get the state variable for `showSidebar` & `toggleSidebar`
@@ -5434,3 +5433,69 @@ const { showSidebar, toggleSidebar } = useAppContext();
           <button className="close-btn" onClick={ toggleSidebar }>
 
 ```
+
+# Navlinks component
+
+- In `components` create `Navlinks.js`
+
+For now in `SmallSidebar.js` we have a `div` containg the `nav-links`. We want to create the logic for the `NavLink` here.
+
+```js
+<div className='nav-links'>
+      {links.map((link) => {
+        const { text, path, id, icon } = link;
+
+        return (
+          <NavLink
+            to={path}
+            key={id}
+            onClick={ toggleSidebar }
+            className={({ isActive }) =>
+              isActive ? 'nav-link active' : 'nav-link'
+            }
+            end
+          >
+            <span className='icon'>{icon}</span>
+            {text}
+          </NavLink>
+        );
+      })}
+    </div>
+```
+
+For every link we have in `links.js` in `utils` folder, we destructure them for the necessary data to create a `NavLink`. 
+
+Notice the `onClick` has `toggleSidebar`. On a LargeSidebar don't use `onClick` but on `smallSidebar` do want to toggle the state. **To close a sidebar everytime a user clicks on a link.** 
+
+We will pass `toggleSidebar` in as a `prop`, to be passed from the parent container (i.e., `SmallSidebar`)
+
+Finally, the className will conditionally add an `active` class whenever `isActive`. Since we are using `styled-components` the styles won't be colliding, especially when we render this component within another component.
+
+```js
+export default function SmallSidebar() {
+  const { showSidebar, toggleSidebar } = useAppContext();
+
+  return (
+    <Wrapper>
+      <div className={
+        showSidebar ? "sidebar-container show-sidebar" : "sidebar-container"
+      }>
+        <div className="content">
+          <button className="close-btn" onClick={ toggleSidebar }>
+            <FaTimes />
+          </button>
+          <header>
+            <Logo />
+          </header>
+          // Pass function in as a prop
+          <NavLinks toggleSidebar={ toggleSidebar }/>
+        </div>
+      </div>
+    </Wrapper>
+  );
+};
+```
+
+Now on smaller screens that show small sidebar, we can see it in action.
+
+Also notice how `links.js` is the data and separate from the rendering. `NavLinks` component will also be set-up in multiple places.
