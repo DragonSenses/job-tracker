@@ -5332,3 +5332,45 @@ export default function Navbar() {
 Now the moment we log out, it redirects to the landing page.
 
 Check Developer Tools > AppPRovider > Hooks and all the hooks and state should be at the default values.
+
+# Small Sidebar component
+
+Going to have links as an a array of objects. We are going to iterate over this array and create a [NavLink](https://reactrouter.com/en/main/components/nav-link) from `react-router-dom`. 
+
+Create a `utils` folder and create `links.js`.
+
+```js
+import { IoBarChartSharp } from 'react-icons/io5';
+import { MdQueryStats } from 'react-icons/md';
+import { FaWpforms } from 'react-icons/fa';
+import { ImProfile } from 'react-icons/im';
+
+const links = [
+  {
+    id: 1,
+    text: 'stats',
+    path: '/',
+    icon: <IoBarChartSharp />,
+  },
+  {
+    id: 2,
+    text: 'all jobs',
+    path: 'all-jobs',
+    icon: <MdQueryStats />,
+  },
+  {
+    id: 3,
+    text: 'add job',
+    path: 'add-job',
+    icon: <FaWpforms />,
+  },
+  {
+    id: 4,
+    text: 'profile',
+    path: 'profile',
+    icon: <ImProfile />,
+  },
+];
+
+export default links;
+```
