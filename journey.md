@@ -5478,7 +5478,7 @@ export default function SmallSidebar() {
   return (
     <Wrapper>
       <div className={
-        showSidebar ? "sidebar-container show-sidebar" : "sidebar-container"
+        showSidebar ? "sidebar-container" : "sidebar-container show-sidebar"
       }>
         <div className="content">
           <button className="close-btn" onClick={ toggleSidebar }>
@@ -5499,3 +5499,39 @@ export default function SmallSidebar() {
 Now on smaller screens that show small sidebar, we can see it in action.
 
 Also notice how `links.js` is the data and separate from the rendering. `NavLinks` component will also be set-up in multiple places.
+
+# Large Sidebar Component
+
+Large Sidebar will use `showSidebar` from app context to conditionally render the CSS class `show-sidebar`. By default `showSidebar` state is false in `initialState`, so the logic is flipped and it would have `show-sidebar` when the state variable is false. We want to have the component show by default.
+
+Optional - toggle sidebar when a Navlink is pressed, just pass in the function as a prop to `NavLinks` like in `SmallSideBar.js`.
+
+```js
+import React from 'react';
+import Wrapper from '../assets/wrappers/LargeSidebar.js';
+import { useAppContext } from '../context/appContext';
+import Logo from './Logo';
+import NavLinks from './NavLinks.js';
+
+export default function LargeSidebar() {
+  const { showSidebar } = useAppContext();
+
+  return (
+    <Wrapper>
+      <div 
+        className={
+          showSidebar ? "sidebar-container" : "sidebar-container show-sidebar"
+        }
+      >
+        <div className="content">
+          <header>
+            <Logo />
+          </header>
+          <NavLinks />   
+        </div>
+      </div>
+    </Wrapper>
+  );
+};
+```
+
