@@ -5535,3 +5535,22 @@ export default function LargeSidebar() {
 };
 ```
 
+# Authentication, Security & Restricting Access to only the user
+
+The pages in the `Dashboard` will be sending requests. Within those requests, in the request header we have the `authorization` where we pass in the `token` of the user. We can see this in developer tools (press `[F12]` in Chrome) and in the Network tab, under Headers. 
+
+We need to setup the functions on the server to restrict access to certain resources. If the token is not present, send error response.
+
+Let's create that middleware to check for the token. Back to the server at the root directory of the project, head over to `middleware` folder and create `authenticate.js` then setup the `async` function and export it.
+
+
+```js
+const authenticate = async (req, res, next) => {
+  console.log('authenticate user');
+  next();
+};
+
+export default authenticate
+```
+
+Just console.log() for now. 
