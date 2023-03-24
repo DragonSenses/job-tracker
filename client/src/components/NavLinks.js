@@ -16,7 +16,6 @@ export default function NavLinks({ toggleSidebar }) {
             className={({ isActive }) =>
               isActive ? 'nav-link active' : 'nav-link'
             }
-            end
           >
             <span className='icon'>{icon}</span>
             {text}
