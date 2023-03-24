@@ -5379,4 +5379,58 @@ export default links;
 
 - imports: Wrapper, FaTimes icon, appContext, links, NavLink, Logo
 - Icon is the close button
-- 
+- CSS to `show-sidebar` (which will be toggled)
+- navlinks
+
+```js
+import React from 'react';
+import Wrapper from '../assets/wrappers/SmallSidebar.js';
+import { FaTimes } from 'react-icons/fa';
+import { useAppContext } from '../context/appContext';
+import links from '../utils/links';
+import { NavLink } from 'react-router-dom';
+import Logo from './Logo';
+
+export default function SmallSidebar() {
+  return (
+    <Wrapper>
+      <div className="sidebar-container show-sidebar">
+        <div className="content">
+          <button className="close-btn" onClick={ () => console.log('toggle') }>
+            <FaTimes />
+          </button>
+          <header>
+            <Logo />
+          </header>
+          <div className="nav-links">nav links</div>
+        </div>
+      </div>
+    </Wrapper>
+  );
+};
+```
+
+### Sidebar functionality
+
+The [useState](https://react.dev/learn/state-a-components-memory) hook provides two things:
+
+1. A **state variable** to retain the data between renders.
+2. A **state setter function** to update the variable and trigger React to render the component again.
+
+
+We will also change the div that has `sidebar-container` to conditionally render, if `showSidebar` is true then `show-container show-sidebar` css class will be set, if false then `sidebar-container`.
+
+- from global context get the state variable for `showSidebar` & `toggleSidebar`
+- Conditionally render with `showSidebar`
+- Pass `toggleSidebar` function into `close-btn` button
+
+```js
+const { showSidebar, toggleSidebar } = useAppContext();
+
+      <div className={
+        showSidebar ? "sidebar-container show-sidebar" : "sidebar-container"
+      }> </div>
+
+          <button className="close-btn" onClick={ toggleSidebar }>
+
+```

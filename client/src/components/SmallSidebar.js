@@ -7,11 +7,15 @@ import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
 
 export default function SmallSidebar() {
+  const { showSidebar, toggleSidebar } = useAppContext();
+
   return (
     <Wrapper>
-      <div className="sidebar-container show-sidebar">
+      <div className={
+        showSidebar ? "sidebar-container show-sidebar" : "sidebar-container"
+      }>
         <div className="content">
-          <button className="close-btn" onClick={ () => console.log('toggle') }>
+          <button className="close-btn" onClick={ toggleSidebar }>
             <FaTimes />
           </button>
           <header>
