@@ -5251,3 +5251,84 @@ export default function Navbar() {
   )
 }
 ```
+
+## Toggle Logout
+
+Clicking the Logout button should:
+
+1. Set the values in the state to null, empty, 0 etc.
+2. Moment values are set to null, user will be redirected to the landing page
+
+Create action, import/export, dispatch action. Within the `logoutUser` function that dispatchs the action, it also calls `removesUserFromLocalStorage`.
+
+In `reducer.js` we will be importing `initialState` (exported from `appContext`). To logout the user, unlike all the other actions so far, we do NOT want to return `...state` but rather `...initialState`. In other words, we do not want to return all the current values and just update a few of them. Instead return an empty object and grab the `initialState` (which is the default state). Why do this? It's more maintainable in that if we ever add new properties to `initialState` then we don't have to explicitly set it to null  in the reducer instead we can just return the `initalState` object.
+
+For any properties within `initalState` that have a condition (e.g., `user`) or properties that use `localStorage` (e.g., `token`) we have to explicitly override and set those to null.
+
+```js
+const initialState = {
+  isLoading: false,
+  showAlert: false,
+  alertText: '',
+  alertType: '',
+  user: user ? JSON.parse(user) : null ,
+  token: token,
+  userLocation: userLocation || '',
+  jobLocation: userLocation || '',
+  showSidebar: false,
+}
+
+export { AppProvider, initialState, useAppContext }
+```
+
+Just because we remove them from localStorage, it does not automatically update the state.
+
+```js
+import { intialState } from './appContext';
+
+if(action.type === LOGOUT_USER){
+  return {
+    ...initialState,
+    user: null,
+    token: null,
+    userLocation: '',
+    jobLocation: '',
+  }
+}
+```
+
+Import logoutUser in actions, create the function, then pass it in the prop value of AppContext.Provider.
+
+```js
+  const logoutUser = () => {
+    dispatch({ type: LOGOUT_USER });
+    removeUserFromLocalStorage();
+  };
+```
+
+Now that the functionality is out of the way, implement it in the Navbar
+
+```js
+export default function Navbar() {
+  const { toggleSidebar, logoutUser, user } = useAppContext();
+
+    <FaUserCircle />
+    { user?.name }
+    <FaCaretDown />
+
+    <button
+      type="button"
+      className="dropdown-btn"
+      onClick={ logoutUser }
+    >
+      logout
+    </button>
+```
+
+1. Destructure `logoutUser` from appContext
+2. [Optional chaining](https://javascript.info/optional-chaining) and rendering of `user.name`
+3. Change the function `onClick` for button
+
+Now the moment we log out, it redirects to the landing page.
+
+Check Developer Tools > AppPRovider > Hooks and all the hooks and state should be at the default values.
