@@ -5553,4 +5553,50 @@ const authenticate = async (req, res, next) => {
 export default authenticate
 ```
 
-Just console.log() for now. 
+Just console.log() for now. Import this method in `authRoutes` and put it in the `/updateUser` route, a private route (whereas login & register are public routes). Let's name it `authenticateUser`.
+
+```js
+import authenticateUser from '../middleware/authenticate.js';
+
+router.route('/updateUser').patch(authenticateUser, updateUser);
+```
+
+All the routes will be restricted, when it comes to `jobs`. We can do it two ways:
+
+1. `authenticateUser` in `server`, and place it in front of `jobsRouter`
+- Each and every request that goes to `/jobs` will have that authentication
+
+```js
+import authenticateUser from '../middleware/authenticate.js';
+app.use('/api/v1/jobs', authenticateUser, jobsRouter);
+```
+
+2. `authenticateUser` in `jobsRoutes` and do it manually for all routes
+
+```js
+import authenticateUser from '../middleware/auth.js';
+
+router.route('/stats').get(authenticateUser, showStates);
+// ... do the same for all routes
+```
+
+Now in Postman, test out the functionality -> should see the `console.log('authenticate user');` when we make a `Patch` request of Update User. Don't need to pass anything in, just send it.
+
+The response in Postman is `updateUser` string. Whereas in the terminal we can see:
+
+```sh
+[1] webpack compiled successfully
+[0] authenticate user
+[0] PATCH /api/v1/auth/updateUser 200 1.953 ms - 10
+```
+
+The `authenticate user` string, meaning every request that goes to `Update User` will pass through the `authenticate` middleware. 
+
+Let's repeat the request with say `Get Jobs` in Postman.
+
+```sh
+[0] authenticate user
+[0] GET /api/v1/jobs 200 0.688 ms - 10
+```
+
+Awesome! The inital user authentication setup is working so far.
