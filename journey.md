@@ -5774,3 +5774,81 @@ Note: Update User request should not have any Tests script, if you get any error
 Now try Authorization > NO Auth (Drop Down Menu) > Body 
 
 We see Authentication Invalid, 401 Response.
+
+# Authorization Middleware - properly verifying
+
+- We have to check authorization header
+
+Recall that Authorization header uses the Bearer schema, so content of the header looks like:
+
+```sh
+Authorization: Bearer <token>
+```
+
+- If authHeader is empty or does not start with "Bearer" then throw error.
+- Get the token by splitting authHeader
+
+```js
+const token = authHeader.split(' ')[1];
+```
+
+Split it by one space, as token is a space after the Bearer. Then an array of two elements, take the second value (which is the token).
+
+After grabbing token we should use the `jwt.verify()` function. When creating token we had used the `proces.env.SECRET_KEY` variable, which will be used again to verify here. This function returns the payload (what we passed in when creating the token).
+
+```js
+const payload = jwt.verify(token, process.env.SECRET_KEY);
+```
+Recall when creating the Token, we pass in the object payload `{ userId: this._id }`
+
+```js
+UserSchema.methods.createToken = function () {
+  return jwt.sign(
+    { userId: this._id },
+    process.env.SECRET_KEY,
+    { expiresIn: process.env.LIFETIME }
+  );
+}
+```
+
+Before sending the payload to the next middleware, set the `request`'s user property to the payload's `user` object. So now in request, can access the user id. 
+
+If any of these steps failed: expired token, or tampered data then throw an error.
+
+Let's log the payload first:
+
+```js
+import jwt from 'jsonwebtoken';
+import { UnAuthenticatedError } from "../errors/index.js";
+
+const authenticate = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if(!authHeader || !authHeader.startsWith("Bearer")){
+    throw new UnAuthenticatedError("Authentication Invalid");
+  }
+
+  const token = authHeader.split(' ')[1];
+  
+  try{
+    const payload = jwt.verify(token, process.env.SECRET_KEY);
+    console.log(payload);
+    next();
+  } catch(error){
+    throw new UnAuthenticatedError("Authentication Invalid");
+  }
+};
+
+export default authenticate 
+```
+
+Go to Postman > Update User > Authorization > Bearer Token > Send
+
+Update User string is in the response. Check console:
+
+```sh
+[0] {
+[0]   userId: '6418d6ab92ff594a02b6f24a',
+[0]   iat: 1679740438,
+[0]   exp: 1679826838
+[0] }
+```
