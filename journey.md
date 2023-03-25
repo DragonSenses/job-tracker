@@ -5646,3 +5646,106 @@ const authenticate = async (req, res, next) => {
   next();
 };
 ```
+
+Now send the request from Postman -> Update User
+
+Response is Update User, but in the console we see `authorization`, `Bearer` and token.
+
+```sh
+[0] {
+[0]   authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDE4ZDZhYjkyZmY1OTRhMDJiNmYyNGEiLCJpYXQiOjE2Nzk2MjQ1MzQsImV4cCI6MTY3OTcxMDkzNH0.-fDe_VqrLo0QodWB3p6ElHAe_oRWlYeTIHheO4IO2Ec',
+[0]   'user-agent': 'PostmanRuntime/7.31.3',
+[0]   accept: '*/*',
+[0]   'postman-token': '6b6e2d8a-b7a5-4861-9324-64af2b155a02',
+[0]   host: 'localhost:4000',
+[0]   'accept-encoding': 'gzip, deflate, br',
+[0]   connection: 'keep-alive',
+[0]   'content-length': '0'
+[0] }
+[0] Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDE4ZDZhYjkyZmY1OTRhMDJiNmYyNGEiLCJpYXQiOjE2Nzk2MjQ1MzQsImV4cCI6MTY3OTcxMDkzNH0.-fDe_VqrLo0QodWB3p6ElHAe_oRWlYeTIHheO4IO2Ec
+[0] PATCH /api/v1/auth/updateUser 200 3.335 ms - 10
+```
+
+We will grab the Bearer token from our state, and set up an HTTP request that will go to our server. The server will check for authorization header, if its present, token is valid then we can access/modify resources. If not, then throw authentication error.
+
+## Token Setup in Postman
+
+- For Register and Login routes, go to Tests
+
+```js
+const jsonData = pm.response.json();
+pm.globals.set('token', jsonData.token);
+```
+
+We have `jsonData.token` because in the `authController` where we send the response back we have: 
+
+```js
+  res.status(StatusCodes.CREATED).json({
+    user: {
+      email: user.email,
+      lastName: user.lastName,
+      location: user.location,
+      name: user.name
+    }, 
+    token,
+    location: user.location,
+  });
+```
+
+The `user` object and `token`.
+
+Now back to the Postman, remove the Authorization we added earlier. Update User Request > Params > Uncheck Authorization. We send the request and we have `undefined`.
+
+```sh
+{
+[0]   'user-agent': 'PostmanRuntime/7.31.3',
+[0]   accept: '*/*',
+[0]   'postman-token': 'e6d38261-d5de-4056-b0b6-e01fd31468e5',
+[0]   host: 'localhost:4000',
+[0]   'accept-encoding': 'gzip, deflate, br',
+[0]   connection: 'keep-alive',
+[0]   'content-length': '0'
+[0] }
+[0] undefined
+[0] PATCH /api/v1/auth/updateUser 200 3.293 ms - 10
+```
+
+So how do we set it up programatically?
+Go to Postman > Tests. Add the following:
+
+```js
+const jsonData = pm.response.json();
+```
+
+Then at the right, at Code Snippets > click Set Global Variable.
+
+It gives this:
+```js
+pm.globals.set("variable_key", "variable_value");
+```
+
+Set it to this:
+```js
+pm.globals.set("token", jsonData.token);
+```
+
+Save it now. 
+
+Copy the same code and paste it into the Tests of Auth > Login.
+
+Now send the Login request, now instead of manually putting in the:
+
+```js
+Authorization: Bearer <token>
+```
+
+In any of the routes, go to Authorization > Dropdown menu from "Inherit auth form p" to Bearer Token > In the name of the variable > `{{token}}`
+
+`{{token}}` should be there right away. After a sending a login request.
+
+Now we can see it in our global variables (the icon right below the close marker).
+
+After a successful register/login then token will be added to Globals. Every time logged in to a new user {{token}} will be set automatically.
+
+Now all routes will be protected as we repeat the same process > Authroizaiton > Bearer Token > Send request.
+
