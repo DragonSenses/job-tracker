@@ -5749,3 +5749,28 @@ After a successful register/login then token will be added to Globals. Every tim
 
 Now all routes will be protected as we repeat the same process > Authroizaiton > Bearer Token > Send request.
 
+## Adding Error Handling to Authentication Middleware
+
+In `authenticate.js` middleware, import UnAuthentication error and if there is no header throw it.
+
+```js
+import { UnAuthenticatedError } from "../errors/index.js";
+
+const authenticate = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if(!authHeader){
+    throw new UnAuthenticatedError("Authentication Invalid");
+  }
+  next();
+};
+
+export default authenticate
+```
+
+Try it in Postman > Update User > Send Request
+
+Note: Update User request should not have any Tests script, if you get any errors "JSONerror unexpected token u".
+
+Now try Authorization > NO Auth (Drop Down Menu) > Body 
+
+We see Authentication Invalid, 401 Response.
