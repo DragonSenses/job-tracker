@@ -5600,3 +5600,49 @@ Let's repeat the request with say `Get Jobs` in Postman.
 ```
 
 Awesome! The inital user authentication setup is working so far.
+
+# Navlink update -> React Router -> using `end` prop
+
+A [StackOverflow Post](https://stackoverflow.com/questions/70644361/react-router-dom-v6-shows-active-for-index-as-well-as-other-subroutes).
+
+```js
+  <NavLink
+    to={path}
+    key={id}
+    onClick={ toggleSidebar }
+    className={({ isActive }) =>
+      isActive ? 'nav-link active' : 'nav-link'
+    }
+    end
+  >
+```
+
+Note that the without the `end` prop, this link is always active because every URL matches `/`. See the [React Router Docs on Navlink](https://reactrouter.com/en/main/components/nav-link).
+
+# JSON Web Tokens - JWT
+
+Primer on JWT [jwt.io](https://jwt.io/introduction).
+
+Go to the section with header: "How do JSON Web Tokens work?"
+
+
+> Whenever the user wants to access a protected route or resource, the user agent should send the JWT, typically in the Authorization header using the Bearer schema. The content of the header should look like the following:
+
+```sh
+Authorization: Bearer <token>
+```
+
+In Postman, go to Update User > Headers > Add Authorization and Bearer (token) as value.
+
+> This can be, in certain cases, a stateless authorization mechanism. The server's protected routes will check for a valid JWT in the `Authorization` header, and if it's present, the user will be allowed to access protected resources. If the JWT contains the necessary data, the need to query the database for certain operations may be reduced, though this may not always be the case.
+
+In authenticate.js
+```js
+const authenticate = async (req, res, next) => {
+  const headers = req.headers;
+  const authHeader = req.headers.authorization;
+  console.log(headers);
+  console.log(authHeader);
+  next();
+};
+```
