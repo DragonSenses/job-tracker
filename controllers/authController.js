@@ -22,12 +22,16 @@ const register = async (req, res) => {
 
   const token = user.createToken();
 
-  res.status(StatusCodes.CREATED).json({ user: {
-    email: user.email,
-    lastName: user.lastName,
+  res.status(StatusCodes.CREATED).json({
+    user: {
+      email: user.email,
+      lastName: user.lastName,
+      location: user.location,
+      name: user.name
+    }, 
+    token,
     location: user.location,
-    name: user.name
-  }, token});
+  });
 }
 
 const login = async (req, res) => {
