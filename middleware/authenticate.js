@@ -11,7 +11,7 @@ const authenticate = async (req, res, next) => {
   
   try{
     const payload = jwt.verify(token, process.env.SECRET_KEY);
-    console.log(payload);
+    req.user = { userId: payload.userId };
     next();
   } catch(error){
     throw new UnAuthenticatedError("Authentication Invalid");

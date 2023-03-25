@@ -5852,3 +5852,15 @@ Update User string is in the response. Check console:
 [0]   exp: 1679826838
 [0] }
 ```
+
+We have:
+
+-userId
+-issued time
+-exp: expiration
+
+all the time is in milliseconds. 
+
+`userId` will be used in any of the controllers that rely on that user (e.g., look up all jobs of the user or Update User Info). In the controllers, we look at request object and get `userId` property.
+
+`next()` pass it onto the controller.
