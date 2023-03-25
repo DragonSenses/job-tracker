@@ -5864,3 +5864,43 @@ all the time is in milliseconds.
 `userId` will be used in any of the controllers that rely on that user (e.g., look up all jobs of the user or Update User Info). In the controllers, we look at request object and get `userId` property.
 
 `next()` pass it onto the controller.
+
+## Logging the user in `updateUser`
+
+Go to authController,
+
+```js
+const updateUser = (req, res) => {
+  console.log(req.user);
+  res.send('updateUser');
+}
+```
+
+Postman > Update User > Send 
+
+In the terminal we see we have access to the user:
+
+```sh
+[0] { userId: '6418d6ab92ff594a02b6f24a' }
+```
+
+Used later in the controllers. Has a valid token.
+
+## Showcasing an Invalid token
+
+If we go to User model and change the `expiresIn:` value to say `100` (which means 100ms)
+
+```js
+UserSchema.methods.createToken = function () {
+  return jwt.sign(
+    { userId: this._id },
+    process.env.SECRET_KEY,
+    { expiresIn: 100 }
+  );
+}
+```
+
+Now in Postman > Login User > Send request (to get a new token)
+Go to Update User > Send > Get 401 error
+
+Token is already expired so the error handling should work.
