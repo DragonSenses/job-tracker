@@ -6053,3 +6053,13 @@ The user is successfully updated, and the response does not have the password (b
 
 ## Deep dive on the issue when sending the initial request and `updateUser` does not work
 
+Remember that **not every method will trigger the `.pre` hook**
+
+```js
+UserSchema.pre('save', async function(){
+  // const salt = await bcryptjs.genSalt(10);
+  // this.password = await bcryptjs.hash(this.password, salt);
+});
+```
+
+Another alternative solution is to use `User.findOneAndUpdate()` instead of `user.save()`
