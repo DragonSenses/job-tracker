@@ -5904,3 +5904,115 @@ Now in Postman > Login User > Send request (to get a new token)
 Go to Update User > Send > Get 401 error
 
 Token is already expired so the error handling should work.
+
+# Update User Controller
+
+The `updateUser` will look for 4 properties in the `req.body`:
+- email
+- name
+- lastName
+- location
+
+Throw an error if any are missing.
+
+Then get the get the `user` object whose `_id` matches that of the `req.user.userId`.
+Then for each property (email ... location), update them.
+
+Use instance method `save()` for document. 
+
+## Question -> Do we need to create another JWT when calling `updateUser`
+
+Check User model, what are we passing in>
+
+```js
+UserSchema.methods.createToken = function () {
+  return jwt.sign(
+    { userId: this._id },
+    process.env.SECRET_KEY,
+    { expiresIn: process.env.LIFETIME }
+  );
+}
+```
+
+In the payload, just `userId`. We are not changing `id` in the list of prooperties to update. If the properties we are changing are used to create the token, then it is a good idea to issue a new token.
+
+## Implementing `updateUser`  controller
+
+```js
+const updateUser = (req, res) => {
+  const { email, name, lastName, location} = req.body;
+
+  if(!email || !name || !lastName || !location) {
+    throw new BadRequestError("Please provide all values");
+  }
+
+  res.send('updateUser');
+};
+```
+
+Check if any of the properties are empty. Still check even if it is optional, the front-end will check it anyways.
+
+Next is the finding the user that matches the id. Update the properties. Then save the document. Create the token and send the response back wit hthe user, token, location.
+
+```js
+const updateUser = async (req, res) => {
+  const { email, name, lastName, location} = req.body;
+
+  if(!email || !name || !lastName || !location) {
+    throw new BadRequestError("Please provide all values");
+  }
+
+  const user = await User.findOne({_id: req.user.userId});
+
+  user.email = email;
+  user.name = name;
+  user.lastName = lastName;
+  user.location = location;
+
+  await user.save();
+
+  const token = createToken();
+
+  res.status( StatusCodes.OK ).json({ user, token, location: user.location });
+};
+```
+
+Let's test it out. Navigate to Postman.
+
+- Login Request, Send to get valid token
+
+```json
+{
+  "user": {
+      "_id": "6418d6ab92ff594a02b6f24a",
+      "name": "Miyuki",
+      "email": "MiyukiShiba@gmail.com",
+      "lastName": "lastName",
+      "location": "my location",
+      "__v": 0
+  },
+  "token": "...",
+  "location": "my location"
+}
+```
+
+- Patch Update User Request > Body > Raw > JSON
+
+```json
+{
+    "name": "Miyuki",
+    "email": "MiyukiShiba@gmail.com",
+    "lastName": "Shiba",
+    "location": "my location"
+}
+```
+
+Change one property -> `lastName` to `Shiba`.
+
+We got an error:
+
+```json
+{
+    "msg": "Illegal arguments: undefined, string"
+}
+```
