@@ -5971,7 +5971,7 @@ const updateUser = async (req, res) => {
 
   await user.save();
 
-  const token = createToken();
+  const token = user.createToken();
 
   res.status( StatusCodes.OK ).json({ user, token, location: user.location });
 };
@@ -6016,3 +6016,40 @@ We got an error:
     "msg": "Illegal arguments: undefined, string"
 }
 ```
+
+## Issue: Patch Request to updateUser does not work
+
+According to the error, there are illegal arguments undefined string. We can trace it in the console to `bcrypt.hash`. 
+
+The band-aid solution: comment out the following lines of code in the User model
+
+```js
+UserSchema.pre('save', async function(){
+  // const salt = await bcryptjs.genSalt(10);
+  // this.password = await bcryptjs.hash(this.password, salt);
+});
+```
+
+The pre save hook is causing the issue, so just comment out the 2 lines and send the Patch request again in Postman.
+
+Now look at the response (token is shortened to ellipsis):
+
+```json
+{
+    "user": {
+        "_id": "6418d6ab92ff594a02b6f24a",
+        "name": "Miyuki",
+        "email": "MiyukiShiba@gmail.com",
+        "lastName": "Shiba",
+        "location": "my location",
+        "__v": 0
+    },
+    "token": "...",
+    "location": "my location"
+}
+```
+
+The user is successfully updated, and the response does not have the password (because of `select: false`). So when query `User.findOne()` then password won't be returned.
+
+## Deep dive on the issue when sending the initial request and `updateUser` does not work
+
