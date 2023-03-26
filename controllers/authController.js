@@ -76,7 +76,7 @@ const updateUser = async (req, res) => {
 
   await user.save();
 
-  const token = createToken();
+  const token = user.createToken();
 
   res.status( StatusCodes.OK ).json({ user, token, location: user.location });
 };
