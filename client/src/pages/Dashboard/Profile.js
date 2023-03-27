@@ -25,9 +25,16 @@ export default function Profile() {
 
   return (
     <Wrapper>
-      <h1>profile</h1>
       <form action="" className="form" onSubmit={handleSubmit}>
+        <h3>profile</h3>
+        {showAlert && <Alert />}
 
+        <FormRow 
+          type='text'
+          name='name'
+          value={name}
+          handleChange={(e) => setName(e.target.value)}
+        />
       </form>
     </Wrapper>
   )

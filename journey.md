@@ -6246,3 +6246,87 @@ Next, create the submit handler function that checks for any empty values (retur
       updateUser({ name, email, lastName, location });
     }
 ```
+
+## Working on the Profile Component
+
+Profile should return a `<form>` element. Within it a heading, conditionally rendered `Alert` component and the `FormRow` components. The `FormRow` props are type, name, value, and `onChange`
+
+```js
+  return (
+    <Wrapper>
+      <form action="" className="form" onSubmit={handleSubmit}>
+        <h3>profile</h3>
+        {showAlert && <Alert />}
+
+        <FormRow 
+          type='text'
+          name='name'
+          value={name}
+          handleChange={(e) => setName(e.target.value)}
+        />
+      </form>
+    </Wrapper>
+  )
+```
+
+Notice how the difference from the Register and here is that since we have many local states instead of just one state which dynamically sets the state of the values. Here is what it looked like in `Register.js` to jog our memory:
+
+```js
+export default function Register() {
+
+  const [values, setValues] = useState(initialState);
+
+  const handleChange = (e) => {
+    setValues({...values, [e.target.name]: e.target.value });
+  };
+
+  /* ... */
+
+  return (
+    <Wrapper className='full-page'>
+      <form className='form' onSubmit={onSubmit} action="">
+        <Logo />
+        <h3>{values.isMember ? "Log In" : "Register"}</h3>
+        {showAlert && <Alert />}
+
+        { !values.isMember && (
+          <FormRow
+            type="text"
+            name="name"
+            value={values.name}
+            handleChange={handleChange}
+          />
+        )}
+
+        <FormRow
+          type="email"
+          name="email"
+          value={values.email}
+          handleChange={handleChange}
+        />
+
+        <FormRow
+          type="password"
+          name="password"
+          value={values.password}
+          handleChange={handleChange}
+        />
+
+        <button type="submit" className="btn btn-block" disabled={isLoading}>submit</button>
+
+        <p>
+          {values.isMember ? "Not a member yet?" : "Already a member?"}
+          <button
+            type='button'
+            onClick={toggleMember}
+            className="member-btn">
+            { values.isMember ? 'Register' : 'Log In' }
+          </button>
+        </p>
+
+      </form>
+    </Wrapper>
+  )
+}
+```
+
