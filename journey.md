@@ -6175,3 +6175,29 @@ UserSchema.pre('save', async function(){
 If we are not modifying the password, then return and avoid re-hashing the password.
 
 When user is being registered, password is being modified, therefore it will hash the password.
+
+# The Profile Page
+
+On the front-end we have a page with a `form` with 4 fields: name, last name, email, location.
+
+- By default, set them up with values that user has in initial request (within the state)
+- When user tries to make changes, it makes an `updateUser` request, then values are updated and a new token is issued
+- Location will be the default value to `addJob` page later on
+
+## Create an updateUser function in app context
+
+For now the function just logs the current user passed in. Pass down the function.
+
+```js
+  const updateUser = async (currentUser) => {
+    // Log user if all values are provided on update
+    console.log(currentUser);
+  };
+
+  return (
+    <AppContext.Provider value = {{...state, 
+    displayAlert, registerUser, loginUser, toggleSidebar, logoutUser, updateUser }}>
+      {children}
+    </AppContext.Provider>
+  )
+```

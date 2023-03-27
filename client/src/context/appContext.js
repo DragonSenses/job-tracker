@@ -115,9 +115,14 @@ export default function AppProvider(props) {
     removeUserFromLocalStorage();
   };
 
+  const updateUser = async (currentUser) => {
+    // Log user if all values are provided on update
+    console.log(currentUser);
+  };
+
   return (
     <AppContext.Provider value = {{...state, 
-    displayAlert, registerUser, loginUser, toggleSidebar, logoutUser }}>
+    displayAlert, registerUser, loginUser, toggleSidebar, logoutUser, updateUser }}>
       {children}
     </AppContext.Provider>
   )
