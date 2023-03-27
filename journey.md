@@ -6330,3 +6330,5 @@ export default function Register() {
 }
 ```
 
+So in `Profile` we just call the set function from the `useState` hook, and pass in the `e.target.value`. Whereas in the `Register` we call `e.target.value` within `handleChange` function so we can pass it to all `FormRow` components.
+

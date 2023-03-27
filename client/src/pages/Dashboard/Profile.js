@@ -5,7 +5,7 @@ import { FormRow, Alert } from '../../components';
 import Wrapper from '../../assets/wrappers/DashBoardFormPage.js';
 
 export default function Profile() {
-  const { user, showAlert, displayAlert, updateUser, isLoading }=
+  const { user, showAlert, displayAlert, updateUser, isLoading } =
     useAppContext();
 
     const [name, setName] = useState(user?.name);
@@ -29,13 +29,36 @@ export default function Profile() {
         <h3>profile</h3>
         {showAlert && <Alert />}
 
-        <FormRow 
-          type='text'
-          name='name'
-          value={name}
-          handleChange={(e) => setName(e.target.value)}
-        />
+        <div className="form-center">
+
+          <FormRow 
+            type='text'
+            name='name'
+            value={name}
+            handleChange={(e) => setName(e.target.value)}
+          />
+          <FormRow 
+            type='text'
+            name='name'
+            value={name}
+            handleChange={(e) => setLastName(e.target.value)}
+            labelText = 'last name'
+          />
+          <FormRow 
+            type='email'
+            name='email'
+            value={email}
+            handleChange={(e) => setEmail(e.target.value)}
+          />
+          <FormRow 
+            type='text'
+            name='location'
+            value={location}
+            handleChange={(e) => setLocation(e.target.value)}
+          />
+
+        </div>
       </form>
     </Wrapper>
-  )
-}
+  );
+};
