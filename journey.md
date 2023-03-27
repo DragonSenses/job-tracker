@@ -6332,3 +6332,12 @@ export default function Register() {
 
 So in `Profile` we just call the set function from the `useState` hook, and pass in the `e.target.value`. Whereas in the `Register` we call `e.target.value` within `handleChange` function so we can pass it to all `FormRow` components.
 
+Fill out the rest of the `FormRow` components for every input we wish to save.
+
+Finally create a `submit` button, that is disabled if `isLoading` is true. Conditionally render text based on `isLoading`.
+
+```js
+<button className="btn btn-block" type='submit' disabled={isLoading}>
+  {isLoading ? 'Please Wait...' : 'Save Changes'}
+</button>
+```
