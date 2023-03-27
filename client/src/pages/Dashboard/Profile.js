@@ -13,9 +13,22 @@ export default function Profile() {
     const [lastName, setLastName] = useState(user?.lastName);
     const [location, setLocation] = useState(user?.location);
   
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      if(!name || !email || !lastName || !location){
+        displayAlert();
+        return;
+      }
+
+      updateUser({ name, email, lastName, location });
+    }
+
   return (
     <Wrapper>
-      Profile
+      <h1>profile</h1>
+      <form action="" className="form" onSubmit={handleSubmit}>
+
+      </form>
     </Wrapper>
   )
 }

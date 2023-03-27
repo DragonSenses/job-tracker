@@ -6232,3 +6232,17 @@ export default function Profile() {
 
 Next let's import a few more things, going to use `FormRow` component and `Alert` component.
 Then we import the styled component wrapper called `DashboardFormPage`, this js file with css inside will be the form used for `AddJob` page as well.
+
+Next, create the submit handler function that checks for any empty values (return and do nothing if so) then calls `updateUser()` from global context (which right now just logs the user object).
+
+```js
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      if(!name || !email || !lastName || !location){
+        displayAlert();
+        return;
+      }
+
+      updateUser({ name, email, lastName, location });
+    }
+```
