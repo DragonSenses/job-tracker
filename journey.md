@@ -6201,3 +6201,34 @@ For now the function just logs the current user passed in. Pass down the functio
     </AppContext.Provider>
   )
 ```
+
+## Implementing Profile Page
+
+Navigate to the `Profile.js` in `pages`.
+
+Going to need to use values from `initialState` and functions from global context.
+
+We are going to use `state variables` with [useState](https://react.dev/reference/react/useState). We create a local state for the form field values: name, email, lastName, location. 
+
+```js
+import React from 'react';
+import { useState } from 'react';
+import { useAppContext } from '../../context/appContext';
+
+export default function Profile() {
+  const { user, showAlert, displayAlert, updateUser, isLoading }=
+    useAppContext();
+
+    const [name, setName] = useState(user?.name);
+    const [email, setEmail] = useState(user?.email);
+    const [lastName, setLastName] = useState(user?.lastName);
+    const [location, setLocation] = useState(user?.location);
+  
+  return (
+    <h1>Profile</h1>
+  )
+}
+```
+
+Next let's import a few more things, going to use `FormRow` component and `Alert` component.
+Then we import the styled component wrapper called `DashboardFormPage`. 
