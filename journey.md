@@ -6062,4 +6062,58 @@ UserSchema.pre('save', async function(){
 });
 ```
 
-Another alternative solution is to use `User.findOneAndUpdate()` instead of `user.save()`
+Another alternative solution is to use `User.findOneAndUpdate()` instead of `user.save()`.
+
+Let's trace the execution. Notice that in `bycryptjs.hash(this.password, salt);` it is looking for
+
+```js
+this.password
+```
+
+In the User Model, password's `select` property is false. In the `authController` when using `User.findOne()` we don't return the password. Now in `updateUser` function, in the line `awaituser.save()` it will trigger the `UserSchema.pre('save',...)` hook.
+
+In the hook, we pass in the `salt` and `this.password` in `bycrypt.hash()`. Since we have `password`'s `select: false`, then `this.password` will evaluate to `undefined`.
+
+### Can't we solve it just like in login?
+
+In login we had:
+
+```js
+  const user = await User.findOne({ email }).select('+password');
+```
+
+If we do have the `this.password`, and if it is hashed (hashing the password that's already hashed). Now in the process, the login will also be affected. Now when trying to login with a password it won't match to the hashed value in the database.
+
+So if we simply add the password:
+
+```js
+  const user = await User.findOne({_id: req.user.userId}).select('+password');
+```
+
+The pre save hook will work, but login functionality won't work because password is hashed a 2nd time.
+
+### Solution: Using **Modified Paths**
+
+```js
+UserSchema.pre('save', async function(){
+  console.log(this.modifiedPaths());
+  console.log(this.isModified('name'));
+
+  // const salt = await bcryptjs.genSalt(10);
+  // this.password = await bcryptjs.hash(this.password, salt);
+});
+```
+
+`this.modifiedPaths()` returns all the paths we are modifying
+   - will allow us to check for which paths we are modifying
+   
+`this.isModified('name')` will check for a specific one
+
+- if we are not modifying the password (which the updateUser route isn't doing), modifying everything else besides the password then just return.
+
+Two issues are solved:
+
+1. Removes the error when the `this.password` isn't provided
+2. If `this.password` exists in the instance, then won't hash it for the second time
+
+
