@@ -6106,7 +6106,7 @@ UserSchema.pre('save', async function(){
 
 `this.modifiedPaths()` returns all the paths we are modifying
    - will allow us to check for which paths we are modifying
-   
+
 `this.isModified('name')` will check for a specific one
 
 - if we are not modifying the password (which the updateUser route isn't doing), modifying everything else besides the password then just return.
@@ -6117,3 +6117,61 @@ Two issues are solved:
 2. If `this.password` exists in the instance, then won't hash it for the second time
 
 
+ ```js
+UserSchema.pre('save', async function(){
+  console.log(this.modifiedPaths());
+  console.log(this.isModified('name'));
+});
+```
+
+Send a Postman Update User request without any updates:
+
+```json
+{
+    "name": "Miyuki",
+    "email": "MiyukiShiba@gmail.com",
+    "lastName": "Shiba",
+    "location": "my location"
+}
+```
+
+and we get an empty array (because nothing is modified), and false in the console.
+
+```sh
+[0] []
+[0] false
+[0] PATCH /api/v1/auth/updateUser 200 133.933 ms - 355
+```
+
+Now say if we modified the name, so send a updateUser request with the name field changed then in the array we get a non-empty array with string name.
+
+```js
+['name']
+```
+
+Returns the value(s) we are updating (the ones that are different from the database). We can also check if a specific path is being modified with `this.isModified('name')`.
+
+So to check if not modifying the password, then don't do anything.
+
+```js
+if(!this.isModified('password')) {
+  return;
+}
+```
+
+## Complete Solution: Using modified paths to avoid re-hashing the password
+
+```js
+UserSchema.pre('save', async function(){
+  if(!this.isModified('password')) {
+    return;
+  }
+  
+  const salt = await bcryptjs.genSalt(10);
+  this.password = await bcryptjs.hash(this.password, salt);
+});
+```
+
+If we are not modifying the password, then return and avoid re-hashing the password.
+
+When user is being registered, password is being modified, therefore it will hash the password.
