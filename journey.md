@@ -6231,4 +6231,4 @@ export default function Profile() {
 ```
 
 Next let's import a few more things, going to use `FormRow` component and `Alert` component.
-Then we import the styled component wrapper called `DashboardFormPage`. 
+Then we import the styled component wrapper called `DashboardFormPage`, this js file with css inside will be the form used for `AddJob` page as well.

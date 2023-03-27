@@ -1,6 +1,8 @@
 import React from 'react';
 import { useState } from 'react';
 import { useAppContext } from '../../context/appContext';
+import { FormRow, Alert } from '../../components';
+import Wrapper from '../../assets/wrappers/DashBoardFormPage.js';
 
 export default function Profile() {
   const { user, showAlert, displayAlert, updateUser, isLoading }=
@@ -12,6 +14,8 @@ export default function Profile() {
     const [location, setLocation] = useState(user?.location);
   
   return (
-    <h1>Profile</h1>
+    <Wrapper>
+      Profile
+    </Wrapper>
   )
 }
