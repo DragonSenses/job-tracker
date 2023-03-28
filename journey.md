@@ -6452,3 +6452,29 @@ Downside in global setup:
 IF we use `axios.get()` on another API, it sends our `Bearer` token.
 
 Send updateUser request (Save Changes Button) > Developer Tools > Network > Fetch/XHR there are two Request Headers. It shows Authorization: Bearer Token. 
+
+## Axios | Custom Instance
+
+```js
+const authFetch = axios.create({
+  baseURL: '/api/v1',
+  headers: {
+    Authorization: `Bearer ${state.token}`,
+  },
+});
+
+const updateUser = async (currentUser) => {
+  try {
+    const { data } = await authFetch.patch('/auth/updateUser', currentUser);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+```
+
+We can use `authFetch`, when sending to another api request, we don't have to send the Bearer token. Instead of using `axios.patch()` within `updateUser`.
+
+Positive: Bearer token not found in a different request with a different URL.
+Downsides: Does not handle 401 responses (Authentication Errors).
+
+## Axios | Interceptors
