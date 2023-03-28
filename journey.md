@@ -6361,3 +6361,52 @@ Now we can move on to the HTTP request, but gotta comment out the form field che
     updateUser({ name, email, lastName, location });
   }
 ```
+
+# Axios - Multiple Approaches
+
+We can make HTTP request with Axios, but since requests will become increasingly more complex (providing the token, handling the error responses) we have to look at Axis configuration options. 
+
+We will cover multiple approaches so that we can determine in the future which options are the most apt for upcoming projects.
+
+In the `updateUser` we won't have actions for now, going to just showcase the multiple approaches first before we implement the actions.
+
+## 1 - Bearer Token | Manual Approach
+
+`appContext.js`
+
+```js
+const updateUser = async (currentUser) => {
+  try {
+    const { data } = await axios.patch('/api/v1/auth/updateUser', currentUser, {
+      headers: {
+        Authorization: `Bearer ${state.token}`,
+      },
+    });
+
+    console.log(data);
+
+  } catch(error){
+    console.log(error.response);
+  }
+}
+```
+
+We have `axios.patch()` as we update the data. We have 3 arguments:
+
+- the URL route
+- `currentUser` is the data we are passing in
+- options -> we can pass in the options with a `headers` property, which we set `Authorization`. 
+
+The token is located in the state, so we go with `Bearer ${state.token}`.
+
+Just log the `data` we get back and the error.
+
+Difference between `useState` and `useReducer` is reducer does not update state directly. It uses actions and dispatch.
+
+Now let's try out our `updateUser` function in the Profile page. Run the app and navigate to 'http://localhost:3000/profile'. 
+
+Let's change that lastName to "Shiba", open up the developer tools > Network > Fetch/XHR
+
+**Downsides** of this approach:
+- Every request needs headers: Authorization `Bearer... 
+- Need to check 401 errors
