@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { useAppContext } from '../../context/appContext';
 import { FormRow, Alert } from '../../components';
-import Wrapper from '../../assets/wrappers/DashBoardFormPage.js';
+import Wrapper from '../../assets/wrappers/DashboardFormPage';
 
 export default function Profile() {
   const { user, showAlert, displayAlert, updateUser, isLoading } =
@@ -39,8 +39,8 @@ export default function Profile() {
           />
           <FormRow 
             type='text'
-            name='name'
-            value={name}
+            name='lastName' 
+            value={lastName}
             handleChange={(e) => setLastName(e.target.value)}
             labelText = 'last name'
           />

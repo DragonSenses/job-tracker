@@ -6341,3 +6341,10 @@ Finally create a `submit` button, that is disabled if `isLoading` is true. Condi
   {isLoading ? 'Please Wait...' : 'Save Changes'}
 </button>
 ```
+
+## Initialize HTTP request
+
+First let's test out our Profile Page so far. Pressing the submit button should print the user object in the console (because `updateUser` in `appContext` just logs it).
+
+If we submit when a field is empty, say `lastName`, then it invokes `displayAlert()` which has the hardcoded "Please display all values" (see `reducer`).
+
