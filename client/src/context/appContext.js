@@ -46,7 +46,7 @@ export default function AppProvider(props) {
   // Axios request interceptor
   authFetch.interceptors.request.use( 
     function (config) {
-      config.headers.Authorization = `Bearer ${state.token}`;
+      config.headers['Authorization'] = `Bearer ${state.token}`;
       return config;
     }, 
     function (error) {
@@ -155,7 +155,8 @@ export default function AppProvider(props) {
       const { data } = await authFetch.patch('/auth/updateUser', JSON.stringify(currentUser));
       console.log(data);
     } catch(error) {
-      console.log(error.response);
+      // redundant error logging
+      // console.log(error.response);
     }
   };
 

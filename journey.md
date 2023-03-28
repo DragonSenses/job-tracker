@@ -6615,3 +6615,48 @@ to this line:
 ```js
 config.headers.Authorization = `Bearer ${state.token}`;
 ```
+
+Then later changed the line to:
+```js
+config.headers['Authorization'] = `Bearer ${state.token}`;
+```
+
+After much deliberation, from verifying the JWT signature @ [jwt.io](https://jwt.io/) to checking this [stackoverflow post on jwt](https://stackoverflow.com/questions/50774780/always-getting-invalid-signature-in-jwt-io), realizing that the token is encoded. And logging more enhanced errors. 
+
+I finally was able to track down the greatest issue in the why the server is sending a `401` unauthorized response: 
+
+```sh
+[0] token is eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDE4ZDZhYjkyZmY1OTRhMDJiNmYyNGEiLCJpYXQiOjE2Nzk2MjQ1MzQsImV4cCI6MTY3OTcxMDkzNH0.-fDe_VqrLo0QodWB3p6ElHAe_oRWlYeTIHheO4IO2Ec
+[0] TokenExpiredError: jwt expired
+[0]     at C:\Users\...\job-tracker\node_modules\jsonwebtoken\verify.js:190:21
+[0]     at getSecret (C:\Users\...\job-tracker\node_modules\jsonwebtoken\verify.js:97:14)
+[0]     at module.exports [as verify] (C:\Users\...\job-tracker\node_modules\jsonwebtoken\verify.js:101:10)     
+[0]     at authenticate (file:///C:/Users/.../job-tracker/middleware/authenticate.js:15:25)
+[0]     at newFn (C:\Users\...\job-tracker\node_modules\express-async-errors\index.js:16:20)
+[0]     at Layer.handle [as handle_request] (C:\Users\...\job-tracker\node_modules\express\lib\router\layer.js:95:5)
+[0]     at next (C:\Users\...\job-tracker\node_modules\express\lib\router\route.js:144:13)
+[0]     at Route.dispatch (C:\Users\...\job-tracker\node_modules\express\lib\router\route.js:114:3)
+[0]     at newFn (C:\Users\...\job-tracker\node_modules\express-async-errors\index.js:16:20)
+[0]     at Layer.handle [as handle_request] (C:\Users\...\job-tracker\node_modules\express\lib\router\layer.js:95:5) {
+[0]   expiredAt: 2023-03-25T02:22:14.000Z
+[0] }
+[0] verification went wrong
+[0] UnAuthenticatedError: Authentication Invalid
+[0]     at authenticate (file:///C:/Users/.../job-tracker/middleware/authenticate.js:23:11)
+[0]     at newFn (C:\Users\...\job-tracker\node_modules\express-async-errors\index.js:16:20)
+[0]     at Layer.handle [as handle_request] (C:\Users\...\job-tracker\node_modules\express\lib\router\layer.js:95:5)
+[0]     at next (C:\Users\...\job-tracker\node_modules\express\lib\router\route.js:144:13)
+[0]     at Route.dispatch (C:\Users\...\job-tracker\node_modules\express\lib\router\route.js:114:3)
+[0]     at newFn (C:\Users\...\job-tracker\node_modules\express-async-errors\index.js:16:20)
+[0]     at Layer.handle [as handle_request] (C:\Users\...\job-tracker\node_modules\express\lib\router\layer.js:95:5)
+[0]     at C:\Users\...\job-tracker\node_modules\express\lib\router\index.js:284:15
+[0]     at Function.process_params (C:\Users\...\job-tracker\node_modules\express\lib\router\index.js:346:12)   
+[0]     at next (C:\Users\...\job-tracker\node_modules\express\lib\router\index.js:280:10) {
+[0]   statusCode: 401
+[0] }
+[0] PATCH /api/v1/auth/updateUser 401 2.166 ms - 32
+```
+
+Token is expired! A `TokenExpiredError` along with the an object `{ expiredAt: 2023-03-25T02:22:14.000Z }`. 
+
+**TODO**: Issue a new token by loggin in again, then try all the above Axios requests, etc.
