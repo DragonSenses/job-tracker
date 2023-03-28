@@ -43,13 +43,33 @@ export default function AppProvider(props) {
 
   });
 
+  // Axios request interceptor
+  authFetch.interceptors.request.use( 
+    function (config) {
+      config.headers.Authorization = `Bearer ${state.token}`;
+      return config;
+    }, 
+    function (error) {
+      return Promise.reject(error);
+    }
+  );
+
   // Axios response interceptor
-  authFetch.interceptors.request.use( (config) => {
-    config.headers.common['Authorization'] = `Bearer ${state.token}`;
-    return config;
-  }, (error) => {
-    return Promise.reject(error);
-  });
+  authFetch.interceptors.response.use( 
+    function (response) {
+      return response;
+    }, 
+    function (error) {
+      console.log(error);
+      console.log(error.response);
+
+      if(error.response.status === 401){
+        console.log('Auth Error');
+      }
+
+      return Promise.reject(error);
+    }
+  );
 
   const clearAlert = () => {
     setTimeout(() => {

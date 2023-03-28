@@ -6512,11 +6512,106 @@ We want to add those headers in the config. Let's try implementing above:
 
   });
 
-  // Axios response interceptor
+  // Axios request interceptor
   authFetch.interceptors.request.use( (config) => {
     config.headers.common['Authorization'] = `Bearer ${state.token}`;
     return config;
   }, (error) => {
     return Promise.reject(error);
   });
+```
+
+Next create the `response` interceptor
+
+```js
+  // Axios response interceptor
+  authFetch.interceptors.response.use( 
+    (response) => {
+      return response;
+    }, 
+    (error) => {
+      console.log(error.response);
+      return Promise.reject(error);
+    }
+  );
+```
+
+In the docs, the error will handle any status codes that falls outside the range of 2xx
+
+So let's add a bit more to the error handling, if it is a `401` then log.
+
+```js
+  // Axios response interceptor
+  authFetch.interceptors.response.use( 
+    (response) => {
+      return response;
+    }, 
+    (error) => {
+      console.log(error.response);
+
+      if(error.response.status === 401){
+        console.log('Auth Error');
+      }
+
+      return Promise.reject(error);
+    }
+  );
+```
+
+### Axios | Interceptors [version 1]
+
+```js
+  // Axios custom instance
+  const authFetch = axios.create({
+    baseURL: '/api/v1',
+
+  });
+
+  // Axios request interceptor
+  authFetch.interceptors.request.use( 
+    function (config) {
+      config.headers.common['Authorization'] = `Bearer ${state.token}`;
+      return config;
+    }, 
+    function (error) {
+      return Promise.reject(error);
+    }
+  );
+
+  // Axios response interceptor
+  authFetch.interceptors.response.use( 
+    function (response) {
+      return response;
+    }, 
+    function (error) {
+      console.log(error);
+      console.log(error.response);
+
+      if(error.response.status === 401){
+        console.log('Auth Error');
+      }
+
+      return Promise.reject(error);
+    }
+  );
+```
+
+Issue is: 
+```sh
+TypeError: Cannot set properties of undefined (setting 'Authorization')
+    at AppProvider.dispatch.type (appContext.js:49:1)
+    at async updateUser (appContext.js:155:1)
+```
+
+So checked [stackoverflow](https://stackoverflow.com/questions/43051291/attach-authorization-header-for-all-axios-requests).
+
+So changed this line:
+
+```js
+config.headers.common['Authorization'] = `Bearer ${state.token}`;
+```
+
+to this line:
+```js
+config.headers.Authorization = `Bearer ${state.token}`;
 ```
