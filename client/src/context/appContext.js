@@ -37,6 +37,8 @@ export default function AppProvider(props) {
   const { children } = props;
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  axios.defaults.headers.common['Authorization'] = `Bearer ${state.token}`;
+
   const clearAlert = () => {
     setTimeout(() => {
       dispatch({
@@ -118,11 +120,7 @@ export default function AppProvider(props) {
   const updateUser = async (currentUser) => {
     console.log(currentUser);
     try{
-      const { data } = await axios.patch('/api/v1/auth/updateUser', currentUser, {
-        headers: {
-          Authorization: `Bearer ${state.token}`,
-        },
-      });
+      const { data } = await axios.patch('/api/v1/auth/updateUser', currentUser,);
       console.log(data);
     } catch(error) {
       console.log(error.response);

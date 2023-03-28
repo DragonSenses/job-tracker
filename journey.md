@@ -6410,3 +6410,45 @@ Let's change that lastName to "Shiba", open up the developer tools > Network > F
 **Downsides** of this approach:
 - Every request needs headers: Authorization `Bearer... 
 - Need to check 401 errors
+
+## Axios - Global Setup
+
+Instead of manually adding `Bearer token` for every request, can use a global setup.
+
+```js
+axios.defaults.headers.common['Authorization'] = `Bearer ${state.token}`;
+```
+
+and now `updateUser`
+
+```js
+  const updateUser = async (currentUser) => {
+    console.log(currentUser);
+    try{
+      const { data } = await axios.patch('/api/v1/auth/updateUser', currentUser,);
+      console.log(data);
+    } catch(error) {
+      console.log(error.response);
+    }
+  };
+```
+
+Downside in global setup:
+
+```js
+  const updateUser = async (currentUser) => {
+    console.log(currentUser);
+    try{
+      const { data } = await axios.patch('/api/v1/auth/updateUser', currentUser,);
+      const { data: extra } = await axios.get('https://some-other-api.com/some-route');
+      console.log(data);
+      console.log(extra);
+    } catch(error) {
+      console.log(error.response);
+    }
+  };
+```
+
+IF we use `axios.get()` on another API, it sends our `Bearer` token.
+
+Send updateUser request (Save Changes Button) > Developer Tools > Network > Fetch/XHR there are two Request Headers. It shows Authorization: Bearer Token. 
