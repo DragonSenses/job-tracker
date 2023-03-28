@@ -6478,3 +6478,45 @@ Positive: Bearer token not found in a different request with a different URL.
 Downsides: Does not handle 401 responses (Authentication Errors).
 
 ## Axios | Interceptors
+
+Can attach functionality as requests leave application, and as requests are coming back. Kinda like middleware. Here is the [docs](https://axios-http.com/docs/interceptors).
+
+```js
+// Add a request interceptor
+axios.interceptors.request.use(function (config) {
+    // Do something before request is sent
+    return config;
+  }, function (error) {
+    // Do something with request error
+    return Promise.reject(error);
+  });
+
+// Add a response interceptor
+axios.interceptors.response.use(function (response) {
+    // Any status code that lie within the range of 2xx cause this function to trigger
+    // Do something with response data
+    return response;
+  }, function (error) {
+    // Any status codes that falls outside the range of 2xx cause this function to trigger
+    // Do something with response error
+    return Promise.reject(error);
+  });
+```
+
+We want to add those headers in the config. Let's try implementing above:
+
+```js
+  // Axios custom instance
+  const authFetch = axios.create({
+    baseURL: '/api/v1',
+
+  });
+
+  // Axios response interceptor
+  authFetch.interceptors.request.use( (config) => {
+    config.headers.common['Authorization'] = `Bearer ${state.token}`;
+    return config;
+  }, (error) => {
+    return Promise.reject(error);
+  });
+```

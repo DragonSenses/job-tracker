@@ -37,11 +37,18 @@ export default function AppProvider(props) {
   const { children } = props;
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  // Axios custom instance
   const authFetch = axios.create({
     baseURL: '/api/v1',
-    headers: {
-      Authorization: `Bearer ${state.token}`,
-    },
+
+  });
+
+  // Axios response interceptor
+  authFetch.interceptors.request.use( (config) => {
+    config.headers.common['Authorization'] = `Bearer ${state.token}`;
+    return config;
+  }, (error) => {
+    return Promise.reject(error);
   });
 
   const clearAlert = () => {
@@ -125,7 +132,7 @@ export default function AppProvider(props) {
   const updateUser = async (currentUser) => {
     console.log(currentUser);
     try{
-      const { data } = await authFetch.patch('/auth/updateUser', currentUser);
+      const { data } = await authFetch.patch('/auth/updateUser', JSON.stringify(currentUser));
       console.log(data);
     } catch(error) {
       console.log(error.response);
