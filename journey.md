@@ -6342,9 +6342,22 @@ Finally create a `submit` button, that is disabled if `isLoading` is true. Condi
 </button>
 ```
 
-## Initialize HTTP request
+## Testing out the Profile Page
 
 First let's test out our Profile Page so far. Pressing the submit button should print the user object in the console (because `updateUser` in `appContext` just logs it).
 
 If we submit when a field is empty, say `lastName`, then it invokes `displayAlert()` which has the hardcoded "Please display all values" (see `reducer`).
 
+Now we can move on to the HTTP request, but gotta comment out the form field checks in `handleSubmit` whil we set things up.
+
+```js
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // if(!name || !email || !lastName || !location){
+    //   displayAlert();
+    //   return;
+    // }
+
+    updateUser({ name, email, lastName, location });
+  }
+```
