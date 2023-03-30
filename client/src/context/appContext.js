@@ -76,7 +76,7 @@ export default function AppProvider(props) {
       dispatch({
         type: CLEAR_ALERT,
       })
-    }, 7000)
+    }, 4000)
   };
 
   const displayAlert = () => {
