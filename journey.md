@@ -6596,7 +6596,9 @@ So let's add a bit more to the error handling, if it is a `401` then log.
   );
 ```
 
-Issue is: 
+Why use interceptors? To keep track of error responses, and make decisions based on those error responses (or more specifically `response interceptor`) allows us too setup one logic for multiple requests. Same for all Dashboard pages.
+
+# Issue is: 
 ```sh
 TypeError: Cannot set properties of undefined (setting 'Authorization')
     at AppProvider.dispatch.type (appContext.js:49:1)
@@ -6660,3 +6662,37 @@ I finally was able to track down the greatest issue in the why the server is sen
 Token is expired! A `TokenExpiredError` along with the an object `{ expiredAt: 2023-03-25T02:22:14.000Z }`. 
 
 **TODO**: Issue a new token by loggin in again, then try all the above Axios requests, etc.
+
+# Before solving the issue, fixed the Landing page:
+
+Logged out, then logged back in. 
+
+(The button to link up the Landing Page to the Register page needs to be fixed):
+
+```js
+<button className='btn btn-hero'>Login/Register</button>
+```
+
+Going to Add a child component `<Link>` within:
+
+```js
+<button className='btn btn-hero'>
+  <Link to={'/register'} style={{ textDecoration: 'none' }} >
+    Login/Register
+  </Link>
+</button>
+```
+
+A simpler solution is to remove the `<button>` altogether, as it keeps the stylings in the parent.
+
+```js
+<Link to='/register' className='btn btn-hero'>
+  Login/Register
+</Link>
+```
+
+Now a properly styled Link routes to the `register` page.
+
+# Solving the issue 
+
+Now clicking it to the login page

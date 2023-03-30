@@ -1,7 +1,8 @@
-import React from 'react'
-import main from '../assets/images/main.svg'
+import React from 'react';
+import main from '../assets/images/main.svg';
 import Wrapper from '../assets/wrappers/LandingPage';
 import Logo from '../components/Logo';
+import { Link } from 'react-router-dom';
 
 function Landing() {
   return (
@@ -23,7 +24,9 @@ function Landing() {
             I hope this app will prevent you from growing too despondent. <strong>"If I can ease one
             life the aching, I shall not live in vain" - Emily Dickinson</strong>
           </p>
-          <button className='btn btn-hero'>Login/Register</button>
+          <Link to='/register' className='btn btn-hero'>
+            Login/Register
+          </Link>
         </div>
 
         <img src={main} alt="job hunt" className='img main-img'></img>
