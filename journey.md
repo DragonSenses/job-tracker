@@ -6892,3 +6892,55 @@ To do so let's keep all things the same in the Profile, and remove the token fro
 Now "Save Changes" in Profile page, and we should see the `Auth Error` in Chrome Developer tools console. We are not authorized to make these requests. 
 
 Axios Interceptors allows us to control, keep track of and make decisions based on those error responses.
+
+# Update User functionality
+
+List of things want to do in Update User:
+
+- store in localStorage
+- store in State
+- Update database
+- Dispatch action
+
+Let's add it in `actions.js`:
+
+```js
+export const UPDATE_USER_BEGIN = 'UPDATE_USER_BEGIN';
+export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
+export const UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
+```
+
+Then dispatch the corresponding actions (in `appContext.js`):
+
+```js
+  const updateUser = async (currentUser) => {
+    dispatch({ type: UPDATE_USER_BEGIN });
+    try{
+      const { data } = await authFetch.patch('/auth/updateUser', currentUser);
+      
+      const { user, location, token } = data;
+
+      dispatch({
+        type: UPDATE_USER_SUCCESS,
+        payload: { user, location, token },
+      });
+
+      addUserToLocalStorage({ user, location, token });
+
+    } catch(error) {
+      dispatch({
+        type: UPDATE_USER_ERROR,
+        payload: { msg: error.response.data.msg },
+      })
+    }
+    clearAlert();
+  };
+```
+
+1. Set up the loading by dispatching `UPDATE_USER_BEGIN`
+2. Get `data` from `PATCH` request using `authFetch`
+3. Destructure the `data` for `user, location, token`
+3. Dispatch `UPDATE_USER_SUCCESS`, passing in `user`, `location`, `token` payload
+4. Add `user` to localStorage so data about newly updated user persists
+5. Error handling, dispatch `UPDATE_USER_ERROR` with payload error msg
+6. Invoke `clearAlert()`after `try..catch`
