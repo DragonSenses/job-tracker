@@ -6695,4 +6695,79 @@ Now a properly styled Link routes to the `register` page.
 
 # Solving the issue 
 
-Now clicking it to the login page
+Now clicking it to the login page, then log in properly.
+
+Head over to the `Profile` page on the Dashboard. We see an alert of "Login Successful.. redirecting" so let's reduce the time to 4 seconds:
+
+```js
+  const clearAlert = () => {
+    setTimeout(() => {
+      dispatch({
+        type: CLEAR_ALERT,
+      })
+    }, 4000)
+  };
+```
+
+Now the moment of truth -> set the Location to `Hachioji (Kanto, Tokyo)`.
+
+Ok this time instead of `UnAuthenticatedError` we are geting a `BadRequestError` 400:
+
+```sh
+[0] token is eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDE4ZDZhYjkyZmY1OTRhMDJiNmYyNGEiLCJpYXQiOjE2ODAxMzQ4ODcsImV4cCI6MTY4MDIyMTI4N30.NluIfiumCFssf1n2ypYGsoef3GcsYvYNBdlX78tGngI
+[0] payload is: [object Object]
+[0] userId is: 6418d6ab92ff594a02b6f24a
+[0] BadRequestError: Please provide all values
+[0]     at updateUser (file:///C:/Users/.../job-tracker/controllers/authController.js:67:11)
+[0]     at newFn (C:\Users\...\node_modules\express-async-errors\index.js:16:20)
+[0]     at Layer.handle [as handle_request] (C:\Users\...\node_modules\express\lib\router\layer.js:95:5)
+[0]     at next (C:\Users\...\node_modules\express\lib\router\route.js:144:13)
+[0]     at authenticate (file:///C:/Users/.../job-tracker/middleware/authenticate.js:19:5)
+[0]     at newFn (C:\Users\...\node_modules\express-async-errors\index.js:16:20)
+[0]     at Layer.handle [as handle_request] (C:\Users\...\node_modules\express\lib\router\layer.js:95:5)
+[0]     at next (C:\Users\...\node_modules\express\lib\router\route.js:144:13)
+[0]     at Route.dispatch (C:\Users\...\node_modules\express\lib\router\route.js:114:3)
+[0]     at newFn (C:\Users\...\node_modules\express-async-errors\index.js:16:20) {
+[0]   statusCode: 400
+[0] }
+[0] PATCH /api/v1/auth/updateUser 400 1.640 ms - 35
+```
+
+Which is good! We are getting closer.
+
+Log the request body coming from `updateUser`
+
+```js
+const updateUser = async (req, res) => {
+  const { email, name, lastName, location} = req.body;
+  
+  console.log(`
+    email is \t ${email}
+    name is \t ${name}
+    lastName is \t ${lastName}
+    location is \t ${location}
+  `);
+// ...
+}
+```
+And send the request again form Profile Page:
+
+By the time it reaches the logging it turns out to be:
+
+```js
+[0]     email is         undefined
+[0]     name is          undefined
+[0]     lastName is      undefined
+[0]     location is      undefined
+```
+
+But in the `appContext.js:153` we have
+
+```js
+{
+    "name": "Miyuki",
+    "email": "MiyukiShiba@gmail.com",
+    "lastName": "Shiba",
+    "location": "Hachioji (Kanto, Tokyo)"
+}
+```
