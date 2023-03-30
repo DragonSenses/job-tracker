@@ -152,7 +152,7 @@ export default function AppProvider(props) {
   const updateUser = async (currentUser) => {
     console.log(currentUser);
     try{
-      const { data } = await authFetch.patch('/auth/updateUser', JSON.stringify(currentUser));
+      const { data } = await authFetch.patch('/auth/updateUser', currentUser);
       console.log(data);
     } catch(error) {
       // redundant error logging

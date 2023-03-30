@@ -6771,3 +6771,124 @@ But in the `appContext.js:153` we have
     "location": "Hachioji (Kanto, Tokyo)"
 }
 ```
+
+Let's trace the execution:
+
+Starting form the `Profile` page we 
+
+1. click the button -> triggers `handleSubmit`
+2. Invokes `updateUser` from `appContext`
+
+```js
+  const updateUser = async (currentUser) => {
+    console.log(currentUser);
+    try{
+      const { data } = await authFetch.patch('/auth/updateUser', JSON.stringify(currentUser));
+      console.log(data);
+    } catch(error) {
+      // redundant error logging
+      // console.log(error.response);
+    }
+  };
+```
+
+3. When it destructures the `data` from `authFetch.patch()`
+
+4. Check `authFetch`
+
+5. Problem is that we pass in a JSON.stringified version of `currentUser` to `authFetch`
+
+Pass in `currentUser` as an object instead:
+
+```js
+  const { data } = await authFetch.patch('/auth/updateUser', currentUser);
+```
+
+Now sending a request with changes in `profile` route gives us a value of:
+
+```js
+[0] {
+[0]   name: 'Miyuki',
+[0]   email: 'MiyukiShiba@gmail.com',
+[0]   lastName: 'Shiba',
+[0]   location: 'Hachioji (Kanto, Tokyo)'
+[0] }
+[0]
+[0]     email is         MiyukiShiba@gmail.com
+[0]     name is          Miyuki
+[0]     lastName is      Shiba
+[0]     location is      Hachioji (Kanto, Tokyo)
+[0]
+[0] []
+[0] PATCH /api/v1/auth/updateUser 200 98.122 ms - 379
+```
+
+And in developer tools
+
+```js
+appContext.js:153
+{
+    "name": "Miyuki",
+    "email": "MiyukiShiba@gmail.com",
+    "lastName": "Shiba",
+    "location": "Hachioji (Kanto, Tokyo)"
+}
+
+appContext.js:156 
+{
+    "user": {
+        "_id": "6418d6ab92ff594a02b6f24a",
+        "name": "Miyuki",
+        "email": "MiyukiShiba@gmail.com",
+        "lastName": "Shiba",
+        "location": "Hachioji (Kanto, Tokyo)",
+        "__v": 0
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDE4ZDZhYjkyZmY1OTRhMDJiNmYyNGEiLCJpYXQiOjE2ODAxMzgxMTEsImV4cCI6MTY4MDIyNDUxMX0.YPCCG0Vsk30qAQYrGXv1aQN7YO9VmKe5eMqT_rq8S5k",
+    "location": "Hachioji (Kanto, Tokyo)"
+}
+```
+
+Success! We finally resolved the issue. Big takeaway is that we must log-in so that we can issue a new token before updating the user. In Postman, re-issuing tokens are handled automatically. Its the reason why we need to send a Login request first before updating user (so the token isn't expired for the session).
+
+## Axios Interceptor | Error Handling
+
+AS you can see we had more descriptive errors. For completeness, let's trip up the "Auth Error" we setup back in the Axios response interceptor:
+
+```js
+  // Axios response interceptor
+  authFetch.interceptors.response.use( 
+    function (response) {
+      return response;
+    }, 
+    function (error) {
+      console.log(error);
+      console.log(error.response);
+
+      if(error.response.status === 401){
+        console.log('Auth Error');
+      }
+
+      return Promise.reject(error);
+    }
+  );
+```
+
+To do so let's keep all things the same in the Profile, and remove the token from the state. Or actualy just comment out the line where we set the Bear state token:
+
+```js
+  // Axios request interceptor
+  authFetch.interceptors.request.use( 
+    function (config) {
+      // config.headers['Authorization'] = `Bearer ${state.token}`;
+      return config;
+    }, 
+    function (error) {
+      return Promise.reject(error);
+    }
+  );
+```
+
+Now "Save Changes" in Profile page, and we should see the `Auth Error` in Chrome Developer tools console. We are not authorized to make these requests. 
+
+Axios Interceptors allows us to control, keep track of and make decisions based on those error responses.
