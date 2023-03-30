@@ -156,6 +156,7 @@ export default function AppProvider(props) {
     console.log(currentUser);
 
     dispatch({ type: UPDATE_USER_BEGIN });
+
     try{
       const { data } = await authFetch.patch('/auth/updateUser', currentUser);
       
@@ -174,7 +175,7 @@ export default function AppProvider(props) {
       dispatch({
         type: UPDATE_USER_ERROR,
         payload: { msg: error.response.data.msg },
-      })
+      });
     }
     clearAlert();
   };
