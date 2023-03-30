@@ -6944,3 +6944,9 @@ Then dispatch the corresponding actions (in `appContext.js`):
 4. Add `user` to localStorage so data about newly updated user persists
 5. Error handling, dispatch `UPDATE_USER_ERROR` with payload error msg
 6. Invoke `clearAlert()`after `try..catch`
+
+## Update User | Working on the Reducer
+
+Handling the Update User actions in reducer:
+
+```
