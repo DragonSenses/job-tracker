@@ -7182,3 +7182,53 @@ Finally, to use our schema definition, need to convert the `JobSchema` into a `M
 ```js
 export default mongoose.model('Job', JobSchema);
 ```
+
+# Working on the Jobs Controller
+
+Add the imports we plan to use:
+
+```js
+import Job from '../models/Job.js';
+import { StatusCodes } from 'http-status-codes';
+import { BadRequestError, NotFoundError } from '../errors/index.js';
+```
+
+## Jobs Controller | createJob function
+
+When user creates a Job, they click a button and send a request that includes the fields within the `JobSchema`. The required fields are `position` and `company`. Let's destructure that from the `req.body`.
+
+- Check if `position` or `company` are empty, if true then throw `BadRequestError`
+
+```js
+const createJob = async (req, res) => {
+  const { position, company } = req.body;
+
+  if(!position || !company) {
+    throw new BadRequestError('Please Provide All Values');
+  }
+  
+  res.send('createJob');
+}
+```
+
+Next we want to set the `createdBy` property from the `req.body` and set it to the `req.user.userId`.
+
+- Then we pass the `req.body` into a `Job.create()` to create a `job`
+
+Finally send back the HTTP status code that the `job` resource was created.
+
+```js
+const createJob = async (req, res) => {
+  const { position, company } = req.body;
+
+  if(!position || !company) {
+    throw new BadRequestError('Please Provide All Values');
+  }
+
+  req.body.createdBy = req.user.userId;
+
+  const job = await Job.create(req.body);
+
+  res.status(StatusCodes.CREATED).json({ job });
+}
+```
