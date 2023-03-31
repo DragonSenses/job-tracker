@@ -7373,3 +7373,69 @@ export default function AddJob() {
   );
 }
 ```
+
+In the return, we will conditional render a heading based on `isEditing` flag. Also conditionally render the `Alert` component. Finally create a `FormRow` component for the job position.
+
+```js
+  return (
+    <Wrapper>
+      <form className='form'>
+        <h3>{isEditing ? 'edit job' : 'add job'}</h3>
+        {showAlert && <Alert />}
+        <div className="form-center">
+          <FormRow type="text" name="position" value={position} />
+        </div>
+      </form>
+    </Wrapper>
+  );
+```
+
+Eventually we are going to invoke a function that comes from the state, global context. For now let's have a placeholder local function `handleJobInput` that just logs the event's `name` and `value`.
+
+```js
+  const handleJobInput = (e) =>{
+    const name = e.target.name;
+    const value = e.target.value;
+    console.log(`${name} : ${value}`);
+  }
+```
+
+Now we can add that function to handle to the prop `handleChange`:
+
+```js
+  <FormRow 
+    type="text"
+    name="position"
+    value={position}
+    handleChange={handleJobInput}
+  />
+```
+
+Add two more `FormRow` components for Company and JobLocation
+
+```js
+<FormRow 
+  type="text"
+  name="company"
+  value={company}
+  handleChange={handleJobInput}
+/>
+<FormRow 
+  type="text"
+  name="jobLocation"
+  value={jobLocation}
+  handleChange={handleJobInput}
+/>
+```
+
+Interestingly, jobLocation is already filled out on the page (browser) because its already in our state. The label text is all one word "jobLocation" so lets split it up by using our `prop` `labelText` in our `FormRow` component.
+
+```js
+<FormRow 
+  type="text"
+  name="jobLocation"
+  value={jobLocation}
+  handleChange={handleJobInput}
+  labelText='job location'
+/>
+```

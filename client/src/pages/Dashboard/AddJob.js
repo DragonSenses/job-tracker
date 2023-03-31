@@ -33,19 +33,20 @@ export default function AddJob() {
             type="text"
             name="position"
             value={position}
-            onChange={handleJobInput}
+            handleChange={handleJobInput}
           />
           <FormRow 
             type="text"
             name="company"
             value={company}
-            onChange={handleJobInput}
+            handleChange={handleJobInput}
           />
           <FormRow 
             type="text"
             name="jobLocation"
             value={jobLocation}
-            onChange={handleJobInput}
+            handleChange={handleJobInput}
+            labelText='job location'
           />
         </div>
       </form>
