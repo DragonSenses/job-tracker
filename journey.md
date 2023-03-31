@@ -7439,3 +7439,43 @@ Interestingly, jobLocation is already filled out on the page (browser) because i
   labelText='job location'
 />
 ```
+
+## Create the Submit button
+
+```js
+<div className="btn-container">
+  <button
+    type='submit'
+    className='btn btn-block submit-btn'
+    onClick={handleSubmit}
+  >
+    submit
+  </button>
+</div>
+```
+
+The submit handler:
+
+```js
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if(!position || !company || !jobLocation){
+      displayAlert();
+      return;
+    }
+
+    console.log('create job');
+  };
+```
+
+With triple check form validation
+
+1. Front-End
+2. Controller
+3. mongoose
+
+
+## Implementing the Drop Down menus
+
+We will have drop down menus for our `jobType` and `jobStatus`.

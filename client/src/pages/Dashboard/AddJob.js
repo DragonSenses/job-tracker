@@ -17,11 +17,22 @@ export default function AddJob() {
     statusOptions,
   } = useAppContext();
 
-  const handleJobInput = (e) =>{
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if(!position || !company || !jobLocation){
+      displayAlert();
+      return;
+    }
+
+    console.log('create job');
+  };
+
+  const handleJobInput = (e) => {
     const name = e.target.name;
     const value = e.target.value;
     console.log(`${name} : ${value}`);
-  }
+  };
 
   return (
     <Wrapper>
@@ -48,6 +59,15 @@ export default function AddJob() {
             handleChange={handleJobInput}
             labelText='job location'
           />
+          <div className="btn-container">
+            <button
+              type='submit'
+              className='btn btn-block submit-btn'
+              onClick={handleSubmit}
+            >
+              submit
+            </button>
+          </div>
         </div>
       </form>
     </Wrapper>
