@@ -7514,3 +7514,11 @@ return(
 </div> 
 );
 ```
+
+Now we should see the drop down menu when we click, and it should be "full-time" for Job Type. It won't change bcause the `handleJobInput` hasn't been wired up yet.
+
+We have to repeat this code again, so in order to reduce code reduplication, let's create a component.
+
+## `FormRowSelect` component
+
+Create `FormRowSelect.js` in `components` folder.
