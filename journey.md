@@ -7175,3 +7175,10 @@ const JobSchema = new Schema({
 }, { timestamps: true } );
 ```
 
+## Creating the Job Model
+
+Finally, to use our schema definition, need to convert the `JobSchema` into a `Model` by passsing it into `mongoose.model(modelName, schema)`. Let's do this right in the export.
+
+```js
+export default mongoose.model('Job', JobSchema);
+```

@@ -37,3 +37,5 @@ const JobSchema = new Schema({
     required: [true, 'Please provide the User'],
   }, 
 }, { timestamps: true } );
+
+export default mongoose.model('Job', JobSchema);
