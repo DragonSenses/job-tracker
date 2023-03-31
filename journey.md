@@ -7479,3 +7479,38 @@ With triple check form validation
 ## Implementing the Drop Down menus
 
 We will have drop down menus for our `jobType` and `jobStatus`.
+
+Let's try hard coding one select menu. 
+
+- `div` with `form-row` class
+- `label` for the `jobType`
+- `select` 
+- We have those options in the array within the state
+- Grab the array, iterate over each item, map them to the string (`itemValue`) and `index`
+- In React, since we have a list we need to add the `key` prop  and pass in a unique value, which in this case will be `index`
+- Return an `option` element
+
+```js
+return(
+<div className="form-row">
+  <label htmlFor="jobType" className='form-label'>
+    job type
+  </label>
+
+  <select
+    name='jobType'
+    value={jobType}
+    onChange={handleJobInput}
+    className='form-select'
+  >
+    {jobTypeOptions.map((itemValue, index) => {
+      return(
+        <option key={index} value={itemValue}>
+          {itemValue}
+        </option>
+      );
+    })}
+  </select>
+</div> 
+);
+```
