@@ -7306,11 +7306,22 @@ Let's work on the front-end. Let's add some properties to the `initialState`.
 
 ```js
 const initialState = {
+  jobLocation: userLocation || '',
+  
   position: '',
   company: '',
-  jobTypeOptions: [],
+  jobTypeOptions: ['full-time', 'part-time', 'remote', 'internship'],
   jobType: 'full-time',
-  statusOptions: [],
+  statusOptions: ['interview', 'declined', 'pending'],
   status: 'pending',
+  isEditing: false,
+  editJobId: '',
 }
 ```
+
+We have properties regarding the job, which match the back-end. We also have:
+
+- `isEditing` 
+- `editJobId`
+
+Because we want to be able to Edit the Job on the front-end, in `All Jobs` page where we click on one and `edit` and we will be redirected to `Add Job` page.
