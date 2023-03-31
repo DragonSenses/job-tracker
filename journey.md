@@ -6949,4 +6949,97 @@ Then dispatch the corresponding actions (in `appContext.js`):
 
 Handling the Update User actions in reducer:
 
+```js
+  if(action.type === UPDATE_USER_BEGIN) {
+    return {
+      ...state,
+      isLoading: true,
+    };
+  }
+
+  if(action.type === UPDATE_USER_SUCCESS) {
+    return {
+      ...state,
+      isLoading: false,
+      token: action.payload.token,
+      user: action.payload.user,
+      userLocation: action.payload.location,
+      jobLocation: action.payload.location,
+      showAlert: true,
+      alertType: 'success',
+      alertText: 'User Profile Updated!'
+    };
+  }
+
+  if(action.type === UPDATE_USER_ERROR) {
+    return {
+      ...state,
+      isLoading: false,
+      showAlert: true,
+      alertType: 'danger',
+      alertText: action.payload.msg,
+    };
+  }
 ```
+
+## Testing out the Update User
+
+- Run the app
+- Log out, then log in
+- Go to Profile page
+- Check database
+- Update the Profile by changing one of the fields, then press Save Changes
+- Alert should display, and state should be updated
+- Successfully attaching token when sending requests with auth instance
+- Error Alert displays when one of the values missing (the server error)
+
+# Logout functionality
+
+Improved logout functionality. Especailly the issue we had earlier, user should be logged out when tokens are expired.
+
+Some errors we have when `updateUser` is called:
+
+- Missing value -> Bad Request 400
+- Generic 500 Server Error
+- 401 Unauthorized error -> User should not be in the application in the first place. Token expired.
+
+Instead of showcasing there is a `401` error Unauthorized, they should be logged out.
+
+Right now when you get 401, it displays as an Alert flag in the Profile page. So let's change that so the user is logged out and needs to log back in.
+
+In Axios Response interceptor, instead of logging `Auth Error` we can log out the user instead invoking `logoutUser()`.
+
+```js
+  // Axios response interceptor
+  authFetch.interceptors.response.use( 
+    function (response) {
+      return response;
+    }, 
+    function (error) {
+      console.log(error);
+      console.log(error.response);
+
+      if(error.response.status === 401){
+        console.log('Auth Error');
+        logoutUser();
+      }
+
+      return Promise.reject(error);
+    }
+  );
+```
+Now if we comment out the Bearer token, we will be logged out when we try to `updateUser` (i.e., Press Save Changes in Profile page).
+
+```js
+  authFetch.interceptors.request.use( 
+    function (config) {
+      // config.headers['Authorization'] = `Bearer ${state.token}`;
+      return config;
+    }, 
+    function (error) {
+      return Promise.reject(error);
+    }
+  );
+```
+
+

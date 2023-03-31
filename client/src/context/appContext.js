@@ -67,7 +67,8 @@ export default function AppProvider(props) {
       console.log(error.response);
 
       if(error.response.status === 401){
-        console.log('Auth Error');
+        console.log('Authentication Error');
+        logoutUser();
       }
 
       return Promise.reject(error);
