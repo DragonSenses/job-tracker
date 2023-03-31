@@ -7084,3 +7084,11 @@ Before moving on to the jobsController, jobs model and more let's now handle the
     updateUser({ name, email, lastName, location });
   }
 ```
+
+### Side note: Refactored reducer function to `switch case`
+
+According to the [useReducer docs](https://react.dev/reference/react/useReducer):
+
+>  By convention, it is common to write it as a [switch statement](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/switch). For each case in the switch, calculate and return some next state.
+
+So I refactored the reducer function in `reducer.js` at this stage. Makes it easier to add new cases later for maintainability.

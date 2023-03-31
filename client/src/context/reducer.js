@@ -1,4 +1,4 @@
-import { 
+import {
   DISPLAY_ALERT,
   CLEAR_ALERT,
   REGISTER_USER_BEGIN,
@@ -16,122 +16,141 @@ import {
 
 import { initialState } from './appContext.js';
 
-const reducer = (state, action) => {
-  if(action.type === DISPLAY_ALERT) {
-    return {
-      ...state,
-      showAlert: true,
-      alertType: 'danger',
-      alertText: 'Please provide all values!',
-    };
-  } else if(action.type === CLEAR_ALERT){
-    return {
-      ...state,
-      showAlert: false,
-      alertType: '',
-      alertText: '',
-    };
-  } else if(action.type === REGISTER_USER_BEGIN) {
-    return {
-      ...state,
-      isLoading: true
-    };
-  } else if(action.type === REGISTER_USER_SUCCESS){
-    return {
-      ...state,
-      isLoading: false,
-      token: action.payload.token,
-      user: action.payload.user,
-      userLocation: action.payload.location,
-      jobLocation: action.payload.location,
-      showAlert: true,
-      alertType: 'success',
-      alertText: 'Register Successful! Redirecting...'
-    };
-  } else if(action.type === REGISTER_USER_ERROR){
-    return {
-      ...state,
-      isLoading: false,
-      showAlert: true,
-      alertType: 'danger',
-      alertText: action.payload.msg,
-    };
-  } else if(action.type === LOGIN_USER_BEGIN) {
-    return {
-      ...state,
-      isLoading: true
-    };
-  } else if(action.type === LOGIN_USER_SUCCESS){
-    return {
-      ...state,
-      isLoading: false,
-      token: action.payload.token,
-      user: action.payload.user,
-      userLocation: action.payload.location,
-      jobLocation: action.payload.location,
-      showAlert: true,
-      alertType: 'success',
-      alertText: 'Login Successful! Redirecting...'
-    };
-  } else if(action.type === LOGIN_USER_ERROR){
-    return {
-      ...state,
-      isLoading: false,
-      showAlert: true,
-      alertType: 'danger',
-      alertText: action.payload.msg,
-    };
-  }
+function reducer(state, action) {
 
-  if(action.type === TOGGLE_SIDEBAR) {
-    return {
-      ...state,
-      showSidebar: !state.showSidebar,
-    };
-  }
+  switch (action.type) {
+    case DISPLAY_ALERT: {
+      return {
+        ...state,
+        showAlert: true,
+        alertType: 'danger',
+        alertText: 'Please provide all values!',
+      };
+    }
 
-  if(action.type === LOGOUT_USER){
-    return {
-      ...initialState,
-      user: null,
-      token: null,
-      userLocation: '',
-      jobLocation: '',
+    case CLEAR_ALERT: {
+      return {
+        ...state,
+        showAlert: false,
+        alertType: '',
+        alertText: '',
+      };
+    }
+
+    case REGISTER_USER_BEGIN: {
+      return {
+        ...state,
+        isLoading: true
+      };
+    }
+
+    case REGISTER_USER_SUCCESS: {
+      return {
+        ...state,
+        isLoading: false,
+        token: action.payload.token,
+        user: action.payload.user,
+        userLocation: action.payload.location,
+        jobLocation: action.payload.location,
+        showAlert: true,
+        alertType: 'success',
+        alertText: 'Register Successful! Redirecting...'
+      };
+    }
+
+    case REGISTER_USER_ERROR: {
+      return {
+        ...state,
+        isLoading: false,
+        showAlert: true,
+        alertType: 'danger',
+        alertText: action.payload.msg,
+      };
+    }
+
+    case LOGIN_USER_BEGIN: {
+      return {
+        ...state,
+        isLoading: true
+      };
+    }
+
+    case LOGIN_USER_SUCCESS: {
+      return {
+        ...state,
+        isLoading: false,
+        token: action.payload.token,
+        user: action.payload.user,
+        userLocation: action.payload.location,
+        jobLocation: action.payload.location,
+        showAlert: true,
+        alertType: 'success',
+        alertText: 'Login Successful! Redirecting...'
+      };
+    }
+
+    case LOGIN_USER_ERROR: {
+      return {
+        ...state,
+        isLoading: false,
+        showAlert: true,
+        alertType: 'danger',
+        alertText: action.payload.msg,
+      };
+    }
+
+    case TOGGLE_SIDEBAR: {
+      return {
+        ...state,
+        showSidebar: !state.showSidebar,
+      };
+    }
+
+    case LOGOUT_USER: {
+      return {
+        ...initialState,
+        user: null,
+        token: null,
+        userLocation: '',
+        jobLocation: '',
+      };
+    }
+
+    case UPDATE_USER_BEGIN: {
+      return {
+        ...state,
+        isLoading: true,
+      };
+    }
+
+    case UPDATE_USER_SUCCESS: {
+      return {
+        ...state,
+        isLoading: false,
+        token: action.payload.token,
+        user: action.payload.user,
+        userLocation: action.payload.location,
+        jobLocation: action.payload.location,
+        showAlert: true,
+        alertType: 'success',
+        alertText: 'User Profile Updated!'
+      };
+    }
+
+    case UPDATE_USER_ERROR: {
+      return {
+        ...state,
+        isLoading: false,
+        showAlert: true,
+        alertType: 'danger',
+        alertText: action.payload.msg,
+      };
+    }
+
+    default: {
+      throw new Error(`No such action: ${action.type}`);
     }
   }
-
-  if(action.type === UPDATE_USER_BEGIN) {
-    return {
-      ...state,
-      isLoading: true,
-    };
-  }
-
-  if(action.type === UPDATE_USER_SUCCESS) {
-    return {
-      ...state,
-      isLoading: false,
-      token: action.payload.token,
-      user: action.payload.user,
-      userLocation: action.payload.location,
-      jobLocation: action.payload.location,
-      showAlert: true,
-      alertType: 'success',
-      alertText: 'User Profile Updated!'
-    };
-  }
-
-  if(action.type === UPDATE_USER_ERROR) {
-    return {
-      ...state,
-      isLoading: false,
-      showAlert: true,
-      alertType: 'danger',
-      alertText: action.payload.msg,
-    };
-  }
-
-  throw new Error(`No such action: ${action.type}`);
 }
 
 export default reducer
