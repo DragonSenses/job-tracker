@@ -7307,7 +7307,7 @@ Let's work on the front-end. Let's add some properties to the `initialState`.
 ```js
 const initialState = {
   jobLocation: userLocation || '',
-  
+
   position: '',
   company: '',
   jobTypeOptions: ['full-time', 'part-time', 'remote', 'internship'],
@@ -7325,3 +7325,51 @@ We have properties regarding the job, which match the back-end. We also have:
 - `editJobId`
 
 Because we want to be able to Edit the Job on the front-end, in `All Jobs` page where we click on one and `edit` and we will be redirected to `Add Job` page.
+
+## Why add these properties in the Global Context?
+
+Why not have them in the local state values?
+
+That's because in `All Jobs` when we want to edit a particular job it brings the user to the `Add Job` page so they can edit it there. In there we can set `isEditing` to `true`, get the `editJobId` and provide the input values to update the job. 
+
+To add the job and edit the job, it can all be found in one page in the `Edit Job` page. It's easier to modify those values in the global state. 
+
+# Add Job page
+
+Start with the imports:
+
+```js
+import React from 'react';
+import { FormRow, Alert } from '../../components';
+import { useAppContext } from '../../context/appContext';
+import Wrapper from '../../assets/wrappers/DashboardFormPage';
+```
+
+Next destructure the values from global context. So far:
+
+```js
+import React from 'react';
+import { FormRow, Alert } from '../../components';
+import { useAppContext } from '../../context/appContext';
+import Wrapper from '../../assets/wrappers/DashboardFormPage';
+
+export default function AddJob() {
+  const {
+    showAlert,
+    displayAlert,
+    position,
+    company,
+    jobLocation,
+    jobType,
+    jobTypeOptions,
+    status,
+    statusOptions,
+  } = useAppContext();
+
+  return (
+    <Wrapper>
+      
+    </Wrapper>
+  );
+}
+```
