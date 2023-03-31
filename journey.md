@@ -7232,3 +7232,49 @@ const createJob = async (req, res) => {
   res.status(StatusCodes.CREATED).json({ job });
 }
 ```
+
+## Checking createJob
+
+In the `server.js` we have the `authenticateUser` middleware:
+
+```js
+app.use('/api/v1/jobs', authenticateUser, jobsRouter);
+```
+
+In the `authenticate.js` we attach the `user` object with the `userId` property before we invoke `next()`:
+
+```js
+const authenticate = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if(!authHeader || !authHeader.startsWith("Bearer")){
+    throw new UnAuthenticatedError("Authentication Invalid");
+  }
+
+  const token = authHeader.split(' ')[1];
+  
+  try{
+    const payload = jwt.verify(token, process.env.SECRET_KEY);
+
+    req.user = { userId: payload.userId };
+
+    next();
+  } catch(error){
+    throw new UnAuthenticatedError("Authentication Invalid");
+  }
+};
+```
+
+So we want to add a `createdBy` property to `req.body` since we will pass in `req.body` to the document we will create.
+
+## Testing in Postman
+
+Let's send a `Login` request to get a new token issued. Then go to the `Create Job` request, and go to the `Body` tab > `raw` radio button > `JSON` dropdown and pass in:
+
+```json
+{
+  "company" : "Google",
+  "position": "front-end developer",
+}
+```
+
+Send the request and check the Body output for a successful response.
