@@ -7273,8 +7273,44 @@ Let's send a `Login` request to get a new token issued. Then go to the `Create J
 ```json
 {
   "company" : "Google",
-  "position": "front-end developer",
+  "position": "front-end developer"
 }
 ```
 
 Send the request and check the Body output for a successful response.
+
+```json
+{
+    "job": {
+        "company": "Google",
+        "position": "front-end developer",
+        "status": "pending",
+        "jobType": "full-time",
+        "jobLocation": "my city",
+        "createdBy": "6418d6ab92ff594a02b6f24a",
+        "_id": "6426b205fbdb9da6e1e5a3a5",
+        "createdAt": "2023-03-31T10:12:21.562Z",
+        "updatedAt": "2023-03-31T10:12:21.562Z",
+        "__v": 0
+    }
+}
+```
+
+So far so good!
+
+Now if we have an empty value and send the Create Job request, we should get back a msg with "Please provide all values" a 400 response.
+
+# Create Job front-end
+
+Let's work on the front-end. Let's add some properties to the `initialState`. 
+
+```js
+const initialState = {
+  position: '',
+  company: '',
+  jobTypeOptions: [],
+  jobType: 'full-time',
+  statusOptions: [],
+  status: 'pending',
+}
+```
