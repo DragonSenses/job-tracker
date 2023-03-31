@@ -5,6 +5,7 @@ import Wrapper from '../../assets/wrappers/DashboardFormPage';
 
 export default function AddJob() {
   const {
+    isEditing,
     showAlert,
     displayAlert,
     position,
@@ -18,7 +19,13 @@ export default function AddJob() {
 
   return (
     <Wrapper>
-      
+      <form className='form'>
+        <h3>{isEditing ? 'edit job' : 'add job'}</h3>
+        {showAlert && <Alert />}
+        <div className="form-center">
+          <FormRow type="text" name="position" value={position} />
+        </div>
+      </form>
     </Wrapper>
   );
 }
