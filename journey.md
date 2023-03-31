@@ -7151,5 +7151,27 @@ const JobSchema = new Schema({
 });
 ```
 
-## Job Model | Time stamp
+## Job Model | Created By Field
+
+Now create a field `createdBy` which will indicate that it is created by the User and keep track of the time.
+
+```js
+  createdBy: {
+    type: mongooose.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'Please provide the User'],
+  }, 
+```
+
+## Job Model | Timestamps
+
+In mongoose we can add the `timestamps` option which assigns `createdAt` and `updatedAt` fields to schema. See the mongoose docs on [options: timestamps](https://mongoosejs.com/docs/guide.html#timestamps).
+
+So at the end of the Job model schema just add a comma, and set `timestamps` to true.
+
+```js
+const JobSchema = new Schema({
+// ...
+}, { timestamps: true } );
+```
 

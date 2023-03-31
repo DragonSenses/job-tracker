@@ -31,4 +31,9 @@ const JobSchema = new Schema({
     default: 'my city',
     required: true,
   },
-});
+  createdBy: {
+    type: mongooose.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'Please provide the User'],
+  }, 
+}, { timestamps: true } );
