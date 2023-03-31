@@ -7042,4 +7042,45 @@ Now if we comment out the Bearer token, we will be logged out when we try to `up
   );
 ```
 
+WE should see app kick the user back to the landing page. Now if we go to the Register page there is an Alert that displays Unauthorized.
 
+## Removing Unauthorized Alert in Register page
+
+Since there is a **delay** time when `Alert` component is displayed, the user can see the "Authentication Invalid" Alert message in the Login page immediately after logging out (when Token expired, etc.).
+
+Let's remove that Alert.
+
+WE only want to dispatch `UPDATE_USER_ERROR` in `updateUser` only if it isn't a `401`. 
+
+```js
+  const updateUser = async (currentUser) => {
+    dispatch({ type: UPDATE_USER_BEGIN });
+
+    try{
+      // get user data...
+
+    } catch(error) {
+      if(error.response.status !== 401){
+        dispatch({
+          type: UPDATE_USER_ERROR,
+          payload: { msg: error.response.data.msg },
+        });
+      }
+    }
+    clearAlert();
+  };
+```
+
+Before moving on to the jobsController, jobs model and more let's now handle the front-end empty value validation in the Profile page. Let's uncomment the conditional statement in `handleSubmit`:
+
+```js
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if(!name || !email || !lastName || !location){
+      displayAlert();
+      return;
+    }
+
+    updateUser({ name, email, lastName, location });
+  }
+```
