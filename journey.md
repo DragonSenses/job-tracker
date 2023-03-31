@@ -7092,3 +7092,64 @@ According to the [useReducer docs](https://react.dev/reference/react/useReducer)
 >  By convention, it is common to write it as a [switch statement](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/switch). For each case in the switch, calculate and return some next state.
 
 So I refactored the reducer function in `reducer.js` at this stage. Makes it easier to add new cases later for maintainability.
+
+# Job Model
+
+`Job.js` in `models` folder. Let's start setting up the template:
+
+```js
+import mongoose from "mongoose";
+import validator from 'validator';
+import bcryptjs from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+
+const { Schema } = mongoose;
+
+const JobSchema = new Schema({
+  
+});
+```
+
+## Job Model | Fields
+
+The fields it will have are 
+
+- company
+- position
+- status
+- jobType (full=time, part-time, intern)
+- jobLocation
+- timestamp
+
+```js
+const JobSchema = new Schema({
+  company: {
+    type: String,
+    required: [true, 'Please provide company'],
+    maxLength: 50,
+  },
+  position: {
+    type: String,
+    required: [true, 'Please provide position'],
+    maxlength: 100,
+  },
+  status:{
+    type: String,
+    enum: ['interview', 'declined', 'pending'],
+    default: 'pending',
+  },
+  jobType:{
+    type: String,
+    enum: ['full-time', 'part-time', 'remote', 'internship'],
+    default: 'full-time',
+  },
+  jobLocation:{
+    type: String,
+    default: 'my city',
+    required: true,
+  },
+});
+```
+
+## Job Model | Time stamp
+
