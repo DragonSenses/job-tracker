@@ -200,9 +200,16 @@ export default function AppProvider(props) {
     });
   };
 
+  const clearValues = () => {
+    dispatch({
+      type: CLEAR_VALUES,
+    });
+  };
+
   return (
     <AppContext.Provider value = {{...state, 
-    displayAlert, registerUser, loginUser, toggleSidebar, logoutUser, updateUser, handleChange }}>
+    displayAlert, registerUser, loginUser, toggleSidebar, logoutUser, updateUser, handleChange,
+    clearValues }}>
       {children}
     </AppContext.Provider>
   )

@@ -7669,3 +7669,19 @@ For convenience to the user, let's add a Clear button that resets all input fiel
 - Create the function that dispatchs `CLEAR_VALUES` and pass it down to `value` prop
 - Handle the action case within reducer
 - Finally, create the `button` in the `AddJob` page and wire things together
+
+`appContext`
+```js
+  const clearValues = () => {
+    dispatch({
+      type: CLEAR_VALUES,
+    });
+  };
+
+value = {{..., clearValues }};
+```
+
+`reducer`
+```js
+
+```
