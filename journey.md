@@ -7617,3 +7617,32 @@ import { HANDLE_CHANGE } from "./actions";
     };
   }
 ```
+
+- `handleChange` function expects an object with two properties: `name, value`. It then invokes `dispatch` passing in `action.type` and the `payload`. Finally it is passed down within the `value` prop of `AppContext.Provider`
+
+## Using the global `handleChange` function in `AddJob`
+
+```js
+export default function AddJob() {
+  const {
+    // ...
+    handleChange
+  } = useAppContext();
+
+  const handleJobInput = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    console.log(`${name} : ${value}`);
+  };
+```
+
+- Destructure the `handleChange` function from global context
+- In `handleJobInput` invoke `handleChange`
+
+```js
+  const handleJobInput = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    handleChange({name, value});
+  };
+```
