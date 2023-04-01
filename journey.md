@@ -7587,10 +7587,12 @@ The `handleChange` function will be invoked when we update one of the inputs on 
 - Create the function within global context -> `appContext.js` and pass it down
 - Handle the case in `reducer`, update state value with dynamic naming
 
+`actions.js`
 ```js
 export const HANDLE_CHANGE = 'HANDLE_CHANGE';
 ```
 
+`appContext.js`
 ```js
 import { HANDLE_CHANGE } from "./actions";
 
@@ -7604,5 +7606,14 @@ import { HANDLE_CHANGE } from "./actions";
 value = {{ handleChange }}
 ```
 
+`reducer.js`
 ```js
+import { HANDLE_CHANGE } from "./actions";
+
+  case HANDLE_CHANGE: {
+    return {
+      ...state,
+      [action.payload.name]: action.payload.value,
+    };
+  }
 ```

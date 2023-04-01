@@ -12,6 +12,7 @@ import {
   UPDATE_USER_BEGIN,
   UPDATE_USER_SUCCESS,
   UPDATE_USER_ERROR,
+  HANDLE_CHANGE
 } from "./actions";
 
 import { initialState } from './appContext.js';
@@ -144,6 +145,13 @@ function reducer(state, action) {
         showAlert: true,
         alertType: 'danger',
         alertText: action.payload.msg,
+      };
+    }
+
+    case HANDLE_CHANGE: {
+      return {
+        ...state,
+        [action.payload.name]: action.payload.value,
       };
     }
 
