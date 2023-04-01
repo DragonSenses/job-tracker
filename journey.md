@@ -7681,7 +7681,33 @@ For convenience to the user, let's add a Clear button that resets all input fiel
 value = {{..., clearValues }};
 ```
 
+Now how do we handle the `CLEAR_VALUES` action in the reducer?
+
+- Should setup a temporary state where we handle all the job values from the `initialState`
+- Note: if user edits a job, but then thinks otherwise and clears the job instead, then we should  set `isEditing` and `editJobId` to the default values.
+
 `reducer`
 ```js
+  case CLEAR_VALUES: {
+    
+    const initialState = {
+      isEditing: false,
+      editJobId: '',
+      position: '',
+      company: '',
+      jobLocation: state.userLocation,
+      jobType: 'full-time',
+      status: 'pending',
+    };
 
+    return {
+      ...state,
+      ...initialState
+    };
+  }
 ```
+
+We have a temporary state `initalState` and reset the values related to job to the default. Then spread out the current `state` to expand it into a list of arguments and get the rest of the values. Then also spread the `initalState` which provides all the values for the all the properties related to job in the actual `state`.
+
+## AddJob | Clear Button
+- Next create the button for the AddJob form

@@ -156,6 +156,23 @@ function reducer(state, action) {
       };
     }
 
+    case CLEAR_VALUES: {
+      const initialState = {
+        isEditing: false,
+        editJobId: '',
+        position: '',
+        company: '',
+        jobLocation: state.userLocation,
+        jobType: 'full-time',
+        status: 'pending',
+      };
+
+      return {
+        ...state,
+        ...initialState
+      };
+    }
+
     default: {
       throw new Error(`No such action: ${action.type}`);
     }
