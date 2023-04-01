@@ -60,7 +60,20 @@ export default function AddJob() {
             labelText='job location'
           />
 
-          {/* FormRow Select */}
+          <FormRowSelect 
+            name="status"
+            value={status}
+            handleChange={handleJobInput}
+            list={statusOptions}
+          />
+
+          <FormRowSelect
+            labelText="job type"
+            name="jobType"
+            value={jobType}
+            handleChange={handleJobInput}
+            list={jobTypeOptions}
+          />
 
           <div className="btn-container">
             <button

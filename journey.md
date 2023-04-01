@@ -7523,3 +7523,56 @@ We have to repeat this code again, so in order to reduce code reduplication, let
 
 Create `FormRowSelect.js` in `components` folder, rfc. Then update the import/export in `index.js`.
 
+Let's take the code we made for the dropdown menu and paste it into the component. Now let's fix up a few things, mainly the `props`. The React docs on [Passing Props to a Component](https://react.dev/learn/passing-props-to-a-component).
+
+1. Let's pass props to the child component `FormRowSelect`. 
+2. Read props inside the child component `FormRowSelect`
+
+```js
+import React from 'react';
+
+export default function FormRowSelect({labelText, name, value, handleChange, list}) {
+  return (
+    <div className="form-row">
+    <label htmlFor={name} className='form-label'>
+      {labelText || name}
+    </label>
+
+    <select
+      name={name}
+      value={value}
+      onChange={handleChange}
+      className='form-select'
+    >
+      {list.map((itemValue, index) => {
+        return(
+          <option key={index} value={itemValue}>
+            {itemValue}
+          </option>
+        );
+      })}
+    </select>
+  </div> 
+  );
+}
+```
+
+With the FormRowSelect component made, we can reuse it for both the `jobType` and `status` form fields:
+
+```js
+  <FormRowSelect 
+    name="status"
+    value={status}
+    handleChange={handleJobInput}
+    list={statusOptions}
+  />
+
+  <FormRowSelect
+    labelText="job type"
+    name="jobType"
+    value={jobType}
+    handleChange={handleJobInput}
+    list={jobTypeOptions}
+  />
+```
+
