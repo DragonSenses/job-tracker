@@ -7521,4 +7521,5 @@ We have to repeat this code again, so in order to reduce code reduplication, let
 
 ## `FormRowSelect` component
 
-Create `FormRowSelect.js` in `components` folder.
+Create `FormRowSelect.js` in `components` folder, rfc. Then update the import/export in `index.js`.
+
