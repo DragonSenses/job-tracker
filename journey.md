@@ -7576,3 +7576,33 @@ With the FormRowSelect component made, we can reuse it for both the `jobType` an
   />
 ```
 
+Now running the app and seeing the page on the browser we see the drop downs in action.
+
+# Implementing the `handleChange`
+
+The `handleChange` function will be invoked when we update one of the inputs on a form field. When an input is changed, we want to update the state.
+
+- Create action we want to dispatch
+- Every time we create action, import in context/reducer and export it in actions
+- Create the function within global context -> `appContext.js` and pass it down
+- Handle the case in `reducer`, update state value with dynamic naming
+
+```js
+export const HANDLE_CHANGE = 'HANDLE_CHANGE';
+```
+
+```js
+import { HANDLE_CHANGE } from "./actions";
+
+  const handleChange = ({ name, value }) => {
+    dispatch({
+      type: HANDLE_CHANGE,
+      payload: { name, value },
+    });
+  };
+
+value = {{ handleChange }}
+```
+
+```js
+```
