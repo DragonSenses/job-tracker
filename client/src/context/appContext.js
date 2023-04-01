@@ -16,6 +16,7 @@ import {
   UPDATE_USER_BEGIN,
   UPDATE_USER_SUCCESS,
   UPDATE_USER_ERROR,
+  HANDLE_CHANGE
 } from "./actions";
 
 const user = localStorage.getItem('user');
@@ -191,9 +192,16 @@ export default function AppProvider(props) {
     clearAlert();
   };
 
+  const handleChange = ({ name, value }) => {
+    dispatch({
+      type: HANDLE_CHANGE,
+      payload: { name, value },
+    });
+  };
+
   return (
     <AppContext.Provider value = {{...state, 
-    displayAlert, registerUser, loginUser, toggleSidebar, logoutUser, updateUser }}>
+    displayAlert, registerUser, loginUser, toggleSidebar, logoutUser, updateUser, handleChange }}>
       {children}
     </AppContext.Provider>
   )
