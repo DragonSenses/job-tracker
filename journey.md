@@ -7646,3 +7646,26 @@ export default function AddJob() {
     handleChange({name, value});
   };
 ```
+
+## Testing the functionality
+
+Every time we change one of the inputs in AddPage we also update the state.
+
+Developer Tools > Components > AppProvider > hooks > Reducer
+
+- Now type something within Position -> "Front-End Developer"
+
+We see the hook updated with: `position: "Front-End Developer"`.
+
+Now add the company name: `Adobe`. Then hit Submit. In the console we will see `create job`, since all values in the form are provided.
+
+Now we have a **global `handleChange` function**, handling every change to the inputs of the form AddJob page.
+
+## Add Clear Button
+
+For convenience to the user, let's add a Clear button that resets all input fields to the default.
+
+- Create action `CLEAR_VALUES`, export it in actions, then import it in reducer/appContext
+- Create the function that dispatchs `CLEAR_VALUES` and pass it down to `value` prop
+- Handle the action case within reducer
+- Finally, create the `button` in the `AddJob` page and wire things together
