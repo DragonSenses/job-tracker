@@ -7711,3 +7711,43 @@ We have a temporary state `initalState` and reset the values related to job to t
 
 ## AddJob | Clear Button
 - Next create the button for the AddJob form
+
+```js
+const {
+  // ...
+  clearValues
+} = useAppContext();
+
+return (
+  return (
+    <Wrapper>
+      <form className='form'>
+      /* ... */
+          <div className="btn-container">
+            <button
+              type='submit'
+              className='btn btn-block submit-btn'
+              onClick={handleSubmit}
+            >
+              submit
+            </button>
+
+            <button
+              className='btn btn-block clear-btn'
+              onClick={(e) => {
+                e.preventDefault();
+                clearValues();
+              }}
+            >
+              clear
+            </button>
+          </div>
+        </div>
+      </form>
+    </Wrapper>
+);
+```
+
+Have to access the event object and prevent default (otherwise page refreshes). The button behaves this way because it is within the form. 
+
+Note: If Clear button comes before the submit button, pressing Enter on the keyboard hits the Clear button rather than submit.
