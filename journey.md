@@ -7895,6 +7895,49 @@ case CREATE_JOB_ERROR: {
 }
 ```
 
+## Clear Alert after `createJob`
+
+After testing, the Alert won't disappear so need to add that in after the `try..catch`:
+
+```js
+  const createJob = async () => {
+    dispatch({ type: CREATE_JOB_BEGIN });
+
+    try{
+      const { 
+        position, 
+        company, 
+        jobLocation, 
+        jobType, 
+        status 
+      } = state;
+
+      await authFetch.post('/jobs', {
+        position, 
+        company, 
+        jobLocation, 
+        jobType, 
+        status 
+      });
+
+      dispatch({ type: CREATE_JOB_SUCCESS });
+      dispatch({ type: CLEAR_VALUES });
+
+    } catch(error){
+      if(error.response === 401) {
+        return;
+      }
+
+      dispatch({
+        type: CREATE_JOB_ERROR,
+        payload: { msg: error.response.data.msg },
+      });
+    }
+
+    clearAlert();
+  };
+  ```
+
 ## Import `createJob` in `AddJob` then invoke it in `handleSubmit`.
 
 ```js

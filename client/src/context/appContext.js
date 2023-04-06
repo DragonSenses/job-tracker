@@ -242,6 +242,8 @@ export default function AppProvider(props) {
         payload: { msg: error.response.data.msg },
       });
     }
+
+    clearAlert();
   };
 
   return (
