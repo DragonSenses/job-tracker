@@ -7864,6 +7864,37 @@ catch(error){
   };
 ```
 
+## Setup the Reducer to handle create job actions
+
+```js
+case CREATE_JOB_BEGIN: {
+  return{
+    ...state,
+    isLoading: true
+  };
+}
+
+case CREATE_JOB_SUCCESS: {
+  return {
+    ...state,
+    isLoading: false,
+    showAlert: true,
+    alertType: 'success',
+    alertText: 'New Job Created!'
+  };
+}
+
+case CREATE_JOB_ERROR: {
+  return {
+    ...state,
+    isLoading: false,
+    showAlert: true,
+    alertType: 'danger',
+    alertText: action.payload.msg,
+  };
+}
+```
+
 ## Import `createJob` in `AddJob` then invoke it in `handleSubmit`.
 
 ```js

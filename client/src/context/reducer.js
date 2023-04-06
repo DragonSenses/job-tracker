@@ -176,6 +176,33 @@ function reducer(state, action) {
       };
     }
 
+    case CREATE_JOB_BEGIN: {
+      return{
+        ...state,
+        isLoading: true
+      };
+    }
+
+    case CREATE_JOB_SUCCESS: {
+      return {
+        ...state,
+        isLoading: false,
+        showAlert: true,
+        alertType: 'success',
+        alertText: 'New Job Created!'
+      };
+    }
+
+    case CREATE_JOB_ERROR: {
+      return {
+        ...state,
+        isLoading: false,
+        showAlert: true,
+        alertType: 'danger',
+        alertText: action.payload.msg,
+      };
+    }
+
     default: {
       throw new Error(`No such action: ${action.type}`);
     }
