@@ -7751,3 +7751,24 @@ return (
 Have to access the event object and prevent default (otherwise page refreshes). The button behaves this way because it is within the form. 
 
 Note: If Clear button comes before the submit button, pressing Enter on the keyboard hits the Clear button rather than submit.
+
+---
+
+# Create Job | Functionality
+
+When we go to `Add Job` page, when we fill out the form successfully and hit submit we should see an Alert that tells the user that a new job was created (to be displayed in `All Jobs` page).
+
+First let's setup the actions we want to dispatch that determines the stages of Create Job.
+
+```js
+export const CREATE_JOB_BEGIN = 'CREATE_JOB_BEGIN';
+export const CREATE_JOB_SUCCESS = 'CREATE_JOB_SUCCESS';
+export const CREATE_JOB_ERROR = 'CREATE_JOB_ERROR';
+```
+
+Let's import them in the reducer and appContext.
+
+Next we create the `createJob` function in `appContext`. 
+
+Import `createJob` in `AddJob` then invoke it in `handleSubmit`.
+
