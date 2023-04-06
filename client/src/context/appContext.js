@@ -209,10 +209,38 @@ export default function AppProvider(props) {
     });
   };
 
+  const createJob = async () => {
+    dispatch({ type: CREATE_JOB_BEGIN });
+
+    try{
+      const { 
+        position, 
+        company, 
+        jobLocation, 
+        jobType, 
+        status 
+      } = state;
+
+      await authFetch.post('/jobs', {
+        position, 
+        company, 
+        jobLocation, 
+        jobType, 
+        status 
+      });
+
+      dispatch({ type: CREATE_JOB_SUCCESS });
+      dispatch({ type: CLEAR_VALUES });
+      
+    } catch(error){
+
+    }
+  };
+
   return (
     <AppContext.Provider value = {{...state, 
     displayAlert, registerUser, loginUser, toggleSidebar, logoutUser, updateUser, handleChange,
-    clearValues }}>
+    clearValues, createJob, }}>
       {children}
     </AppContext.Provider>
   )

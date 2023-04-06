@@ -7786,7 +7786,63 @@ export const CREATE_JOB_ERROR = 'CREATE_JOB_ERROR';
 
 Let's import them in the reducer and appContext.
 
-Next we create the `createJob` function in `appContext`. 
+## Next we create the `createJob` function in `appContext`. 
+
+```js
+  const createJob = async () => {
+    dispatch({ type: CREATE_JOB_BEGIN });
+
+    try{
+      const { 
+        position, 
+        company, 
+        jobLocation, 
+        jobType, 
+        status 
+      } = state;
+
+      // authFetch
+
+    } catch(error){
+
+    }
+  };
+```
+- We dispatch the BEGIN action, then we in a `try..catch` we start the logic. 
+
+- We destructure out the values we need to create a job from the state.
+
+### Let's try fleshing out the `authFetch`
+
+- Calling `authFetch` with a `post()` as we want to post or create a job with the data we destructured.
+- The parameters to `post()` are `post(url, data)`
+- The `url` or route will be `'/jobs'` as seen in `server.js`: 
+```js
+app.use('/api/v1/jobs', authenticateUser, jobsRouter);
+```
+- The `data` we want to pass in are the properties we destructured out of `state` to create the job:
+- The Axios Interceptors will add that token to authenticate the user for us
+
+So far:
+
+```js
+await authFetch.post('/jobs', {
+  position, 
+  company, 
+  jobLocation, 
+  jobType, 
+  status 
+});
+```
+
+Afterwards we can dispatch `CREATE_JOB_SUCCESS`. Also going to dispatch `CLEAR_VALUES` to update the state and reset them to default values to facilitate creating another job.
+
+```js
+dispatch({ type: CREATE_JOB_SUCCESS });
+dispatch({ type: CLEAR_VALUES });
+```
+
+- Don't forget to pass the function in to the `value` prop of `AppContext.Provider`!
 
 Import `createJob` in `AddJob` then invoke it in `handleSubmit`.
 
