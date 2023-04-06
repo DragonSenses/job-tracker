@@ -6,6 +6,7 @@ import Wrapper from '../../assets/wrappers/DashboardFormPage';
 export default function AddJob() {
   const {
     isEditing,
+    isLoading,
     showAlert,
     displayAlert,
     position,
@@ -82,6 +83,7 @@ export default function AddJob() {
               type='submit'
               className='btn btn-block submit-btn'
               onClick={handleSubmit}
+              disabled={isLoading}
             >
               submit
             </button>

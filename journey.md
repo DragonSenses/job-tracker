@@ -7752,6 +7752,24 @@ Have to access the event object and prevent default (otherwise page refreshes). 
 
 Note: If Clear button comes before the submit button, pressing Enter on the keyboard hits the Clear button rather than submit.
 
+## Disable submit button when `isLoading` is `true`
+
+In `AddJob` page, add the prop `disabled={isLoading}` to submit button:
+
+```js
+<div className="btn-container">
+<button
+  type='submit'
+  className='btn btn-block submit-btn'
+  onClick={handleSubmit}
+  disabled={isLoading}
+>
+  submit
+</button>
+```
+
+Prevents user from submit form again when in the middle of a request.
+
 ---
 
 # Create Job | Functionality
