@@ -18,6 +18,7 @@ export default function AddJob() {
     statusOptions,
     handleChange,
     clearValues,
+    createJob,
   } = useAppContext();
 
   const handleSubmit = (e) => {
@@ -28,7 +29,12 @@ export default function AddJob() {
       return;
     }
 
-    console.log('create job');
+    if(isEditing){
+      // 
+      return;
+    }
+
+    createJob();
   };
 
   const handleJobInput = (e) => {

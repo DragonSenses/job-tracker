@@ -7866,3 +7866,28 @@ catch(error){
 
 ## Import `createJob` in `AddJob` then invoke it in `handleSubmit`.
 
+```js
+export default function AddJob() {
+  const {
+    // ...
+    createJob,
+  } = useAppContext();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if(!position || !company || !jobLocation){
+      displayAlert();
+      return;
+    }
+
+    if(isEditing){
+      // editJob
+      return;
+    }
+
+    createJob();
+  };
+  // ...
+}
+```
