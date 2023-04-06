@@ -231,9 +231,16 @@ export default function AppProvider(props) {
 
       dispatch({ type: CREATE_JOB_SUCCESS });
       dispatch({ type: CLEAR_VALUES });
-      
-    } catch(error){
 
+    } catch(error){
+      if(error.response === 401) {
+        return;
+      }
+
+      dispatch({
+        type: CREATE_JOB_ERROR,
+        payload: { msg: error.response.data.msg },
+      });
     }
   };
 

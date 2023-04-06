@@ -7844,5 +7844,25 @@ dispatch({ type: CLEAR_VALUES });
 
 - Don't forget to pass the function in to the `value` prop of `AppContext.Provider`!
 
-Import `createJob` in `AddJob` then invoke it in `handleSubmit`.
+### Error handling in `createJob`
+
+In the `catch`, if we were to get a `401` error then we do not want to have an `Alert` display that the user is `Unauthorized` (as this will show in the Register). So let's just return.
+
+If any other error than dispatch the `CREATE_JOB_ERROR` action and pass in the payload msg and update state accordingly.
+
+```js
+catch(error){
+      if(error.response === 401) {
+        return;
+      }
+
+      dispatch({
+        type: CREATE_JOB_ERROR,
+        payload: { msg: error.response.data.msg },
+      });
+    }
+  };
+```
+
+## Import `createJob` in `AddJob` then invoke it in `handleSubmit`.
 
