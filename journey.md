@@ -8205,7 +8205,39 @@ Starting out the function we have to dispatch the action `GET_JOBS_BEGIN`. Then 
   };
 ```
 
-Now to setup the logic of the fetch.
+Now to setup the logic of the fetch within the `try` block.
+- Use `authFetch()` to get the `data` we need
+- Pass in the `url` which will be `'/jobs'`
+- Destructure `jobs`, `totalJobs` and `numOfPages` from the `data`
+- Dispatch the `GET_JOBS_SUCCESS` action to update the state of All Jobs page
+- Within that action, pass in the type and payload with the data we destructured out
+
+```js
+  const getJobs = async () => {
+    let url = '/jobs';
+    
+    dispatch({ type: GET_JOBS_BEGIN });
+
+    try{
+      const data = authFetch(url);
+      const { jobs, totalJobs, numOfPages } = data;
+
+      dispatch({
+        type: GET_JOBS_SUCCESS,
+        payload: {
+          jobs,
+          totalJobs,
+          numOfPages
+        },
+      });
+
+    } catch(error){
+      console.log(error.response);
+      logoutUser();
+    }
+    clearAlert();
+  };
+```
 
 ## Update All Jobs page through reducer
 

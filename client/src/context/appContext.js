@@ -258,6 +258,17 @@ export default function AppProvider(props) {
     dispatch({ type: GET_JOBS_BEGIN });
 
     try{
+      const data = authFetch(url);
+      const { jobs, totalJobs, numOfPages } = data;
+
+      dispatch({
+        type: GET_JOBS_SUCCESS,
+        payload: {
+          jobs,
+          totalJobs,
+          numOfPages
+        },
+      });
 
     } catch(error){
       console.log(error.response);
