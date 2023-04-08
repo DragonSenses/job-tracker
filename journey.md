@@ -8370,6 +8370,33 @@ export default function JobsContainer() {
 ```
 
 - `Loading` component conditionally renders when `isLoading` is `true`
+
+```css
+.loading {
+  width: 6rem;
+  height: 6rem;
+  border: 5px solid var(--grey-400);
+  border-radius: 50%;
+  border-top-color: var(--primary-500);
+  animation: spinner 2s linear infinite;
+}
+.loading-center {
+  margin: 0 auto;
+}
+```
+
+The component:
+
+```js
+import React from 'react';
+
+export default function Loading() {
+  return (
+    <div className='loading'></div>
+  );
+}
+```
+
 - If the `jobs` array is empty (a length of 0) then render a simple heading that says "No jobs to display"
 
 The `useEffect` hook is used here. What I want: the moment the `JobsContainer` is rendered, then invoke `getJobs()` function.
