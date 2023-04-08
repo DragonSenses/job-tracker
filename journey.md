@@ -7965,3 +7965,150 @@ export default function AddJob() {
   // ...
 }
 ```
+
+## Testing `createJob`
+
+Comment out `AddJob`'s validation checks:
+
+
+```js
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // if(!position || !company || !jobLocation){
+    //   displayAlert();
+    //   return;
+    // }
+
+    if(isEditing){
+      // 
+      return;
+    }
+
+    createJob();
+  };
+```
+
+Now if we submit a Bad Request with empty fields in `position` for example, we should get the Alert `Please Provide All Values` from the server. In the developer tools we have that 400 (Bad Request).
+
+Now with a positive request, fill out the form properly and go ahead and submit the form for `createJob`.
+
+Remember to uncomment the form validation on the front-end in `handleSubmit`, before moving on.
+
+# Get All Jobs
+
+Planning the page. It will have a Search Form with search field, and drop downs. 
+
+Then below are all the jobs displayed (or all the jobs that match the search query).
+
+Each job will contain its own card containing:
+- job title / job position
+- Location
+- job type
+- Status
+- Date created
+- Edit/Delete buttons
+
+## Server Side - `jobsController`
+
+In the `jobsController` we should have a function `getAllJobs`, which gets all the jobs created by a specific user. We do this with `Job.find()`.
+
+In the `authenticate` middleware, if there is a valid token then we add `user` to the request `req`.
+
+```js
+req.user = { userId: payload.userId };
+```
+
+Then we can access the `req.user` property for its `userId` to find all the jobs created by the correct user.
+
+```js
+const jobs = await Job.find({ createdBy: req.user.userId });
+```
+
+Then after succesfully finding the data, we go with `StatusCodes.OK`  for the response `res`. 
+
+Read and parse the data with `json()`. The values we want to display are:
+- `jobs`
+- `totalJobs`
+- `numOfPages`
+
+We are going to have pagination to display the jobs. Right now `numOfPages` is hardcoded to 1 but we should dynamically set this based on the `jobs.length`. In other words, the more jobs we have the more pages.
+
+Here is how it will look in the controller:
+
+```js
+const getAllJobs = async (req, res) => {
+  const jobs = await Job.find({ createdBy: req.user.userId });
+
+  res.status(StatusCodes.OK)
+     .json({ jobs, totalJobs: jobs.length, numOfPages: 1 });
+}
+```
+
+### Testing getAllJobs
+
+- Go to Postman
+- Login to re-issue token
+- Create jobs
+- Get All Jobs
+
+We should see in the Body:
+
+```json
+{
+    "jobs": [
+        {
+            "_id": "6426b205fbdb9da6e1e5a3a5",
+            "company": "Google",
+            "position": "front-end developer",
+            "status": "pending",
+            "jobType": "full-time",
+            "jobLocation": "my city",
+            "createdBy": "6418d6ab92ff594a02b6f24a",
+            "createdAt": "2023-03-31T10:12:21.562Z",
+            "updatedAt": "2023-03-31T10:12:21.562Z",
+            "__v": 0
+        },
+        {
+            "_id": "642f36a5429866ccdadb11c5",
+            "company": "Uber",
+            "position": "Front-End Developer",
+            "status": "pending",
+            "jobType": "full-time",
+            "jobLocation": "Irvine, California",
+            "createdBy": "6418d6ab92ff594a02b6f24a",
+            "createdAt": "2023-04-06T21:16:21.321Z",
+            "updatedAt": "2023-04-06T21:16:21.321Z",
+            "__v": 0
+        },
+        {
+            "_id": "6430ed5141edde8ddc9c697e",
+            "company": "Uber",
+            "position": "front-end developer",
+            "status": "pending",
+            "jobType": "full-time",
+            "jobLocation": "my city",
+            "createdBy": "6418d6ab92ff594a02b6f24a",
+            "createdAt": "2023-04-08T04:28:01.216Z",
+            "updatedAt": "2023-04-08T04:28:01.216Z",
+            "__v": 0
+        },
+        {
+            "_id": "6430ed6641edde8ddc9c6980",
+            "company": "FLT",
+            "position": "back-end developer",
+            "status": "pending",
+            "jobType": "full-time",
+            "jobLocation": "my city",
+            "createdBy": "6418d6ab92ff594a02b6f24a",
+            "createdAt": "2023-04-08T04:28:22.851Z",
+            "updatedAt": "2023-04-08T04:28:22.851Z",
+            "__v": 0
+        }
+    ],
+    "totalJobs": 4,
+    "numOfPages": 1
+}
+```
+
+It works!
