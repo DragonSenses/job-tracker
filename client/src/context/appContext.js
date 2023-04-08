@@ -252,6 +252,20 @@ export default function AppProvider(props) {
     clearAlert();
   };
 
+  const getJobs = async () => {
+    let url = '/jobs';
+    
+    dispatch({ type: GET_JOBS_BEGIN });
+
+    try{
+
+    } catch(error){
+      console.log(error.response);
+      logoutUser();
+    }
+    clearAlert();
+  };
+
   return (
     <AppContext.Provider value = {{...state, 
     displayAlert, registerUser, loginUser, toggleSidebar, logoutUser, updateUser, handleChange,

@@ -8187,7 +8187,25 @@ Alerts persist across pages and can be seen if you quickly navigate. For example
 
 We need to clearAlert() before that happens, so add that in the reducer where `showAlert: false`.
 
-##
+## `getJobs` function in Global Context
+
+Starting out the function we have to dispatch the action `GET_JOBS_BEGIN`. Then a `try..catch` that will handle the logic of getting data and updating the page. In the catch, we log the `error.response` then `logoutUser()` is invoked. Finally, after the `try..catch` we invoke `clearAlert()`.
+
+```js
+  const getJobs = async () => {
+    dispatch({ type: GET_JOBS_BEGIN });
+
+    try{
+
+    } catch(error){
+      console.log(error.response);
+      logoutUser();
+    }
+    clearAlert();
+  };
+```
+
+Now to setup the logic of the fetch.
 
 ## Update All Jobs page through reducer
 
