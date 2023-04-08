@@ -8328,6 +8328,8 @@ export default function AllJobs() {
 
 JobsContainer will be using three components: the `Wrapper` styled-component, the `Job` component and the `Loading` component. 
 
+The `useEffect` hook is used here. What I want: the moment the `JobsContainer` is rendered, then invoke `getJobs()` function. 
+
 ```js
 import React from 'react';
 import { useAppContext } from '../context/appContext';
@@ -8419,6 +8421,45 @@ export default function Loading({ props }) {
 }
 ```
 
-- If the `jobs` array is empty (a length of 0) then render a simple heading that says "No jobs to display"
+#### If the `jobs` array is empty (a length of 0) then render a simple heading that says "No jobs to display"
 
-The `useEffect` hook is used here. What I want: the moment the `JobsContainer` is rendered, then invoke `getJobs()` function. 
+
+#### Working on the final piece to render
+
+Let's dynamically render a heading based on the number of jobs found.
+
+|totalJobs|output|
+|---------|------|
+|0| No jobs to display|
+|1| 1 Job Found|
+|2| 2 Jobs Found|
+|n > 1 | n Jobs Found |
+
+We want to add a `s` after "job" string when there is more than one.
+
+```js
+  return (
+    <Wrapper>
+      <h5>
+        {totalJobs} job{jobs.length > 1 && 's'} found
+      </h5>
+    </Wrapper>
+  );
+```
+
+Then create a `div` that maps out each `job` to display, and renders a `Job` component for each.
+Recall that in the array of `jobs`, it has an object job with properties such as company, position, status, jobType, jobLocation, createdBy, etc. 
+
+There is one more property we can use to uniquely identify the specific job: `_id`. So use that as the key to uniquely identify it within the list. Pass that to the props.
+
+Next props to pass down is all the information (properties) within the job I want to pass down as well, so spread out the `job` object and pass it down.
+
+```js
+<div className='jobs'>
+  {jobs.map((job) => {
+    return <Job key={job._id} {...job} />
+  })}
+</div>
+```
+
+Next display the pagination buttons that show when a totalJobs exceed a certain amount. For now, leave a comment to mark where it should be (right below the `jobs` div). 
