@@ -8185,5 +8185,28 @@ If you are getting 404 in the All Jobs page then there is something wrong with t
 
 Alerts persist across pages and can be seen if you quickly navigate. For example, if user creates a job and heads over to all jobs page then they may see the alert. 
 
-We need to clearAlert() before that happens, so add that in the reducer where `showAler: false`.
+We need to clearAlert() before that happens, so add that in the reducer where `showAlert: false`.
 
+##
+
+## Update All Jobs page through reducer
+
+```js
+    case GET_JOBS_BEGIN: {
+      return {
+        ...state,
+        isLoading: true,
+        showAlert: false,
+      };
+    }
+
+    case GET_JOBS_SUCCESS: {
+      return {
+        ...state,
+        isLoading: false,
+        jobs: action.payload.jobs,
+        totalJobs: action.payload.totalJobs,
+        numOfPages: action.payload.numOfPages,
+      };
+    }
+```

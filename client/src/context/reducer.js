@@ -205,6 +205,24 @@ function reducer(state, action) {
       };
     }
 
+    case GET_JOBS_BEGIN: {
+      return {
+        ...state,
+        isLoading: true,
+        showAlert: false,
+      };
+    }
+
+    case GET_JOBS_SUCCESS: {
+      return {
+        ...state,
+        isLoading: false,
+        jobs: action.payload.jobs,
+        totalJobs: action.payload.totalJobs,
+        numOfPages: action.payload.numOfPages,
+      };
+    }
+
     default: {
       throw new Error(`No such action: ${action.type}`);
     }
