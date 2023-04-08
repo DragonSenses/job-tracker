@@ -8289,3 +8289,37 @@ Here is the docs on the differences between dependencies [useEffect dependencies
 
 Going to use `useEffect` hook for `getJobs` with an empty dependency array. It will act like `componentDidMount` and only run once.
 
+## Front-End | Components
+
+1. Search Form
+2. Job Cards
+3. Pagination of Jobs
+
+Job Cards have:
+- job title / job position
+- Location
+- job type
+- Status
+- Date created
+- Edit/Delete buttons
+
+Essentially this could be reduced to two container components:
+
+1. Search Container
+2. Jobs Container
+
+We want to create those components and render them within the AllJobs component.
+
+```js
+import React from 'react';
+import { JobsContainer, SearchContainer} from '../../components';
+
+export default function AllJobs() {
+  return (
+    <>
+      <SearchContainer />
+      <JobsContainer />
+    </>
+  );
+}
+```
