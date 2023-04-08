@@ -1,5 +1,5 @@
 import React from 'react';
-import { useReducer, useContext } from 'react';
+import { useReducer, useContext, useEffect } from 'react';
 import axios from 'axios';
 import reducer from './reducer';
 import { 
@@ -277,10 +277,14 @@ export default function AppProvider(props) {
     clearAlert();
   };
 
+  useEffect( () => {
+    getJobs();
+  }, []);
+
   return (
     <AppContext.Provider value = {{...state, 
     displayAlert, registerUser, loginUser, toggleSidebar, logoutUser, updateUser, handleChange,
-    clearValues, createJob, }}>
+    clearValues, createJob, getJobs, }}>
       {children}
     </AppContext.Provider>
   )

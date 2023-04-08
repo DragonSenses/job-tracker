@@ -8239,6 +8239,12 @@ Now to setup the logic of the fetch within the `try` block.
   };
 ```
 
+Now let's pass the function down to the `value` prop. 
+
+```js
+  <AppContext.Provider value = {{..., getJobs, }}>
+```
+
 ## Update All Jobs page through reducer
 
 ```js
@@ -8260,3 +8266,26 @@ Now to setup the logic of the fetch within the `try` block.
       };
     }
 ```
+
+## Synchronizing `getJobs` with `useEffect` hook
+
+React docs on [useEffect](https://react.dev/reference/react/useEffect).
+
+`useEffect` is a React Hook that lets you **synchronize a component with an external system.**
+
+```js
+useEffect(setup, dependencies?);
+```
+
+Here is a stackoverflow post on [useEffect with no dependency array or an empty array](https://stackoverflow.com/questions/58579426/in-useeffect-whats-the-difference-between-providing-no-dependency-array-and-an).
+
+- Giving it an empty array acts like `componentDidMount` as in, it only runs once.
+
+- Giving it no second argument acts as both `componentDidMount` and `componentDidUpdate`, as in it runs first on mount and then on every re-render.
+
+- Giving it an array as second argument with any value inside, eg , `[variable1]` will only execute the code inside your `useEffect` hook ONCE on mount, as well as whenever that particular variable (`variable1`) changes.
+
+Here is the docs on the differences between dependencies [useEffect dependencies](https://react.dev/reference/react/useEffect#examples-dependencies).
+
+Going to use `useEffect` hook for `getJobs` with an empty dependency array. It will act like `componentDidMount` and only run once.
+
