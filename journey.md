@@ -8323,3 +8323,53 @@ export default function AllJobs() {
   );
 }
 ```
+
+### JobsContainer component
+
+JobsContainer will be using three components: the `Wrapper` styled-component, the `Job` component and the `Loading` component. 
+
+```js
+import React from 'react';
+import { useAppContext } from '../context/appContext';
+import { useEffect } from 'react';
+import Loading from './Loading';
+import Job from './Job';
+import Wrapper from '../assets/wrappers/JobsContainer';
+
+export default function JobsContainer() {
+  const {
+    getJobs,
+    jobs,
+    isLoading,
+    page,
+    totalJobs,
+  } = useAppContext();
+
+  useEffect(() => {
+    getJobs()
+  }, []);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if(jobs.length === 0 ){
+    return (
+      <Wrapper>
+        <h2>No Jobs to display...</h2>
+      </Wrapper>
+    );
+  }
+
+  return (
+    <Wrapper>
+      
+    </Wrapper>
+  );
+}
+```
+
+- `Loading` component conditionally renders when `isLoading` is `true`
+- If the `jobs` array is empty (a length of 0) then render a simple heading that says "No jobs to display"
+
+The `useEffect` hook is used here. What I want: the moment the `JobsContainer` is rendered, then invoke `getJobs()` function.
