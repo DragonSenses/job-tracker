@@ -8112,3 +8112,42 @@ We should see in the Body:
 ```
 
 It works!
+
+## Front-End | All Jobs Page
+
+Now like before we should have a:
+
+1. Search Form
+2. Job Cards
+3. Pagination of Jobs
+
+Job Cards have:
+- job title / job position
+- Location
+- job type
+- Status
+- Date created
+- Edit/Delete buttons
+
+Now let's add the data to our state that we want to pass in to `getAllJobs`. 
+
+```js
+  res.status(StatusCodes.OK)
+     .json({ jobs, totalJobs: jobs.length, numOfPages: 1 });
+```
+
+In `appContext`:
+
+```js
+const initialState = {
+  jobs: [],
+  totalJobs: 0,
+  numOfPages: 1,
+  page: 1,
+}
+```
+
+- An array that will store all the `jobs`
+- The total amount of jobs, or `jobs.length`
+- Number of Pages
+- The initial page (usually first page, hardcoded)

@@ -45,6 +45,10 @@ const initialState = {
   status: 'pending',
   isEditing: false,
   editJobId: '',
+  jobs: [],
+  totalJobs: 0,
+  numOfPages: 1,
+  page: 1,
 }
 
 const AppContext = React.createContext();
