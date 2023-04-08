@@ -8151,3 +8151,39 @@ const initialState = {
 - The total amount of jobs, or `jobs.length`
 - Number of Pages
 - The initial page (usually first page, hardcoded)
+
+## Actions for GetAllJobs
+
+Let's create the actions to dispatch for All Jobs page.
+
+```js
+export const GET_JOBS_BEGIN = 'GET_JOBS_BEGIN';
+export const GET_JOBS_SUCCESS = 'GET_JOBS_SUCCESS';
+```
+
+### Error Handling for All Jobs page
+
+Notice we do not have `GET_JOBS_ERROR` like other previous actions.
+
+Why do we omit the error?
+
+Think about the scenarios that we would get an error.
+
+|Scenario|To Do|
+|--------|-----|
+|Empty Array | Output - "No Jobs to Display" in the page |
+| 401 Error / Unauthenticated | Logout User (already handled in interceptor)|
+| 500 Error / Server is Down | Logout User |
+| 400 Error | Logout User |
+| 404 Error | Logout User |
+
+Do we need to Alert in any of these cases? 
+
+If you are getting 404 in the All Jobs page then there is something wrong with the application.
+
+### Alerts in All Jobs Page
+
+Alerts persist across pages and can be seen if you quickly navigate. For example, if user creates a job and heads over to all jobs page then they may see the alert. 
+
+We need to clearAlert() before that happens, so add that in the reducer where `showAler: false`.
+
