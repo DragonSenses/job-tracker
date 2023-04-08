@@ -8397,6 +8397,28 @@ export default function Loading() {
 }
 ```
 
+Now upon testing, the Loading component isn't centered right away. 
+
+So we want to pass in a prop called `center`. We do this because we may not always want the Loading component to be in the center.
+
+```js
+  if (isLoading) {
+    return <Loading center />;
+  }
+```
+
+Then update the component accordingly, and conditionally render:
+
+```js
+export default function Loading({ props }) {
+  const { center } = props;
+
+  return (
+    <div className={center ? 'loading loading-center': 'loading'}></div>
+  );
+}
+```
+
 - If the `jobs` array is empty (a length of 0) then render a simple heading that says "No jobs to display"
 
-The `useEffect` hook is used here. What I want: the moment the `JobsContainer` is rendered, then invoke `getJobs()` function.
+The `useEffect` hook is used here. What I want: the moment the `JobsContainer` is rendered, then invoke `getJobs()` function. 

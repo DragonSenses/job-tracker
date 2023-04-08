@@ -15,11 +15,11 @@ export default function JobsContainer() {
   } = useAppContext();
 
   useEffect(() => {
-    getJobs()
+    getJobs();
   }, []);
 
   if (isLoading) {
-    return <Loading />;
+    return <Loading center />;
   }
 
   if(jobs.length === 0 ){
