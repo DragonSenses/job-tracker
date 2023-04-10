@@ -8463,3 +8463,7 @@ Next props to pass down is all the information (properties) within the job I wan
 ```
 
 Next display the pagination buttons that show when a totalJobs exceed a certain amount. For now, leave a comment to mark where it should be (right below the `jobs` div). 
+
+### Job Component
+
+Since we are passing down the props, let's update Job component accordingly.
