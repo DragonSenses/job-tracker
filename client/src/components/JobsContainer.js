@@ -22,7 +22,7 @@ export default function JobsContainer() {
     return <Loading center />;
   }
 
-  if( jobs?.length === 0 ){
+  if( 0 === 0 ){
     return (
       <Wrapper>
         <h2>No Jobs to display...</h2>
@@ -33,7 +33,7 @@ export default function JobsContainer() {
   return (
     <Wrapper>
       <h5>
-        {totalJobs} job{jobs.length > 1 && 's'} found
+        {/* {totalJobs} job{jobs.length > 1 && 's'} found */}
       </h5>
       <div className='jobs'>
         {jobs.map((job) => {
