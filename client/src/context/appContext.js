@@ -272,7 +272,7 @@ export default function AppProvider(props) {
 
     } catch(error){
       console.log(error.response);
-      logoutUser();
+      // logoutUser();
     }
     clearAlert();
   };

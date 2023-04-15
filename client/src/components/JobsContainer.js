@@ -22,7 +22,7 @@ export default function JobsContainer() {
     return <Loading center />;
   }
 
-  if(jobs.length === 0 ){
+  if( jobs?.length === 0 ){
     return (
       <Wrapper>
         <h2>No Jobs to display...</h2>
