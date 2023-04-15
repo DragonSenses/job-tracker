@@ -8467,3 +8467,21 @@ Next display the pagination buttons that show when a totalJobs exceed a certain 
 ### Job Component
 
 Since we are passing down the props, let's update Job component accordingly.
+
+To Format Dates in the `Job` components, going to use a package called [moment.js](https://momentjs.com/).
+
+```sh
+cd client
+
+npm install moment --save
+```
+
+
+---
+
+### Glaring Issue: Exhaustive Dep
+
+Either include dependency array or leave it out in `useEffect` hook where we `getJobs`. Fix this later as it does not synchronize the jobs array correctly
+
+---
+
