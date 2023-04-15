@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment.js';
+import moment from 'moment';
 
 export default function Job({props}) {
   const { company, createdAt } = props;
