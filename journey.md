@@ -8506,5 +8506,13 @@ We pull out the `createdAt` prop to use as a date, then format it with `moment`.
 
 Either include dependency array or leave it out in `useEffect` hook where we `getJobs`. Fix this later as it does not synchronize the jobs array correctly
 
+After some debugging, came across another error:
+
+```sh
+Proxy error: Could not proxy request /api/v1/jobs from localhost:3000 to http://localhost:4000/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+```
+
+[Stack overflow post on Could not proxy request in React App](https://stackoverflow.com/questions/45367298/could-not-proxy-request-pusher-auth-from-localhost3000-to-http-localhost500).
 ---
 
