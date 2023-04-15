@@ -8476,6 +8476,29 @@ cd client
 npm install moment --save
 ```
 
+Now to add the date to the job we can do this:
+
+```js
+import React from 'react';
+import moment from 'moment.js';
+
+export default function Job({props}) {
+  const { company, createdAt } = props;
+
+  let date = moment(createdAt); 
+  date = date.format('MMM Do, YYYY'); // Apr 14th 23
+
+  return (
+    <div>
+      Job
+      <h5>{company}</h5>
+      <h5>{date}</h5>
+    </div>
+  );
+}
+```
+
+We pull out the `createdAt` prop to use as a date, then format it with `moment`.
 
 ---
 
