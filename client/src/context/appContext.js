@@ -281,10 +281,18 @@ export default function AppProvider(props) {
     getJobs();
   }, []);
 
+  const setEditJob = (id) => {
+    console.log(`set edit job: ${id}`);
+  };
+
+  const deleteJob = (id) => {
+    console.log(`delete job : ${id}`);
+  };
+
   return (
     <AppContext.Provider value = {{...state, 
     displayAlert, registerUser, loginUser, toggleSidebar, logoutUser, updateUser, handleChange,
-    clearValues, createJob, getJobs, }}>
+    clearValues, createJob, getJobs, setEditJob, deleteJob, }}>
       {children}
     </AppContext.Provider>
   )

@@ -8500,6 +8500,23 @@ export default function Job({props}) {
 
 We pull out the `createdAt` prop to use as a date, then format it with `moment`.
 
+
+##### Setup placeholder functions for Job Component
+
+Want to be able to `delete` and `edit` the job component, so should setup some placeholder function in `appContext`. For now it will just log the `id`, and the functionality will be implemented in depth later.
+
+```js
+
+  const setEditJob = (id) => {
+    console.log(`set edit job: ${id}`);
+  };
+
+  const deleteJob = (id) => {
+    console.log(`delete job : ${id}`);
+  };
+
+  value = {{ setEditJob, deleteJob, }}
+
 ---
 
 ### Glaring Issue: Exhaustive Dep
