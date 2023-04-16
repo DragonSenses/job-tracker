@@ -16,7 +16,10 @@ export default function Job({props}) {
     status
   } = props;
 
-  
+  const {
+    setEditJob,
+    deleteJob,
+  } = useAppContext();
 
   let date = moment(createdAt);
   date = date.format('MMM Do, YYYY'); // Apr 14th 23
