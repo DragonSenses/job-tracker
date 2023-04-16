@@ -26,9 +26,13 @@ export default function Job({props}) {
 
   return (
     <Wrapper>
-      Job
-      <h5>{company}</h5>
-      <h5>{date}</h5>
+      <header>
+        <div className="main-icon">{company.charAt(0)}</div>
+        <div className="info">
+          <h5>{position}</h5>
+          <p>{company}</p>
+        </div>
+      </header>
     </Wrapper>
   );
 }
