@@ -1,7 +1,11 @@
 import React from 'react';
+import Wrapper from '../assets/wrappers/JobInfo';
 
-export default function JobInfo() {
+export default function JobInfo(props) {
+  
   return (
-    <div>JobInfo</div>
+    <Wrapper>
+      JobInfo
+    </Wrapper>
   );
 }
