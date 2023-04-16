@@ -33,6 +33,13 @@ export default function Job({props}) {
           <p>{company}</p>
         </div>
       </header>
+      <div className="content">
+        <footer>
+          <div className="actions">
+            <button></button>
+          </div>
+        </footer>
+      </div>
     </Wrapper>
   );
 }
