@@ -36,7 +36,20 @@ export default function Job({props}) {
       <div className="content">
         <footer>
           <div className="actions">
-            <button></button>
+            <Link 
+              to='/add-job'
+              className="btn edit-btn"
+              onClick={() => deleteJob(_id)}
+            >
+              Edit
+            </Link>
+            <button 
+              type='button' 
+              className='btn delete-btn' 
+              onClick={()=> deleteJob(_id)}
+            >
+              Delete
+            </button>
           </div>
         </footer>
       </div>
