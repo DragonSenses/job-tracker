@@ -6,7 +6,17 @@ import { useAppContext } from '../context/appContext';
 import Wrapper from '../assets/wrappers/Job';
 
 export default function Job({props}) {
-  const { company, createdAt } = props;
+  const {
+    _id,
+    position, 
+    company, 
+    jobLocation, 
+    jobType, 
+    createdAt, 
+    status
+  } = props;
+
+  
 
   let date = moment(createdAt);
   date = date.format('MMM Do, YYYY'); // Apr 14th 23
