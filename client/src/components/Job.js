@@ -4,6 +4,7 @@ import { FaLocationArrow, FaBriefcase, FaCalendarAlt } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useAppContext } from '../context/appContext';
 import Wrapper from '../assets/wrappers/Job';
+import JobInfo from './JobInfo';
 
 export default function Job({props}) {
   const {
@@ -34,6 +35,12 @@ export default function Job({props}) {
         </div>
       </header>
       <div className="content">
+        <div className="content-center">
+          <JobInfo icon={<FaLocationArrow />} text={jobLocation} />
+          <JobInfo icon={<FaCalendarAlt />} text={date} />
+          <JobInfo icon={<FaBriefcase />} text={jobType} />
+          <div className={`status ${status}`}>{status}</div>
+        </div>
         <footer>
           <div className="actions">
             <Link 
