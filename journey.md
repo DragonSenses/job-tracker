@@ -8686,6 +8686,25 @@ To do:
   - Destructure the needed values out of the job
   - Update the current state by spreading it out, then change update the following values: isEditing, editJobId, position, company, jobLocation, jobType, and status
 
+  ```js
+      case SET_EDIT_JOB: {
+      const job = state.jobs.find( (job) => job._id === action.payload.id);
+      const {
+        _id, position, company, jobLocation, jobType, status
+      } = job;
+
+      return {
+        ...state,
+        isEditing: true,
+        editJobId: _id,
+        position,
+        company,
+        jobLocation,
+        jobType,
+        status,
+      };
+    }
+  ```
 
 ### Glaring Issue: Exhaustive Dep
 
