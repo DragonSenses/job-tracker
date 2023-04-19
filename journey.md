@@ -8716,7 +8716,7 @@ Now we should see that all the state values in AppProvider context hooks are all
 
 -->Test this later
 
-### Glaring Issue: Exhaustive Dep
+# Glaring Issue: Exhaustive Dep
 
 Either include dependency array or leave it out in `useEffect` hook where we `getJobs`. Fix this later as it does not synchronize the jobs array correctly
 
@@ -8730,3 +8730,285 @@ See https://nodejs.org/api/errors.html#errors_common_system_errors for more info
 [Stack overflow post on Could not proxy request in React App](https://stackoverflow.com/questions/45367298/could-not-proxy-request-pusher-auth-from-localhost3000-to-http-localhost500).
 ---
 
+## Attempt to Solve `exhaustive-deps` lint rule
+
+Link to [Github issue](https://github.com/facebook/react/issues/14920).
+
+Original Code: 
+
+```js
+  const getJobs = async () => {
+    let url = `/jobs`;
+    
+    dispatch({ type: GET_JOBS_BEGIN });
+
+    try{
+      const data = authFetch(url);
+      const { jobs, totalJobs, numOfPages } = data;
+
+      dispatch({
+        type: GET_JOBS_SUCCESS,
+        payload: {
+          jobs,
+          totalJobs,
+          numOfPages
+        },
+      });
+
+    } catch(error){
+      console.log(error.response);
+      // logoutUser();
+    }
+    clearAlert();
+  };
+
+  useEffect( () => {
+    getJobs();
+  }, []);
+```
+
+Changed code:
+
+```js
+```
+
+## Issue -> Backend works in POSTMAN the Get request to jobs gives a `200`
+
+In Postman:
+```sh
+[0] POST /api/v1/auth/login 200 139.552 ms - 379
+[0] -------- Authenticate Middleware --------
+[0] [token]:
+[0]       eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDE4ZDZhYjkyZmY1OTRhMDJiNmYyNGEiLCJpYXQiOjE2ODE5MDkxMzcsImV4cCI6MTY4MTk5NTUzN30.PIBvV1CZox56LEHiufrdlLfCZhnb3IsykJZoYg6T3iQ
+[0] [payload]:   [object Object]
+[0] [userId]:    6418d6ab92ff594a02b6f24a
+[0] ----- End of Authenticate Middleware -----
+[0] GET /api/v1/jobs 200 43.069 ms - 1424
+```
+
+but in Front-End we have:
+```sh
+[0] -------- Authenticate Middleware --------
+[0] [token]:
+[0]       eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDE4ZDZhYjkyZmY1OTRhMDJiNmYyNGEiLCJpYXQiOjE2ODE4ODM1NDksImV4cCI6MTY4MTk2OTk0OX0.gnJo_MQ_NWr3qIR0PXQN01gpd4ATYk4ExtA1dofq_NM
+[0] [payload]:   [object Object]
+[0] [userId]:    6418d6ab92ff594a02b6f24a
+[0] ----- End of Authenticate Middleware -----
+[0] GET /api/v1/jobs 304 85.918 ms - -
+```
+
+A 304 Response.
+
+> A 304 status code indicates that a conditional GET or HEAD request has been received and would have resulted in a 200 (OK) response if it were not for the fact that the condition evaluated to false.
+
+> This means that the requested resource has not been modified since the version specified by the request headers If-Modified-Since or If-None-Match
+
+> Postman may be caching the response and sending a new request with updated headers, which is why you are getting a 200 status code
+
+### Some Changes in appContext
+
+```js
+  const getJobs = async () => {
+    let url = `/jobs`;
+    
+    dispatch({ type: GET_JOBS_BEGIN });
+
+    try {
+      // Added await
+      const data = await authFetch(url);
+      
+      console.log(`Data from authFetch: 
+        ${data}`);
+```
+
+Now originally, without `await`, the dev tools console would print out [object Promise]. With `await` now it logs [object Object] which is what we want.
+
+### WE ARE GETTING SOMEWHERE
+
+Ok so I logged a couple more things here:
+
+```js
+  const getJobs = async () => {
+    let url = `/jobs`;
+    
+    dispatch({ type: GET_JOBS_BEGIN });
+
+    try {
+      const data = await authFetch(url);
+      
+      console.log(`Data from authFetch: 
+        ${data}`);
+
+      console.log("-------- Printing out values of data --------")
+      let i = 0;
+      for (let value of Object.values(data)){
+        console.log(`value ${i++} is`);
+        console.log(value);
+      }
+      console.log("--------End of data --------")
+
+
+      const { jobs, totalJobs, numOfPages } = data;
+
+      console.log(`
+      jobs: \t\t ${jobs}
+      totalJobs: \t ${totalJobs}
+      numOfPages: \t ${numOfPages}`
+      );
+```
+
+And look at the result in the developer tools!
+
+```sh
+Data from authFetch: 
+        [object Object]
+appContext.js:269 -------- Printing out values of data --------
+appContext.js:272 value 0 is
+appContext.js:273 {jobs: Array(5), totalJobs: 5, numOfPages: 1}jobs: Array(5)0: {_id: '6426b205fbdb9da6e1e5a3a5', company: 'Google', position: 'front-end developer', status: 'pending', jobType: 'full-time', …}1: {_id: '642f36a5429866ccdadb11c5', company: 'Uber', position: 'Front-End Developer', status: 'pending', jobType: 'full-time', …}2: {_id: '6430ed5141edde8ddc9c697e', company: 'Uber', position: 'front-end developer', status: 'pending', jobType: 'full-time', …}3: {_id: '6430ed6641edde8ddc9c6980', company: 'FLT', position: 'back-end developer', status: 'pending', jobType: 'full-time', …}4: {_id: '643f8548d3058bdd9f527b10', company: 'FLT', position: 'front-end developer', status: 'pending', jobType: 'full-time', …}length: 5[[Prototype]]: Array(0)numOfPages: 1totalJobs: 5[[Prototype]]: Objectconstructor: ƒ Object()hasOwnProperty: ƒ hasOwnProperty()isPrototypeOf: ƒ isPrototypeOf()propertyIsEnumerable: ƒ propertyIsEnumerable()toLocaleString: ƒ toLocaleString()toString: ƒ toString()valueOf: ƒ valueOf()__defineGetter__: ƒ __defineGetter__()__defineSetter__: ƒ __defineSetter__()__lookupGetter__: ƒ __lookupGetter__()__lookupSetter__: ƒ __lookupSetter__()__proto__: (...)get __proto__: ƒ __proto__()set __proto__: ƒ __proto__()
+appContext.js:272 value 1 is
+appContext.js:273 200
+appContext.js:272 value 2 is
+appContext.js:273 OK
+appContext.js:272 value 3 is
+appContext.js:273 AxiosHeaders {access-control-allow-headers: '*', access-control-allow-methods: '*', access-control-allow-origin: '*', content-encoding: 'gzip', content-type: 'application/json; charset=utf-8', …}access-control-allow-headers: "*"access-control-allow-methods: "*"access-control-allow-origin: "*"content-encoding: "gzip"content-type: "application/json; charset=utf-8"date: "Wed, 19 Apr 2023 13:46:25 GMT"etag: "W/\"590-V65cvvMK/K/Kx3+H7OARAgGh1Yw\""vary: "Accept-Encoding"x-powered-by: "Express"Symbol(Symbol.toStringTag): (...)[[Prototype]]: Object
+appContext.js:272 value 4 is
+appContext.js:273 {transitional: {…}, adapter: Array(2), transformRequest: Array(1), transformResponse: Array(1), timeout: 0, …}
+appContext.js:272 value 5 is
+appContext.js:273 XMLHttpRequest {onreadystatechange: null, readyState: 4, timeout: 0, withCredentials: false, upload: XMLHttpRequestUpload, …}
+appContext.js:275 --------End of data --------
+appContext.js:280 
+      jobs: 		 undefined
+      totalJobs: 	 undefined
+      numOfPages: 	 undefined
+```
+
+
+To understand this look at what it was before:
+
+```js
+  const data = await authFetch(url);
+
+  const { jobs, totalJobs, numOfPages } = data;
+```
+
+Which is trying to destructure `data` or the entire response. But the response comes in an object. Used `Object.values()` to print out the values within that data object.
+
+Let's clean it up using `Object.entries()`. And see the console:
+
+```sh
+-------- Printing out values of data --------
+appContext.js:277 (2) ['data', {…}]0: "data"1: jobs: (5) [{…}, {…}, {…}, {…}, {…}]numOfPages: 1totalJobs: 5[[Prototype]]: Objectlength: 2[[Prototype]]: Array(0)
+appContext.js:277 (2) ['status', 200]0: "status"1: 200length: 2[[Prototype]]: Array(0)
+appContext.js:277 (2) ['statusText', 'OK']0: "statusText"1: "OK"length: 2[[Prototype]]: Array(0)
+appContext.js:277 (2) ['headers', AxiosHeaders]0: "headers"1: AxiosHeaders {access-control-allow-headers: '*', access-control-allow-methods: '*', access-control-allow-origin: '*', content-encoding: 'gzip', content-type: 'application/json; charset=utf-8', …}length: 2[[Prototype]]: Array(0)
+appContext.js:277 (2) ['config', {…}]0: "config"1: {transitional: {…}, adapter: Array(2), transformRequest: Array(1), transformResponse: Array(1), timeout: 0, …}length: 2[[Prototype]]: Array(0)
+appContext.js:277 (2) ['request', XMLHttpRequest]0: "request"1: XMLHttpRequest {onreadystatechange: null, readyState: 4, timeout: 0, withCredentials: false, upload: XMLHttpRequestUpload, …}length: 2[[Prototype]]: Array(0)
+appContext.js:279 --------End of data --------
+      jobs: 		 undefined
+      totalJobs: 	 undefined
+      numOfPages: 	 undefined
+```
+
+# FIXED THE ISSUE OF STATE VALUE OF `jobs` being undefined.
+
+- At first thought the problem was that the appContext or global context was not being passed down or passing down jobs array. But it would be an empty array and not `undefined`. Same goes with `totalJobs` and `numOfPages` for being undefined and not default values.
+
+- Next start to go step by step. Tested backend, tested postman. Following from the server, to this line `app.use('/api/v1/jobs', authenticateUser, jobsRouter);` then did extensive error logging for authenticate middleware and jobsRouter.
+
+- Then looked into `jobsController` and `Job` model. None of these were the issue yet. Postman has a 200 response so it is still good. Its just the front end. 
+
+- Finally, started logging and isolating the problem to the front end. 
+
+The main issue is that `jobs` array and `jobs.length` are being evaluated to undefined. So somehow, someway perhaps in the appContext and maybe in the function that these values are just not evaluating.
+
+AS one can see from the console in developer tools, we hhave the response as an object named `data`.
+
+This data object can be displayed like this:
+
+```js
+let data = {
+  data: {...},
+  status: 200,
+  statusText: OK,
+  headers: AxiosHeaders,
+  config: {...},
+  request: XMLHttpRequest
+}
+```
+
+AS you can see, `data` itself is a nested prop of `data` object. Within that `data` property is lo and behold:
+
+```js
+(2) ['data', {…}]
+  0: "data"
+  1 : 
+    > jobs : (5) [{…}, {…}, {…}, {…}, {…}] 
+      numOfPages : 1
+      totalJobs : 5
+    > [[Prototype]] :  Object
+  length: 2
+  > [[Prototype]] : Array(0)
+```
+
+IT IS WHERE OUR `jobs` array and `numOfPages` and `totalJobs` are!!!!!
+
+HOORAY, WE FOUND THE ISSUE!
+
+## Fixed the issue of undefined state values -> `jobs`, `totalJobs` and `numOfPages`
+
+So now when we destructure the values out, instead of
+
+```js
+const { jobs, totalJobs, numOfPages } = data;
+```
+
+It is:
+
+```js
+const { jobs, totalJobs, numOfPages } = data.data;
+```
+
+Now let's go see the developer tools > Components > App Provider > hooks 
+
+and lo and behold, our issue is finally fixed. The state is finally updated!!!!
+
+```js
+hooks
+[
+  {
+    "name": "Reducer",
+    "value": {
+      "isLoading": false,
+      "showAlert": false,
+      "alertText": "",
+      "alertType": "",
+      "user": "{__v: 0, _id: \"6418d6ab92ff594a02b6f24a\", email: \"M…}",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDE4ZDZhYjkyZmY1OTRhMDJiNmYyNGEiLCJpYXQiOjE2ODE4ODM1NDksImV4cCI6MTY4MTk2OTk0OX0.gnJo_MQ_NWr3qIR0PXQN01gpd4ATYk4ExtA1dofq_NM",
+      "userLocation": "Hachioji (Kanto, Tokyo)",
+      "showSidebar": false,
+      "position": "",
+      "company": "",
+      "jobLocation": "Hachioji (Kanto, Tokyo)",
+      "jobTypeOptions": "[\"full-time\", \"part-time\", \"remote\", \"internship\"]",
+      "jobType": "full-time",
+      "statusOptions": "[\"interview\", \"declined\", \"pending\"]",
+      "status": "pending",
+      "isEditing": false,
+      "editJobId": "",
+      "jobs": "[{…}, {…}, {…}, {…}, {…}]",
+      "totalJobs": 5,
+      "numOfPages": 1,
+      "page": 1
+    },
+    "subHooks": [],
+    "hookSource": {
+      "lineNumber": 3439,
+      "functionName": "AppProvider",
+      "fileName": "http://localhost:3000/static/js/bundle.js",
+      "columnNumber": 78
+    }
+  }
+]
+```
+
+YEAHHHHH!!!! WE GOT IT.
