@@ -8654,19 +8654,30 @@ To do:
 2. Update the function `setEditJob` using `id` as a parameter, and dispatch the action
 3. Also another function `editJob` that will be just a placeholder for now
 
+  ```js
+    const setEditJob = (id) => {
+      console.log(`set edit job: ${id}`);
+
+      dispatch({ type: SET_EDIT_JOB, payload: { id } });
+    };
+
+    const editJob = () => {
+      console.log('edit job');
+    }
+
+    value = {{ ... , editJob }}
+  ---
+
+4. Now update the reducer to handle the action
+
 ```js
-  const setEditJob = (id) => {
-    console.log(`set edit job: ${id}`);
-
-    dispatch({ type: SET_EDIT_JOB, payload: { id } });
-  };
-
-  const editJob = () => {
-    console.log('edit job');
-  }
-
-  value = {{ ... , editJob }}
----
+    case SET_EDIT_JOB: {
+      return {
+        ...state,
+        isEditing: true,
+      };
+    }
+```
 
 ### Glaring Issue: Exhaustive Dep
 

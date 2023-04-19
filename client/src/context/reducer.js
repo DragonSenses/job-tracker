@@ -19,6 +19,7 @@ import {
   CREATE_JOB_ERROR,
   GET_JOBS_BEGIN,
   GET_JOBS_SUCCESS,
+  SET_EDIT_JOB,
 } from "./actions";
 
 import { initialState } from './appContext.js';
@@ -220,6 +221,13 @@ function reducer(state, action) {
         jobs: action.payload.jobs,
         totalJobs: action.payload.totalJobs,
         numOfPages: action.payload.numOfPages,
+      };
+    }
+
+    case SET_EDIT_JOB: {
+      return {
+        ...state,
+        isEditing: true,
       };
     }
 
