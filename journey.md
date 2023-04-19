@@ -9012,3 +9012,32 @@ hooks
 ```
 
 YEAHHHHH!!!! WE GOT IT.
+
+# Fix prop passing for `Job` and `Loading` component
+
+Fixed the issue of destructuring props. Instead of `{props}` in the parameter just put `props`:
+
+```js
+export default function Loading(props) {
+```
+
+likewise in Job:
+
+```js
+export default function Job(props) {
+  const {
+    _id,
+    position, 
+    company, 
+    jobLocation, 
+    jobType, 
+    createdAt, 
+    status
+  } = props;
+```
+
+# Only remaining issue is 304 - HTTP Not Modified
+
+Get request has been receieved and would result in a 200 response if it were not for the fact that the condition evaluated to false. 
+
+Have to look deeper into this one later.
