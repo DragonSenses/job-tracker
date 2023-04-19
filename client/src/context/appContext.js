@@ -278,8 +278,7 @@ export default function AppProvider(props) {
       }
       console.log("--------End of data --------")
 
-
-      const { jobs, totalJobs, numOfPages } = data;
+      const { jobs, totalJobs, numOfPages } = data.data;
 
       console.log(`
       jobs: \t\t ${jobs}
