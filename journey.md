@@ -8679,6 +8679,14 @@ To do:
     }
 ```
 
+5. In the reducer, the logic to handle `SET_EDIT_JOB`:
+
+  - Grab the job based on the id passed in from the payload
+  - TO do that, use the `jobs` array within the state and use `find()` the matching `_id`
+  - Destructure the needed values out of the job
+  - Update the current state by spreading it out, then change update the following values: isEditing, editJobId, position, company, jobLocation, jobType, and status
+
+
 ### Glaring Issue: Exhaustive Dep
 
 Either include dependency array or leave it out in `useEffect` hook where we `getJobs`. Fix this later as it does not synchronize the jobs array correctly
