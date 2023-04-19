@@ -260,16 +260,35 @@ export default function AppProvider(props) {
     
     dispatch({ type: GET_JOBS_BEGIN });
 
-    try{
-      const data = authFetch(url);
+    try {
+      const data = await authFetch(url);
+      
+      console.log(`Data from authFetch: 
+        ${data}`);
+
+      console.log("-------- Printing out values of data --------")
+      let i = 0;
+      for (let value of Object.values(data)){
+        console.log(`value ${i++} is`);
+        console.log(value);
+      }
+      console.log("--------End of data --------")
+
+
       const { jobs, totalJobs, numOfPages } = data;
+
+      console.log(`
+      jobs: \t\t ${jobs}
+      totalJobs: \t ${totalJobs}
+      numOfPages: \t ${numOfPages}`
+      );
 
       dispatch({
         type: GET_JOBS_SUCCESS,
         payload: {
           jobs,
           totalJobs,
-          numOfPages
+          numOfPages,
         },
       });
 
