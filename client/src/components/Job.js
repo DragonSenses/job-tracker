@@ -6,7 +6,7 @@ import { useAppContext } from '../context/appContext';
 import Wrapper from '../assets/wrappers/Job';
 import JobInfo from './JobInfo';
 
-export default function Job({props}) {
+export default function Job(props) {
   const {
     _id,
     position, 
