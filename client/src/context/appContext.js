@@ -267,10 +267,14 @@ export default function AppProvider(props) {
         ${data}`);
 
       console.log("-------- Printing out values of data --------")
-      let i = 0;
-      for (let value of Object.values(data)){
-        console.log(`value ${i++} is`);
-        console.log(value);
+      // let i = 0;
+      // for (let value of Object.values(data)){
+      //   console.log(`value ${i++} is`);
+      //   console.log(value);
+      // }
+
+      for (let entry of Object.entries(data)){
+        console.log(entry);
       }
       console.log("--------End of data --------")
 
