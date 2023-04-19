@@ -8611,6 +8611,39 @@ Now in Job
   </div>
 ```
 
+Notice the line:
+```js
+    <div className={`status ${status}`}>{status}</div>
+```
+
+in css wrapper:
+
+```css
+  .status {
+    border-radius: var(--borderRadius);
+    text-transform: capitalize;
+    letter-spacing: var(--letterSpacing);
+    text-align: center;
+    width: 100px;
+    height: 30px;
+  }
+
+    .pending {
+    background: #fcefc7;
+    color: #e9b949;
+  }
+  .interview {
+    background: #e0e8f9;
+    color: #647acb;
+  }
+  .declined {
+    color: #d66a6a;
+    background: #ffeeee;
+  }
+```
+
+
+
 ---
 
 ### Glaring Issue: Exhaustive Dep
