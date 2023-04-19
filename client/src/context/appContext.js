@@ -83,8 +83,9 @@ export default function AppProvider(props) {
       return response;
     }, 
     function (error) {
-      console.log(error);
-      console.log(error.response);
+      console.log(`Error triggered in authFetch, Axios Response Interceptor
+      error: ${error}
+      error.response: ${error.response}`);
 
       if(error.response.status === 401){
         console.log('Authentication Error');
@@ -253,8 +254,9 @@ export default function AppProvider(props) {
     clearAlert();
   };
 
+  
   const getJobs = async () => {
-    let url = '/jobs';
+    let url = `/jobs`;
     
     dispatch({ type: GET_JOBS_BEGIN });
 
@@ -272,15 +274,17 @@ export default function AppProvider(props) {
       });
 
     } catch(error){
-      console.log(error.response);
+      console.log(`Error triggered in getJobs() appContext.js! 
+      Here is the Error Response:
+      ${error.response}`);
       // logoutUser();
     }
     clearAlert();
   };
 
-  useEffect( () => {
-    getJobs();
-  }, []);
+  // useEffect( () => {
+  //   getJobs();
+  // }, []);
 
   const setEditJob = (id) => {
     console.log(`set edit job: ${id}`);
