@@ -8581,6 +8581,36 @@ export default function Job({props}) {
 }
 ```
 
+#### JobInfo component
+
+```js
+import React from 'react';
+import Wrapper from '../assets/wrappers/JobInfo';
+
+export default function JobInfo(props) {
+  const { icon, text } = props;
+
+  return (
+    <Wrapper>
+      <span className="icon">{icon}</span>
+      <span className="text">{text}</span>
+    </Wrapper>
+  );
+}
+```
+
+Now in Job
+
+```js
+<div className="content">
+  <div className="content-center">
+    <JobInfo icon={<FaLocationArrow />} text={jobLocation} />
+    <JobInfo icon={<FaCalendarAlt />} text={date} />
+    <JobInfo icon={<FaBriefcase />} text={jobType} />
+    <div className={`status ${status}`}>{status}</div>
+  </div>
+```
+
 ---
 
 ### Glaring Issue: Exhaustive Dep
