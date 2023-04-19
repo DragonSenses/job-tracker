@@ -8706,6 +8706,16 @@ To do:
     }
   ```
 
+### Update AddJob page with edit job
+
+- Now what does `editJob` function do? It will be invoked in the `addJob` function. Head over to Add Job page and take out `editJob` function from the appContext.
+
+- In the `handleSubmit` where we check for `isEditing` state value. Within it we invoke `editJob()`
+
+Now we should see that all the state values in AppProvider context hooks are all filled out. 
+
+-->Test this later
+
 ### Glaring Issue: Exhaustive Dep
 
 Either include dependency array or leave it out in `useEffect` hook where we `getJobs`. Fix this later as it does not synchronize the jobs array correctly
