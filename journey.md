@@ -8642,6 +8642,17 @@ in css wrapper:
   }
 ```
 
+### SetEditJob
+
+When we click on the Edit button, we want to change the values within the state. Namely, position, company, location, status and type. It also navigates to the add-job page with those values filled in.
+
+First, let's edit the values in the state. Next, we will make a request to edit the values in the actual database. 
+
+To do:
+
+1. Set up the action `SET_EDIT_JOB`
+2. Create the function `setEditJob` using `id` as a parameter, and dispatch the action
+3. Also another function `editJob` that will be just a placeholder for now
 
 
 ---
