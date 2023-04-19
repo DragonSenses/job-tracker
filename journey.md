@@ -8651,10 +8651,21 @@ First, let's edit the values in the state. Next, we will make a request to edit 
 To do:
 
 1. Set up the action `SET_EDIT_JOB`
-2. Create the function `setEditJob` using `id` as a parameter, and dispatch the action
+2. Update the function `setEditJob` using `id` as a parameter, and dispatch the action
 3. Also another function `editJob` that will be just a placeholder for now
 
+```js
+  const setEditJob = (id) => {
+    console.log(`set edit job: ${id}`);
 
+    dispatch({ type: SET_EDIT_JOB, payload: { id } });
+  };
+
+  const editJob = () => {
+    console.log('edit job');
+  }
+
+  value = {{ ... , editJob }}
 ---
 
 ### Glaring Issue: Exhaustive Dep
