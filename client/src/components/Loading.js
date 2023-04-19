@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Loading({ props }) {
+export default function Loading(props) {
   const { center } = props;
 
   return (
