@@ -8722,28 +8722,34 @@ In `jobController.js`
 
 ```js
 const updateJob = async (req, res) => {
+  // Extract job ID from the request
   const { id: jobId } = req.params;
 
+  // Extract company and position from the request's body
   const { company, position } = req.body;
 
+  // Check if any of these values are empty
   if (!company || !position) {
     throw new BadRequestError('Please Provide All Values');
   }
 
+  // Find the job in the database
   const job = await Job.findOne({ _id: jobId });
 
+  // If job is not found
   if (!job) {
     throw new NotFoundError(`No job with id ${jobId}`);
   }
 
-  const updatedJob = await Job.findOneAndUpdate({ _id: jobId }, req.body, {
-    new: true,
-    runValidators: true,
-  });
+  // Ways to approach -> Should check if allowed to update job
+  // The newly updated job
+  let updatedJob;
 
-  res.status(StatusCodes.OK).json({ updatedJob });
+  res.status(StatusCodes.OK).json( { updatedJob });
 };
 ```
+
+We can approach this multiple ways. One is to check permission if we are allowed to update and edit the job.
 
 # Glaring Issue: Exhaustive Dep
 
