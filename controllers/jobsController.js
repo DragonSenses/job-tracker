@@ -30,10 +30,21 @@ const updateJob = async (req, res) => {
   // Extract company and position from the request's body
   const { company, position } = req.body;
 
+  // Check if any of these values are empty
   if (!company || !position) {
     throw new BadRequestError('Please Provide All Values');
   }
 
+  // Find the job in the database
+  const job = await Job.findOne({ _id: jobId });
+
+  // If job is not found
+  if (!job) {
+    // Throw error
+  }
+
+
+  // The newly updated job
   let updatedJob;
 
   res.status(StatusCodes.OK).json( { updatedJob });
