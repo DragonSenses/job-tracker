@@ -8714,7 +8714,36 @@ To do:
 
 Now we should see that all the state values in AppProvider context hooks are all filled out. 
 
--->Test this later
+## Backend | Edit Job
+
+Now lets allow editing of the job in the server.
+
+In `jobController.js`
+
+```js
+const updateJob = async (req, res) => {
+  const { id: jobId } = req.params;
+
+  const { company, position } = req.body;
+
+  if (!company || !position) {
+    throw new BadRequestError('Please Provide All Values');
+  }
+
+  const job = await Job.findOne({ _id: jobId });
+
+  if (!job) {
+    throw new NotFoundError(`No job with id ${jobId}`);
+  }
+
+  const updatedJob = await Job.findOneAndUpdate({ _id: jobId }, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(StatusCodes.OK).json({ updatedJob });
+};
+```
 
 # Glaring Issue: Exhaustive Dep
 
