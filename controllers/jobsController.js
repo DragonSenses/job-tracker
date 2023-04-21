@@ -24,7 +24,19 @@ const getAllJobs = async (req, res) => {
 }
 
 const updateJob = async (req, res) => {
-  res.send('updateJob');
+  // Extract job ID from the request
+  const { id: jobId } = req.params;
+
+  // Extract company and position from the request's body
+  const { company, position } = req.body;
+
+  if (!company || !position) {
+    throw new BadRequestError('Please Provide All Values');
+  }
+
+  let updatedJob;
+
+  res.status(StatusCodes.OK).json( { updatedJob });
 }
 
 const deleteJob = async (req, res) => {
