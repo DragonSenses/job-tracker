@@ -8913,6 +8913,64 @@ That's because as we destructure the value out of `req.body` in the line:
 
 Then `jobLocation` will be `undefined`. Then we set it to `job.jobLocation` but we are looking for a value and not `undefined`.
 
+## Checking Permissions
+
+If for some reason, we logged in as another user and that different user has access to Miyuki's job `_id`, then that other user can edit it.
+ 
+In the server:
+
+```js
+app.use('/api/v1/jobs', authenticateUser, jobsRouter);
+```
+
+This other user is authenticated, but should not have access to Miyuki's jobs to edit. 
+
+Now a quick solution is just like in `getAllJobs`:
+
+```js
+const getAllJobs = async (req, res) => {
+  // Find the jobs created the user from the request
+  const jobs = await Job.find({ createdBy: req.user.userId });
+
+  // Respond with 200 and a json containing the jobs, totalJobs, and pages
+  res.status(StatusCodes.OK)
+     .json({ jobs, totalJobs: jobs.length, numOfPages: 1 });
+};
+```
+
+And in `updateJob`, we add two parameters in `Job.findOne()` with one being `_id: jobId` and the other being `createdBy`:
+
+```js
+const updateJob = async (req, res) => {
+  const { id: jobId } = req.params;
+  const { company, position } = req.body;
+  if (!company || !position) {
+    throw new BadRequestError('Please Provide All Values');
+  }
+
+  // Also add createdBy so find job based on jobId and userId
+  const job = await Job.findOne({ _id: jobId, createdBy: req.user.userId });
+
+  if (!job) {
+    throw new NotFoundError(`No job with id ${jobId}`);
+  }
+  const updatedJob = await Job.findOneAndUpdate({ _id: jobId}, req.body, {
+    new: true,
+    runValidators: true,
+  });
+  res.status(StatusCodes.OK).json( { updatedJob });
+};
+```
+
+We have the property `createdBy` and use it as well in `updateJob`. 
+
+It works but the downside is that if there is an `admin` wants to modify something regarding the content. The adming cannot access and edit the jobs created by users. 
+
+A better approach is to setup permissions. Check `userId` matches the one in the `job`
+
+
+---
+
 # Glaring Issue: Exhaustive Dep
 
 Either include dependency array or leave it out in `useEffect` hook where we `getJobs`. Fix this later as it does not synchronize the jobs array correctly
