@@ -8894,6 +8894,25 @@ On the other hand, `await job.save()` will trigger the hook.
 - Notice we are only updating the values we pulled out from the `req.body()` namely company and position.
 - Just remember to pull out every value needed to update (e.g., `jobLocation`)
 
+So add `job.jobLocation = jobLocation;`. But if not going to pass in `jobLocation` in the request altogether and in Job model the `default: 'my city'` is removed. Then it will trigger an error. `findOneAndUpdate()` will not have this issue.
+
+This response will trigger an error in Postman if we went with alternative approach and are updating the `job.jobLocation = jobLocation`. 
+
+```json
+{
+  "company": "Google (Edited)",
+  "position": "full-stack developer"
+} 
+```
+
+That's because as we destructure the value out of `req.body` in the line:
+
+```js
+  const { company, position, jobLocation } = req.body;
+```
+
+Then `jobLocation` will be `undefined`. Then we set it to `job.jobLocation` but we are looking for a value and not `undefined`.
+
 # Glaring Issue: Exhaustive Dep
 
 Either include dependency array or leave it out in `useEffect` hook where we `getJobs`. Fix this later as it does not synchronize the jobs array correctly
