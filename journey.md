@@ -8757,7 +8757,7 @@ Let's update the job in the database through `updatedJob`. We have to look for t
 ```js
 const updatedJob = await Job.findOneAndUpdate({ _id: jobId}, req.body, {
   new: true,
-  runValidators: true;
+  runValidators: true,
 });
 ```
 
