@@ -8820,11 +8820,83 @@ Now we have a 200 request with the JSON:
 
 Notice, we can omit `status` and send a request that will work. But if we include `status` it must have among the `enum` values of pending, interview, declined. IF we passed in any other value then we will get a "something is not a valid enum value for path `status`.
 
-We can approach this multiple ways. One is to check permission if we are allowed to update and edit the job.
+## Alternative Approach to Updating the Job
+
+In `jobController.js` some of the code remains the same
+
+```js
+const updateJob = async (req, res) => {
+  const { id: jobId } = req.params;
+  const { company, position } = req.body;
+
+  if (!company || !position) {
+    throw new BadRequestError('Please Provide All Values');
+  }
+
+  const job = await Job.findOne({ _id: jobId });
+
+  if(!job) {
+    throw new NotFoundError(`No job with id ${jobId}`);
+  }
+
+  // ...
+
+  res.status(StatusCodes.OK).json( { updatedJob });
+};
+```
+
+But instead of `findOneAndUpdate()` operation we can take an alternative approach of updating the properties one-by-one.
+
+We have access to the job. So we can do this:
+
+```js
+// Update properties one by one
+job.position = position;
+job.company = company;
+
+await job.save();
+res.status(StatusCodes.OK).json( { job });
+```
+
+So together:
+
+```js
+const updateJob = async (req, res) => {
+  const { id: jobId } = req.params;
+  const { company, position } = req.body;
+
+  if (!company || !position) {
+    throw new BadRequestError('Please Provide All Values');
+  }
+
+  const job = await Job.findOne({ _id: jobId });
+
+  if(!job) {
+    throw new NotFoundError(`No job with id ${jobId}`);
+  }
+
+  job.position = position;
+  job.company = company;
+
+  await job.save();
+  res.status(StatusCodes.OK).json( { job });
+};
+```
+
+Then we go with `await job.save()` before sending a 200 code with job as a json.
+
+### Why update the properties one-by-one rather than using `findOneAndUpdate()`?
+
+The reason is because `findOneAndUpdate()` does not trigger the hook. Right now the `Job` model does not have a hook, but if it did then we should be aware of this fact. 
+
+On the other hand, `await job.save()` will trigger the hook.
+
+- Notice we are only updating the values we pulled out from the `req.body()` namely company and position.
+- Just remember to pull out every value needed to update (e.g., `jobLocation`)
 
 # Glaring Issue: Exhaustive Dep
 
-Either include dependency array or leave it out in `us    eEffect` hook where we `getJobs`. Fix this later as it does not synchronize the jobs array correctly
+Either include dependency array or leave it out in `useEffect` hook where we `getJobs`. Fix this later as it does not synchronize the jobs array correctly
 
 After some debugging, came across another error:
 
