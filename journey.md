@@ -8968,6 +8968,33 @@ It works but the downside is that if there is an `admin` wants to modify somethi
 
 A better approach is to setup permissions. Check `userId` matches the one in the `job`
 
+# Checking Permissions to Update Job
+
+In the `updateJob` we can check permissions by comparing if the `userId` of the request is equivalent to the one who created the job accessed with the `createdBy()` property.
+
+```js
+// Check Permissions to allow Editing
+req.user.userId(id) === job.createdBy(id);
+// Does not match -> throw Unauthorized error
+throw new UnAuthorizedError('Not authorized to access this route');
+
+console.log(typeof req.user.userId);
+console.log(typeof job.createdBy);
+```
+
+Go to the Postman, add the log statements in the `updateJob` and send a Patch request. We should see in the server console the types each are. 
+
+```
+[0] string
+[0] object
+PATCH /api/v1/jobs/6426b205fbdb9da6e1e5a3a5 200 94.142ms - 301
+```
+
+Notice that for `req.user.userId()` the id will be a string. Whereas `job.createdBy()` the id will be an object. If just comparing them with `===` then it would not work. We just have the basic logic out now.
+
+WE can do this logic directly in the `updateJob()` operation in the `jobsController` but this logic can be re-used for other controllers (e.g., `deleteJob()`).
+
+So let's setup a separate function to do this.
 
 ---
 
