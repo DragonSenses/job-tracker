@@ -8749,11 +8749,23 @@ const updateJob = async (req, res) => {
 };
 ```
 
+Let's update the job in the database through `updatedJob`. We have to look for the job whose id matches and then pass in the request's body. We update the job with mongoose's [`findOneAndUpdate`](https://mongoosejs.com/docs/tutorials/findoneandupdate.html) function.
+
+- `new: true` - will return a new document after update is applied
+- `runValidators: true` will specifically tell Mongoose to support validation on `findOneAndUpdate()` operation. See [Validation](https://mongoosejs.com/docs/validation.html#update-validators).
+
+```js
+const updatedJob = await Job.findOneAndUpdate({ _id: jobId}, req.body, {
+  new: true,
+  runValidators: true;
+});
+```
+
 We can approach this multiple ways. One is to check permission if we are allowed to update and edit the job.
 
 # Glaring Issue: Exhaustive Dep
 
-Either include dependency array or leave it out in `useEffect` hook where we `getJobs`. Fix this later as it does not synchronize the jobs array correctly
+Either include dependency array or leave it out in `us    eEffect` hook where we `getJobs`. Fix this later as it does not synchronize the jobs array correctly
 
 After some debugging, came across another error:
 
