@@ -8996,6 +8996,22 @@ WE can do this logic directly in the `updateJob()` operation in the `jobsControl
 
 So let's setup a separate function to do this.
 
+## Create `checkPermissions`
+
+- Create a `utils` folder at the base of the project
+- Inside, create `checkPermissions.js`
+- Within the file, import `UnAuthorizedError` and create the function `checkPermissions` to export
+
+```js
+import { UnAuthorizedError } from '../errors/index.js';
+
+export default function checkPermissions() {
+
+};
+```
+
+
+
 ---
 
 # Glaring Issue: Exhaustive Dep
