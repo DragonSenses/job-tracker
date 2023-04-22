@@ -8751,8 +8751,11 @@ const updateJob = async (req, res) => {
 
 Let's update the job in the database through `updatedJob`. We have to look for the job whose id matches and then pass in the request's body. We update the job with mongoose's [`findOneAndUpdate`](https://mongoosejs.com/docs/tutorials/findoneandupdate.html) function.
 
+Here are the options we pass in:
+
 - `new: true` - will return a new document after update is applied
 - `runValidators: true` will specifically tell Mongoose to support validation on `findOneAndUpdate()` operation. See [Validation](https://mongoosejs.com/docs/validation.html#update-validators).
+- run validators will check if the property is there and if the passed in value for it is empty or does not match value required in database then it will pass an error. Only runs on what you provide in the `req.body`
 
 ```js
 const updatedJob = await Job.findOneAndUpdate({ _id: jobId}, req.body, {
@@ -8760,6 +8763,10 @@ const updatedJob = await Job.findOneAndUpdate({ _id: jobId}, req.body, {
   runValidators: true,
 });
 ```
+
+### Now let's test `updateJob` in Postman.
+
+
 
 We can approach this multiple ways. One is to check permission if we are allowed to update and edit the job.
 
