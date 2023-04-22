@@ -8766,7 +8766,59 @@ const updatedJob = await Job.findOneAndUpdate({ _id: jobId}, req.body, {
 
 ### Now let's test `updateJob` in Postman.
 
+- Login, then GetAllJobs request
 
+We have this:
+```json
+{
+    "jobs": [
+        {
+            "_id": "6426b205fbdb9da6e1e5a3a5",
+            "company": "Google",
+            "position": "front-end developer",
+            "status": "pending",
+            "jobType": "full-time",
+            ...
+```
+
+Pass in the job's `_id` (i.e., 6426b205fbdb9da6e1e5a3a5) into the Update Job URL.
+
+So in Postman the Update Job request's URL is like this:
+
+Patch | {{URL}}/jobs/6426b205fbdb9da6e1e5a3a5
+
+Then click Body > raw > JSON
+
+Then pass in these values:
+
+```json
+{
+  "company": "Google (Edited)",
+  "position": "full-stack developer",
+  "status": "pending"
+}
+```
+
+Now we have a 200 request with the JSON:
+
+```json
+{
+    "updatedJob": {
+        "_id": "6426b205fbdb9da6e1e5a3a5",
+        "company": "Google (Edited)",
+        "position": "full-stack developer",
+        "status": "pending",
+        "jobType": "full-time",
+        "jobLocation": "my city",
+        "createdBy": "6418d6ab92ff594a02b6f24a",
+        "createdAt": "2023-03-31T10:12:21.562Z",
+        "updatedAt": "2023-04-22T13:25:01.233Z",
+        "__v": 0
+    }
+}
+```
+
+Notice, we can omit `status` and send a request that will work. But if we include `status` it must have among the `enum` values of pending, interview, declined. IF we passed in any other value then we will get a "something is not a valid enum value for path `status`.
 
 We can approach this multiple ways. One is to check permission if we are allowed to update and edit the job.
 
