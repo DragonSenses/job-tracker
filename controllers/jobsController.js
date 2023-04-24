@@ -64,18 +64,24 @@ const updateJob = async (req, res) => {
 };
 
 const deleteJob = async (req, res) => {
+  // Extract job id from the request
   const { id: jobId } = req.params;
 
+  // Access the corresponding job document through our Job model with findOne()
   const job = await Job.findOne({ _id: jobId });
 
+  // Check if we found the job
   if(!job){
     throw new NotFoundError(`No job with id: ${jobId}`);
   }
 
+  // Check if user has permissions
   checkPermissions(req.user, job.createdBy);
 
+  // Remove the job document from the model
   await job.remove();
 
+  // Respond with OK status and a msg to indicate to front-end that job is deleted
   res.send(StatusCodes.OK).json({ msg: 'Job removed successfully.' });
 };
 
