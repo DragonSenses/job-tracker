@@ -9017,7 +9017,47 @@ Why check for the entire user object? Because we also want to check if the user 
 - If the user object is an admin, then we just proceed with the functionality (or just `return`).
 - Compare the ids (where ids also have matching data types) then throw an error.
 
+```js
+import { UnAuthorizedError } from '../errors/index.js';
 
+export default function checkPermissions(requestUser, resourceUserId) {
+  // Check if user object is admin
+
+  // Check if userId matches to that who created the resource
+  if(requestUser.userId === resourceUserId.toString()) {
+    return;
+  }
+
+  // Throw error in all other cases
+  throw new UnAuthorizedError("Not authorized to access this route");
+};
+```
+
+Now when we invoke this function in the `jobsController` what are the arguments to the params?
+
+We pass in `req.user` to the `requestUser` param. And `job.createdBy` for the `resourceUserId`.
+
+
+### Postman testing checkPermissions
+
+Login again to reissue a new token. Then send a patch request to update job in Postman.
+
+It should work with a Patch and 200.
+
+If there ever is an error, it won't reach the `updatedJob` portion in controller:
+
+```js
+  // Check Permissions of the user
+  checkPermissions(req.user, job.createdBy);
+
+  // Find and update the job, run validation & return a new document
+  const updatedJob = await Job.findOneAndUpdate({ _id: jobId}, req.body, {
+    new: true,
+    runValidators: true,
+  });
+```
+
+Now let's run the request but with a different resource id, a job not created by the user logged in. Then we should also see the `401` unauthorized error.
 
 ---
 
