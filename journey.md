@@ -9099,6 +9099,10 @@ Now go to the Postman and append the id to the URL for the Delete request. Somet
 Make sure to change the Authorization to type: Bearer Token under the Delete request.
 
 
+## Issue: removing in mongoose
+
+Another issue is that `job.remove()` is not recognized as a function so we need to find another way to remove the job object from the database.
+
 ---
 
 # Glaring Issue: Exhaustive Dep
