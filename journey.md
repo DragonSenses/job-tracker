@@ -9103,6 +9103,17 @@ Make sure to change the Authorization to type: Bearer Token under the Delete req
 
 Another issue is that `job.remove()` is not recognized as a function so we need to find another way to remove the job object from the database.
 
+After searching through, we found this:
+
+[Mongoose findOne()](https://mongoosejs.com/docs/api/model.html#Model.findOne()) and [Model.deleteOne()](https://mongoosejs.com/docs/api/model.html#Model.prototype.deleteOne()) as `remove()` has been deprecated since v5.5.3 (see this [Stackoverflow response](https://stackoverflow.com/questions/5809788/how-do-i-remove-documents-using-node-js-mongoose)).
+
+So replace `remove()` with `deleteOne()`. 
+
+Also some other fixes is to change: 
+- `res.send()` to `res.status()`.
+
+Look into this error:
+- [0] Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client 
 ---
 
 # Glaring Issue: Exhaustive Dep
