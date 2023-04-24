@@ -9059,6 +9059,46 @@ If there ever is an error, it won't reach the `updatedJob` portion in controller
 
 Now let's run the request but with a different resource id, a job not created by the user logged in. Then we should also see the `401` unauthorized error.
 
+# Delete functionality in the Server (Back-end)
+
+Let's work on the `deleteJob` function in the `jobsController`.
+
+It should
+
+- Get `jobId` from the request
+- Look for the `job` using `jobId`
+- If search fails (job does not exist) then throw an error
+- Check the permissions
+- Delete the job using `remove()`
+- Respond with successful status code. No data needed to be sent to the front-end, so just send a message that deletion was successful
+
+```js
+const deleteJob = async (req, res) => {
+  const { id: jobId } = req.params;
+
+  const job = await Job.findOne({ _id: jobId });
+
+  if(!job){
+    throw new NotFoundError(`No job with id: ${jobId}`);
+  }
+
+  checkPermissions(req.user, job.createdBy);
+
+  await job.remove();
+
+  res.send(StatusCodes.OK).json({ msg: 'Job removed successfully.' });
+};
+```
+
+## Postman testing delete functionality
+
+Now go to the Postman and append the id to the URL for the Delete request. Something like this:
+
+`{{base_url}}/jobs/642f36a5429866ccdadb11c5`
+
+Make sure to change the Authorization to type: Bearer Token under the Delete request.
+
+
 ---
 
 # Glaring Issue: Exhaustive Dep
