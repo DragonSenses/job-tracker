@@ -1,4 +1,4 @@
-import { UnAuthorizedError } from '../errors/index.js';
+import { UnAuthenticatedError } from '../errors/index.js';
 
 export default function checkPermissions(requestUser, resourceUserId) {
   // Check if user object is admin
@@ -9,5 +9,5 @@ export default function checkPermissions(requestUser, resourceUserId) {
   }
 
   // Throw error in all other cases
-  throw new UnAuthorizedError("Not authorized to access this route");
+  throw new UnAuthenticatedError("Not authorized to access this route");
 };
