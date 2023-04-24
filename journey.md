@@ -9010,6 +9010,13 @@ export default function checkPermissions() {
 };
 ```
 
+This function will check the entire user object (which will be called `requestUser`) and the job id (which will be called `resourceUserId`).  These will be the paramaters.
+
+Why check for the entire user object? Because we also want to check if the user object is the `admin`. If only comparing resource ids then admin can't do anything because they did not create the resource.
+
+- If the user object is an admin, then we just proceed with the functionality (or just `return`).
+- Compare the ids (where ids also have matching data types) then throw an error.
+
 
 
 ---
