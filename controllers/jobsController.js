@@ -79,7 +79,7 @@ const deleteJob = async (req, res) => {
   checkPermissions(req.user, job.createdBy);
 
   // Remove the job document from the model
-  await job.remove();
+  await job.deleteOne();
 
   // Respond with OK status and a msg to indicate to front-end that job is deleted
   res.send(StatusCodes.OK).json({ msg: 'Job removed successfully.' });

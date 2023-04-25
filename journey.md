@@ -9114,6 +9114,11 @@ Also some other fixes is to change:
 
 Look into this error:
 - [0] Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client 
+
+
+**Important to note** that some methods bypass the middleware, in mongoose. See [Middleware](https://mongoosejs.com/docs/middleware.html). The method deleteOne() is a document middleware function where `this` refers to the document.
+
+
 ---
 
 # Glaring Issue: Exhaustive Dep
