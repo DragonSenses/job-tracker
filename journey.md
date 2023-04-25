@@ -9292,6 +9292,7 @@ We need to update the loading, alerts and alert type/text.
     case EDIT_JOB_ERROR: {
       return {
         ...state,
+        isEditing: false,
         isLoading: false,
         showAlert: true,
         alertType: 'danger',
@@ -9299,6 +9300,12 @@ We need to update the loading, alerts and alert type/text.
       };
     }
 ```
+
+## Issue on clicking Edit button it calls Delete instead
+
+Problem is that every time we click `Edit` button it invokes a DELETE request.
+
+### Solution: bug found, both onClick handlers are using delete function in `Job` component
 
 ---
 
