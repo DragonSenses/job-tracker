@@ -9269,7 +9269,36 @@ Let's setup the cases in the reducer to handle the actions:
     }
 ```
 
-We need to update Alert, loading, ....
+We need to update the loading, alerts and alert type/text. 
+
+```js
+    case EDIT_JOB_BEGIN: {
+      return {
+        ...state,
+        isLoading: true,
+      };
+    }
+
+    case EDIT_JOB_SUCCESS: {
+      return {
+        ...state,
+        isLoading: false,
+        showAlert: true,
+        alertType: 'success',
+        alertText: 'Job Updated!',
+      };
+    }
+
+    case EDIT_JOB_ERROR: {
+      return {
+        ...state,
+        isLoading: false,
+        showAlert: true,
+        alertType: 'danger',
+        alertText: action.payload.msg,
+      };
+    }
+```
 
 ---
 

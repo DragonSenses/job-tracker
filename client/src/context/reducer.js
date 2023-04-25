@@ -256,18 +256,27 @@ function reducer(state, action) {
     case EDIT_JOB_BEGIN: {
       return {
         ...state,
+        isLoading: true,
       };
     }
 
     case EDIT_JOB_SUCCESS: {
       return {
         ...state,
+        isLoading: false,
+        showAlert: true,
+        alertType: 'success',
+        alertText: 'Job Updated!',
       };
     }
 
     case EDIT_JOB_ERROR: {
       return {
         ...state,
+        isLoading: false,
+        showAlert: true,
+        alertType: 'danger',
+        alertText: action.payload.msg,
       };
     }
 
