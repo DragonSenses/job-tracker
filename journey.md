@@ -9137,6 +9137,23 @@ For now, in the reducer we will just set `isLoading: true`
     }
 ```
 
+Now when implementing the function in global context, we want to make sure to call `getJobs()` because we want to synchronize the jobs in the state / localStorage with that of the database.
+
+```js
+  const deleteJob = async (jobId) => {
+    dispatch({ type: DELETE_JOB_BEGIN });
+
+    try {
+      await authFetch.delete(`/jobs/${jobId}`);
+      getJobs();
+    } catch (error){
+      console.log(error.response);
+    }
+  };
+```
+
+We want to `authFetch` to get the base URL and interceptors, and invoke `delete()`. Using a template string, we have `/jobs/${jobId}`
+
 ---
 
 # Glaring Issue: Exhaustive Dep

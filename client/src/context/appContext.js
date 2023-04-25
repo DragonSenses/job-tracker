@@ -309,18 +309,27 @@ export default function AppProvider(props) {
   //   getJobs();
   // }, []);
 
-  const setEditJob = (id) => {
-    console.log(`set edit job: ${id}`);
+  const setEditJob = (jobId) => {
+    console.log(`set edit job: ${jobId}`);
 
-    dispatch({ type: SET_EDIT_JOB, payload: { id } });
+    dispatch({ type: SET_EDIT_JOB, payload: { jobId } });
   };
 
   const editJob = () => {
     console.log('edit job');
   }
 
-  const deleteJob = (id) => {
-    console.log(`delete job : ${id}`);
+  const deleteJob = async (jobId) => {
+    console.log(`delete job : ${jobId}`);
+
+    dispatch({ type: DELETE_JOB_BEGIN });
+
+    try {
+      await authFetch.delete(`/jobs/${jobId}`);
+      getJobs();
+    } catch (error){
+      console.log(error.response);
+    }
   };
 
   return (
