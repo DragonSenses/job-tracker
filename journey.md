@@ -9492,10 +9492,27 @@ reducer.js:262 {_id: '644814de8e952783acf46457', company: 'test', position: 'tes
 Alright we got closer to the problem statement now: the issue is that when `find()` an array method is used, it's going through another set of array (which do not have the `_id` property) that contain the index and the actual javascript `job` object that contains the property
 
 ```js
-      const job = state.jobs.find( (job) => job._id === action.payload.id);
+const job = state.jobs.find( (job) => job._id === action.payload.id);
 ```
 
-Needs to be changed
+Needs to be changed to:
+```js
+const job = Object.values(state.jobs).find( (job) => 
+  job._id === action.payload.id
+);
+```
+
+Another issue before this is that:
+```js
+console.log(`action.payload.id: ${action.payload.id}`);
+```
+
+```sh
+action.payload.id: undefined
+```
+
+So the comparison isn't working out.
+
 ---
 
 # Glaring Issue: Exhaustive Dep
