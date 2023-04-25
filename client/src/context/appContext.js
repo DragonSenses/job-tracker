@@ -266,29 +266,8 @@ export default function AppProvider(props) {
 
     try {
       const data = await authFetch(url);
-      
-      console.log(`Data from authFetch: 
-        ${data}`);
-
-      console.log("-------- Printing out values of data --------")
-      // let i = 0;
-      // for (let value of Object.values(data)){
-      //   console.log(`value ${i++} is`);
-      //   console.log(value);
-      // }
-
-      for (let entry of Object.entries(data)){
-        console.log(entry);
-      }
-      console.log("--------End of data --------")
 
       const { jobs, totalJobs, numOfPages } = data.data;
-
-      console.log(`
-      jobs: \t\t ${jobs}
-      totalJobs: \t ${totalJobs}
-      numOfPages: \t ${numOfPages}`
-      );
 
       dispatch({
         type: GET_JOBS_SUCCESS,
@@ -303,14 +282,10 @@ export default function AppProvider(props) {
       console.log(`Error triggered in getJobs() appContext.js! 
       Here is the Error Response:
       ${error.response}`);
-      // logoutUser();
+      logoutUser();
     }
     clearAlert();
   };
-
-  // useEffect( () => {
-  //   getJobs();
-  // }, []);
 
   const setEditJob = (jobId) => {
     console.log(`set edit job: ${jobId}`);
@@ -325,15 +300,15 @@ export default function AppProvider(props) {
       const { position, company, jobLocation, jobType, status } = state;
 
       await authFetch.patch(`/jobs/${state.editJobId}`, {
-        position,
         company,
+        position,
         jobLocation,
         jobType,
         status,
       });
 
       dispatch({
-        type: EDIT_JOB_SUCCESS
+        type: EDIT_JOB_SUCCESS,
       });
 
       dispatch({ CLEAR_VALUES });

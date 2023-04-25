@@ -9540,6 +9540,64 @@ IT IS WHERE OUR `jobs` array and `numOfPages` and `totalJobs` are!!!!!
 
 HOORAY, WE FOUND THE ISSUE!
 
+## getJobs debugged
+
+```js
+
+ const getJobs = async () => {
+    let url = `/jobs`;
+    
+    dispatch({ type: GET_JOBS_BEGIN });
+
+    try {
+      const data = await authFetch(url);
+      
+      console.log(`Data from authFetch: 
+        ${data}`);
+
+      console.log("-------- Printing out values of data --------")
+      // let i = 0;
+      // for (let value of Object.values(data)){
+      //   console.log(`value ${i++} is`);
+      //   console.log(value);
+      // }
+
+      for (let entry of Object.entries(data)){
+        console.log(entry);
+      }
+      console.log("--------End of data --------")
+
+      const { jobs, totalJobs, numOfPages } = data.data;
+
+      console.log(`
+      jobs: \t\t ${jobs}
+      totalJobs: \t ${totalJobs}
+      numOfPages: \t ${numOfPages}`
+      );
+
+      dispatch({
+        type: GET_JOBS_SUCCESS,
+        payload: {
+          jobs,
+          totalJobs,
+          numOfPages,
+        },
+      });
+
+    } catch(error){
+      console.log(`Error triggered in getJobs() appContext.js! 
+      Here is the Error Response:
+      ${error.response}`);
+      // logoutUser();
+    }
+    clearAlert();
+  };
+
+  // useEffect( () => {
+  //   getJobs();
+  // }, []);
+  ```
+
 ## Fixed the issue of undefined state values -> `jobs`, `totalJobs` and `numOfPages`
 
 So now when we destructure the values out, instead of
