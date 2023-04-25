@@ -9307,6 +9307,17 @@ Problem is that every time we click `Edit` button it invokes a DELETE request.
 
 ### Solution: bug found, both onClick handlers are using delete function in `Job` component
 
+
+## Issue cannot destructure property
+
+In the developer tool's console: 
+```sh
+reducer.js:234 Uncaught TypeError: Cannot destructure property '_id' of 'job' as it is undefined.
+```
+
+SO let's do some extensive error logging in the reducer to find out what's going on.
+
+
 ---
 
 # Glaring Issue: Exhaustive Dep

@@ -229,10 +229,32 @@ function reducer(state, action) {
     }
 
     case SET_EDIT_JOB: {
+      console.log("-------- Reducer: SET_EDIT_JOB --------");
+
       const job = state.jobs.find( (job) => job._id === action.payload.id);
+
+      console.log(`
+      -------- job variable --------
+
+      ${job}
+      
+      -------- end of job variable --------`);
+
       const {
         _id, position, company, jobLocation, jobType, status
       } = job;
+
+      console.log(` 
+      -------- destructured properties of job variable --------
+
+      _id: ${job._id}
+      position: ${job.position}
+      company: ${job.company}
+      jobLocation: ${job.jobLocation}
+      jobType: ${job.jobType}
+      status: ${job.status}
+
+      -------- end of destructured properties --------`);
 
       return {
         ...state,
