@@ -231,14 +231,34 @@ function reducer(state, action) {
     case SET_EDIT_JOB: {
       console.log("-------- Reducer: SET_EDIT_JOB --------");
 
+      console.log(`
+      -------- jobs --------
+
+      state.jobs:
+        ${state.jobs}
       
+      `);
+
+      console.log(`
+      typeof state.jobs:
+        ${typeof state.jobs}
+      `);
+
+      console.log(`Printing out every entry within jobs:`)
+
+      for(let entry of Object.entries(state.jobs)){
+        console.log(entry);
+      }
+
+      console.log(`------- end of jobs --------`);
 
       const job = state.jobs.find( (job) => job._id === action.payload.id);
 
       console.log(`
       -------- job variable --------
 
-      ${job}
+      job: 
+        ${job}
 
       -------- end of job variable --------`);
 

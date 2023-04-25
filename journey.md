@@ -9381,7 +9381,81 @@ reducer.js:236
 
 A common issue for undefined variables is asynchronous, usually have to wait for it to be initialized with data so need to setup `async/await`, `Promise` to `resolve` / `reject` to use `.then()`.
 
+But after some checking, it is not the case and this is the front-end where we have access to state. 
 
+So added more logging, this time on the `state.jobs` variable which is an array of jobs. Using `Object.entries()` we print out every entry:
+
+```js
+      for(let entry of Object.entries(state.jobs)){
+        console.log(entry);
+      }
+```
+
+The result is 
+```json
+[
+    "0",
+    {
+        "_id": "6426b205fbdb9da6e1e5a3a5",
+        "company": "Google (Edit)",
+        "position": "front-end developer",
+        "status": "pending",
+        "jobType": "full-time",
+        "jobLocation": "my city",
+        "createdBy": "6418d6ab92ff594a02b6f24a",
+        "createdAt": "2023-03-31T10:12:21.562Z",
+        "updatedAt": "2023-04-24T06:15:31.359Z",
+        "__v": 0
+    }
+]
+[
+    "1",
+    {
+        "_id": "6430ed5141edde8ddc9c697e",
+        "company": "Uber",
+        "position": "front-end developer",
+        "status": "pending",
+        "jobType": "full-time",
+        "jobLocation": "my city",
+        "createdBy": "6418d6ab92ff594a02b6f24a",
+        "createdAt": "2023-04-08T04:28:01.216Z",
+        "updatedAt": "2023-04-08T04:28:01.216Z",
+        "__v": 0
+    }
+]
+[
+    "2",
+    {
+        "_id": "6447615520382764f288d790",
+        "company": "EIEN",
+        "position": "vtuber",
+        "status": "pending",
+        "jobType": "full-time",
+        "jobLocation": "my city",
+        "createdBy": "6418d6ab92ff594a02b6f24a",
+        "createdAt": "2023-04-25T05:12:53.868Z",
+        "updatedAt": "2023-04-25T05:12:53.868Z",
+        "__v": 0
+    }
+]
+[
+    "3",
+    {
+        "_id": "644814de8e952783acf46457",
+        "company": "test",
+        "position": "test",
+        "status": "pending",
+        "jobType": "full-time",
+        "jobLocation": "Hachioji (Kanto, Tokyo)",
+        "createdBy": "6418d6ab92ff594a02b6f24a",
+        "createdAt": "2023-04-25T17:58:54.823Z",
+        "updatedAt": "2023-04-25T17:58:54.823Z",
+        "__v": 0
+    }
+]
+```
+
+So we actually do have the `_id` property and it is not undefined, the issue lies in destructuring or trying to extract it properly as it is contained within an array and the 2nd part is the object that contains the property.
 
 
 ---
