@@ -9154,6 +9154,8 @@ Now when implementing the function in global context, we want to make sure to ca
 
 We want to `authFetch` to get the base URL and interceptors, and invoke `delete()`. Using a template string, we have `/jobs/${jobId}`
 
+Then call `getJobs()` because it deletes it from database, not local state. So want to synchronize both front-end and back-end and by doing so we can also let `getJobs` change the `isLoading` back to false.
+
 
 ## Edit functionality for Front-End
 
@@ -9164,10 +9166,23 @@ Delete is called within the component, or `AllJobs` page. On the other hand, edi
 - Create the action to dispatch
 
 ```js
-
+export const EDIT_JOB_BEGIN = 'EDIT_JOB_BEGIN';
+export const EDIT_JOB_SUCCESS = 'EDIT_JOB_SUCCESS';
+export const EDIT_JOB_ERROR = 'EDIT_JOB_ERROR';
 ```
 
 - Create the function in appContext
+  1. dispatch the begin action
+  2. Extract the needed values from the state
+  3. With `authFetch` and `patch()` the particular job  with a dynmaic template string that contains the URL to the specific job (by passing in the param needed). Then pass all the data that needs to be updated inside the function.
+  4. Dispatch success
+  5. Clear Values to reset the form fields
+  6. log any errors
+
+```js
+
+```
+
 - Handle the action in the reducer to update the state
 
 
