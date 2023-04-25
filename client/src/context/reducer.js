@@ -231,13 +231,15 @@ function reducer(state, action) {
     case SET_EDIT_JOB: {
       console.log("-------- Reducer: SET_EDIT_JOB --------");
 
+      
+
       const job = state.jobs.find( (job) => job._id === action.payload.id);
 
       console.log(`
       -------- job variable --------
 
       ${job}
-      
+
       -------- end of job variable --------`);
 
       const {
@@ -297,8 +299,8 @@ function reducer(state, action) {
     case EDIT_JOB_ERROR: {
       return {
         ...state,
-        isEditing: false,
         isLoading: false,
+        isEditing: false,
         showAlert: true,
         alertType: 'danger',
         alertText: action.payload.msg,

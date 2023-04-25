@@ -9317,6 +9317,72 @@ reducer.js:234 Uncaught TypeError: Cannot destructure property '_id' of 'job' as
 
 SO let's do some extensive error logging in the reducer to find out what's going on.
 
+```js
+    case SET_EDIT_JOB: {
+      console.log("-------- Reducer: SET_EDIT_JOB --------");
+
+      const job = state.jobs.find( (job) => job._id === action.payload.id);
+
+      console.log(`
+      -------- job variable --------
+
+      ${job}
+      
+      -------- end of job variable --------`);
+
+      const {
+        _id, position, company, jobLocation, jobType, status
+      } = job;
+
+      console.log(` 
+      -------- destructured properties of job variable --------
+
+      _id: ${job._id}
+      position: ${job.position}
+      company: ${job.company}
+      jobLocation: ${job.jobLocation}
+      jobType: ${job.jobType}
+      status: ${job.status}
+
+      -------- end of destructured properties --------`);
+
+      return {
+        ...state,
+        isEditing: true,
+        editJobId: _id,
+        position,
+        company,
+        jobLocation,
+        jobType,
+        status,
+      };
+    }
+```
+
+Result
+
+```sh
+set edit job: 644814de8e952783acf46457
+reducer.js:232 -------- Reducer: SET_EDIT_JOB --------
+reducer.js:236 
+      -------- job variable --------
+
+      undefined
+      
+      -------- end of job variable --------
+reducer.js:232 -------- Reducer: SET_EDIT_JOB --------
+reducer.js:236 
+      -------- job variable --------
+
+      undefined
+      
+      -------- end of job variable --------
+```
+
+A common issue for undefined variables is asynchronous, usually have to wait for it to be initialized with data so need to setup `async/await`, `Promise` to `resolve` / `reject` to use `.then()`.
+
+
+
 
 ---
 

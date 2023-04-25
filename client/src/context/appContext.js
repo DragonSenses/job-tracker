@@ -287,7 +287,7 @@ export default function AppProvider(props) {
     clearAlert();
   };
 
-  const setEditJob = (jobId) => {
+  const setEditJob = async (jobId) => {
     console.log(`set edit job: ${jobId}`);
 
     dispatch({ type: SET_EDIT_JOB, payload: { jobId } });
