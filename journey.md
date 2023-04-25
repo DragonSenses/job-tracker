@@ -9154,6 +9154,23 @@ Now when implementing the function in global context, we want to make sure to ca
 
 We want to `authFetch` to get the base URL and interceptors, and invoke `delete()`. Using a template string, we have `/jobs/${jobId}`
 
+
+## Edit functionality for Front-End
+
+What is different from delete and edit?
+
+Delete is called within the component, or `AllJobs` page. On the other hand, edit redirects to a different component that is `AddJob`. 
+
+- Create the action to dispatch
+
+```js
+
+```
+
+- Create the function in appContext
+- Handle the action in the reducer to update the state
+
+
 ---
 
 # Glaring Issue: Exhaustive Dep
