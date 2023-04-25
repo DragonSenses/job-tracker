@@ -324,7 +324,7 @@ export default function AppProvider(props) {
     try {
       const { position, company, jobLocation, jobType, status } = state;
 
-      await authFetch.patch(`/jobs/${editJobId}`, {
+      await authFetch.patch(`/jobs/${state.editJobId}`, {
         position,
         company,
         jobLocation,
@@ -337,10 +337,17 @@ export default function AppProvider(props) {
       });
 
       dispatch({ CLEAR_VALUES });
-      
+
     } catch(error){
-      console.log(error);
+      if(error.response.status === 401) {
+        return;
+      }
+      dispatch({
+        type: EDIT_JOB_ERROR,
+        payload: { msg: error.response.data.msg },
+      })
     }
+    clearAlert();
   };
 
   const deleteJob = async (jobId) => {

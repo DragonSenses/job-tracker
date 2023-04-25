@@ -9206,6 +9206,45 @@ export const EDIT_JOB_ERROR = 'EDIT_JOB_ERROR';
   }
 ```
 
+Some changes to above:
+- Needed to get `editJobId` and that is found within the `state` so it is `state.editJobId`
+- Recall that if the user is Unauthorized and the error is `401` we need to return, user shouldn't be in the page in the first place
+- Dispatch error in this case
+
+```js
+  const editJob = async () => {
+    dispatch({ type: EDIT_JOB_BEGIN });
+
+    try {
+      const { position, company, jobLocation, jobType, status } = state;
+
+      await authFetch.patch(`/jobs/${state.editJobId}`, {
+        position,
+        company,
+        jobLocation,
+        jobType,
+        status,
+      });
+
+      dispatch({
+        type: EDIT_JOB_SUCCESS
+      });
+
+      dispatch({ CLEAR_VALUES });
+
+    } catch(error){
+      if(error.response.status === 401) {
+        return;
+      }
+      dispatch({
+        type: EDIT_JOB_ERROR,
+        payload: { msg: error.response.data.msg },
+      })
+    }
+    clearAlert();
+  };
+```
+
 - Handle the action in the reducer to update the state
 
 
