@@ -11,14 +11,14 @@ const authenticate = async (req, res, next) => {
   const token = authHeader.split(' ')[1];
   
   try{
-    console.log("-------- Authenticate Middleware --------");
-    console.log(`[token]: 
-      ${token}`);
+    // console.log("-------- Authenticate Middleware --------");
+    // console.log(`[token]: 
+    //   ${token}`);
     const payload = jwt.verify(token, process.env.SECRET_KEY);
-    console.log(`[payload]: \t ${payload}`);
-    console.log(`[userId]: \t ${payload.userId}`);
+    // console.log(`[payload]: \t ${payload}`);
+    // console.log(`[userId]: \t ${payload.userId}`);
     req.user = { userId: payload.userId };
-    console.log("----- End of Authenticate Middleware -----");
+    // console.log("----- End of Authenticate Middleware -----");
     next();
   } catch(error){
     console.log(`Error in Authenticate Middleware: 
