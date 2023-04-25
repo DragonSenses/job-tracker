@@ -82,7 +82,7 @@ const deleteJob = async (req, res) => {
   await job.deleteOne();
 
   // Respond with OK status and a msg to indicate to front-end that job is deleted
-  res.send(StatusCodes.OK).json({ msg: 'Job removed successfully.' });
+  res.status(StatusCodes.OK).json({ msg: 'Job removed successfully.' });
 };
 
 const showStats = async (req, res) => {
