@@ -9180,7 +9180,30 @@ export const EDIT_JOB_ERROR = 'EDIT_JOB_ERROR';
   6. log any errors
 
 ```js
+  const editJob = async () => {
+    dispatch({ type: EDIT_JOB_BEGIN });
 
+    try {
+      const { position, company, jobLocation, jobType, status } = state;
+
+      await authFetch.patch(`/jobs/${editJobId}`, {
+        position,
+        company,
+        jobLocation,
+        jobType,
+        status,
+      });
+
+      dispatch({
+        type: EDIT_JOB_SUCCESS
+      });
+
+      dispatch({ CLEAR_VALUES });
+      
+    } catch(error){
+      console.log(error);
+    }
+  }
 ```
 
 - Handle the action in the reducer to update the state
