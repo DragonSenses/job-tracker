@@ -20,6 +20,7 @@ import {
   GET_JOBS_BEGIN,
   GET_JOBS_SUCCESS,
   SET_EDIT_JOB,
+  DELETE_JOB_BEGIN,
 } from "./actions";
 
 import { initialState } from './appContext.js';
@@ -239,6 +240,13 @@ function reducer(state, action) {
         jobLocation,
         jobType,
         status,
+      };
+    }
+
+    case DELETE_JOB_BEGIN: {
+
+      return {
+        ...state,
       };
     }
 

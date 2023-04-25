@@ -24,6 +24,7 @@ import {
   GET_JOBS_BEGIN,
   GET_JOBS_SUCCESS,
   SET_EDIT_JOB,
+  DELETE_JOB_BEGIN,
 } from "./actions";
 
 const user = localStorage.getItem('user');

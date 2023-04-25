@@ -9118,6 +9118,15 @@ Look into this error:
 
 **Important to note** that some methods bypass the middleware, in mongoose. See [Middleware](https://mongoosejs.com/docs/middleware.html). The method deleteOne() is a document middleware function where `this` refers to the document.
 
+# Front-End | Edit & Delete functionality
+
+Just like before we have to:
+
+- Create the action to dispatch
+- Create the function in appContext
+- Handle the action in the reducer to update the state
+
+
 
 ---
 
