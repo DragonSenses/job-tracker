@@ -9126,7 +9126,16 @@ Just like before we have to:
 - Create the function in appContext
 - Handle the action in the reducer to update the state
 
+For now, in the reducer we will just set `isLoading: true`
 
+```js
+    case DELETE_JOB_BEGIN: {
+      return {
+        ...state,
+        isLoading: true,
+      };
+    }
+```
 
 ---
 

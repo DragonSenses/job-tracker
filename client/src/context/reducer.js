@@ -244,9 +244,9 @@ function reducer(state, action) {
     }
 
     case DELETE_JOB_BEGIN: {
-
       return {
         ...state,
+        isLoading: true,
       };
     }
 
