@@ -9247,6 +9247,29 @@ Some changes to above:
 
 - Handle the action in the reducer to update the state
 
+Let's setup the cases in the reducer to handle the actions:
+
+```js
+    case EDIT_JOB_BEGIN: {
+      return {
+        ...state,
+      };
+    }
+
+    case EDIT_JOB_SUCCESS: {
+      return {
+        ...state,
+      };
+    }
+
+    case EDIT_JOB_ERROR: {
+      return {
+        ...state,
+      };
+    }
+```
+
+We need to update Alert, loading, ....
 
 ---
 

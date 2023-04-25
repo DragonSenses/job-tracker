@@ -253,6 +253,24 @@ function reducer(state, action) {
       };
     }
 
+    case EDIT_JOB_BEGIN: {
+      return {
+        ...state,
+      };
+    }
+
+    case EDIT_JOB_SUCCESS: {
+      return {
+        ...state,
+      };
+    }
+
+    case EDIT_JOB_ERROR: {
+      return {
+        ...state,
+      };
+    }
+
     default: {
       throw new Error(`No such action: ${action.type}`);
     }
