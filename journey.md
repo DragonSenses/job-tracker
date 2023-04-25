@@ -9457,7 +9457,45 @@ The result is
 
 So we actually do have the `_id` property and it is not undefined, the issue lies in destructuring or trying to extract it properly as it is contained within an array and the 2nd part is the object that contains the property.
 
+Let's go one step further and try to iterate through the values of the array. Let's log what we get first:
 
+```js
+      console.log(`Printing out every value within jobs:`);
+
+      console.log('---- Iterating via for-loop -> "state.jobs[i]"')
+      for(let i=0; i<state.jobs.length; i++){
+        console.log(state.jobs[i]);
+      }
+
+      console.log('---- Iterating via for-of -> "Object.values(state.jobs)"')
+      for(let value of Object.values(state.jobs)){
+        console.log(value);
+      }
+```
+
+```sh
+Printing out every value within jobs:
+
+reducer.js:255 ---- Iterating via for-loop -> "state.jobs[i]"
+reducer.js:257 {_id: '6426b205fbdb9da6e1e5a3a5', company: 'Google (Edit)', position: 'front-end developer', status: 'pending', jobType: 'full-time', …}
+reducer.js:257 {_id: '6430ed5141edde8ddc9c697e', company: 'Uber', position: 'front-end developer', status: 'pending', jobType: 'full-time', …}
+reducer.js:257 {_id: '6447615520382764f288d790', company: 'EIEN', position: 'vtuber', status: 'pending', jobType: 'full-time', …}
+reducer.js:257 {_id: '644814de8e952783acf46457', company: 'test', position: 'test', status: 'pending', jobType: 'full-time', …}
+
+reducer.js:260 ---- Iterating via for-of -> "Object.values(state.jobs)"
+reducer.js:262 {_id: '6426b205fbdb9da6e1e5a3a5', company: 'Google (Edit)', position: 'front-end developer', status: 'pending', jobType: 'full-time', …}
+reducer.js:262 {_id: '6430ed5141edde8ddc9c697e', company: 'Uber', position: 'front-end developer', status: 'pending', jobType: 'full-time', …}
+reducer.js:262 {_id: '6447615520382764f288d790', company: 'EIEN', position: 'vtuber', status: 'pending', jobType: 'full-time', …}
+reducer.js:262 {_id: '644814de8e952783acf46457', company: 'test', position: 'test', status: 'pending', jobType: 'full-time', …}
+```
+
+Alright we got closer to the problem statement now: the issue is that when `find()` an array method is used, it's going through another set of array (which do not have the `_id` property) that contain the index and the actual javascript `job` object that contains the property
+
+```js
+      const job = state.jobs.find( (job) => job._id === action.payload.id);
+```
+
+Needs to be changed
 ---
 
 # Glaring Issue: Exhaustive Dep

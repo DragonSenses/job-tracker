@@ -244,10 +244,22 @@ function reducer(state, action) {
         ${typeof state.jobs}
       `);
 
-      console.log(`Printing out every entry within jobs:`)
+      console.log(`Printing out every entry within jobs:`);
 
       for(let entry of Object.entries(state.jobs)){
         console.log(entry);
+      }
+
+      console.log(`Printing out every value within jobs:`);
+
+      console.log('---- Iterating via for-loop -> "state.jobs[i]"')
+      for(let i=0; i<state.jobs.length; i++){
+        console.log(state.jobs[i]);
+      }
+
+      console.log('---- Iterating via for-of -> "Object.values(state.jobs)"')
+      for(let value of Object.values(state.jobs)){
+        console.log(value);
       }
 
       console.log(`------- end of jobs --------`);
