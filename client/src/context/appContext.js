@@ -290,7 +290,10 @@ export default function AppProvider(props) {
   const setEditJob = async (jobId) => {
     console.log(`set edit job: ${jobId}`);
 
-    dispatch({ type: SET_EDIT_JOB, payload: { jobId } });
+    dispatch({
+      type: SET_EDIT_JOB,
+      payload: { jobId } 
+    });
   };
 
   const editJob = async () => {

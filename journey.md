@@ -9513,6 +9513,21 @@ action.payload.id: undefined
 
 So the comparison isn't working out.
 
+That's because we renamed `id` to `jobId` in the payload we passed in:
+
+```js
+  const setEditJob = async (jobId) => {
+    console.log(`set edit job: ${jobId}`);
+
+    dispatch({
+      type: SET_EDIT_JOB,
+      payload: { jobId } 
+    });
+  };
+```
+
+So change it in reducer as well.
+
 ---
 
 # Glaring Issue: Exhaustive Dep

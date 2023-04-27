@@ -266,16 +266,16 @@ function reducer(state, action) {
       console.log(Object.values(state.jobs));
       console.log(`------- end of jobs --------`);
 
-      console.log(`action.payload.id: ${action.payload.id}`);
+      console.log(`action.payload.id: ${action.payload.jobId}`);
 
       // const job = Object.values(state.jobs).find( (job) => 
-      //   job._id === action.payload.id
+      //   job._id === action.payload.jobId
       // );
 
       let job;
 
       for(let value of Object.values(state.jobs)){
-        if(value._id === action.payload.id){
+        if(value._id === action.payload.jobId){
           job = value;
         }
       }
