@@ -327,7 +327,6 @@ function reducer(state, action) {
       return {
         ...state,
         isLoading: true,
-        // isEditing: true,
       };
     }
 
@@ -335,7 +334,6 @@ function reducer(state, action) {
       return {
         ...state,
         isLoading: false,
-        // isEditing: false,
         showAlert: true,
         alertType: 'success',
         alertText: 'Job Updated!',
@@ -346,7 +344,6 @@ function reducer(state, action) {
       return {
         ...state,
         isLoading: false,
-        // isEditing: false,
         showAlert: true,
         alertType: 'danger',
         alertText: action.payload.msg,
