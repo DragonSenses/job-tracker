@@ -328,7 +328,9 @@ export default function AppProvider(props) {
         payload: { msg: error.response.data.msg },
       })
     }
+    console.log("-------- Invoking clearAlert() --------");
     clearAlert();
+    console.log("======== editJob end ========");
   };
 
   const deleteJob = async (jobId) => {
