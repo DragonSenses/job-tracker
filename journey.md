@@ -9615,6 +9615,23 @@ So it invokes `editJob()`, which is the function passed down from appContext:
 
 Let's start doing some error logging.
 
+The thing is in the server a successful patch request is sent:
+```sh
+[0] GET /api/v1/jobs 200 39.789 ms - 1129
+[0] GET /api/v1/jobs 304 39.613 ms - -
+[0] PATCH /api/v1/jobs/644814de8e952783acf46457 200 85.776 ms - 292
+```
+It just lands us on a different page.
+
+## Found the issue of undefined action!
+
+After extensive error logging we can see that:
+```js
+      dispatch({ CLEAR_VALUES });
+```
+
+Have to prepend the action with `type`.
+
 ---
 
 # Glaring Issue: Exhaustive Dep

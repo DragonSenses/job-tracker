@@ -297,11 +297,13 @@ export default function AppProvider(props) {
   };
 
   const editJob = async () => {
+    console.log("======== editJob begin ========");
     dispatch({ type: EDIT_JOB_BEGIN });
-
+    console.log("-------- dispatched EDIT_JOB_BEGIN --------");
     try {
       const { position, company, jobLocation, jobType, status } = state;
-
+      console.log("-------- destructured values from state --------");
+      console.log("-------- before the autchFetch.patch --------");
       await authFetch.patch(`/jobs/${state.editJobId}`, {
         company,
         position,
@@ -309,12 +311,13 @@ export default function AppProvider(props) {
         jobType,
         status,
       });
+      console.log("-------- after the autchFetch.patch --------");
 
-      dispatch({
-        type: EDIT_JOB_SUCCESS,
-      });
+      dispatch({ type: EDIT_JOB_SUCCESS });
+      console.log("-------- after dispatching EDIT_JOB_SUCCESS --------");
 
-      dispatch({ CLEAR_VALUES });
+      dispatch({ type: CLEAR_VALUES });
+      console.log("-------- after dispatching CLEAR_VALUES --------");
 
     } catch(error){
       if(error.response.status === 401) {
