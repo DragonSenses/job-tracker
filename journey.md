@@ -9530,6 +9530,90 @@ So change it in reducer as well to `action.payload.jobId`.
 
 Now we successfully can find the job using its `jobId`.
 
+## New problem: action is undefined
+
+Now when we do `Edit` the job and it sends us to Add Page with `Edit Job`. All the values are in place in the form. But when we hit submit, the developer tool's console then leads to 
+
+```sh
+reducer.js:357 Uncaught Error: No such action: undefined
+    at reducer (reducer.js:357:1)
+    at updateReducer (react-dom.development.js:16664:1)
+    at Object.useReducer (react-dom.development.js:17898:1)
+    at useReducer (react.development.js:1626:1)
+    at AppProvider (appContext.js:65:1)
+    at renderWithHooks (react-dom.development.js:16305:1)
+    at updateFunctionComponent (react-dom.development.js:19588:1)
+    at beginWork (react-dom.development.js:21601:1)
+    at HTMLUnknownElement.callCallback (react-dom.development.js:4164:1)
+    at Object.invokeGuardedCallbackDev (react-dom.development.js:4213:1)
+```
+
+Which means this line in reducer is invoked:
+```js
+default: {
+  throw new Error(`No such action: ${action.type}`);
+}
+```
+
+It happens when we hit the submit button after click "Edit" on a job from All-Jobs page.
+
+Looking into the Add Job page we see the submit handler:
+
+```js
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if(!position || !company || !jobLocation){
+      displayAlert();
+      return;
+    }
+
+    if(isEditing){
+      editJob();
+      return;
+    }
+
+    createJob();
+  };
+```
+
+So it invokes `editJob()`, which is the function passed down from appContext:
+
+```js
+  const editJob = async () => {
+    dispatch({ type: EDIT_JOB_BEGIN });
+
+    try {
+      const { position, company, jobLocation, jobType, status } = state;
+
+      await authFetch.patch(`/jobs/${state.editJobId}`, {
+        company,
+        position,
+        jobLocation,
+        jobType,
+        status,
+      });
+
+      dispatch({
+        type: EDIT_JOB_SUCCESS,
+      });
+
+      dispatch({ CLEAR_VALUES });
+
+    } catch(error){
+      if(error.response.status === 401) {
+        return;
+      }
+      dispatch({
+        type: EDIT_JOB_ERROR,
+        payload: { msg: error.response.data.msg },
+      })
+    }
+    clearAlert();
+  };
+```
+
+Let's start doing some error logging.
 
 ---
 
