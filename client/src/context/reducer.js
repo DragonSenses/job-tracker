@@ -268,17 +268,17 @@ function reducer(state, action) {
 
       console.log(`action.payload.id: ${action.payload.jobId}`);
 
-      // const job = Object.values(state.jobs).find( (job) => 
-      //   job._id === action.payload.jobId
-      // );
+      const job = Object.values(state.jobs).find( (job) => 
+        job._id === action.payload.jobId
+      );
 
-      let job;
+      // let job;
 
-      for(let value of Object.values(state.jobs)){
-        if(value._id === action.payload.jobId){
-          job = value;
-        }
-      }
+      // for(let value of Object.values(state.jobs)){
+      //   if(value._id === action.payload.jobId){
+      //     job = value;
+      //   }
+      // }
 
       console.log(`
       -------- job variable --------
@@ -327,7 +327,7 @@ function reducer(state, action) {
       return {
         ...state,
         isLoading: true,
-        isEditing: true,
+        // isEditing: true,
       };
     }
 
@@ -335,7 +335,7 @@ function reducer(state, action) {
       return {
         ...state,
         isLoading: false,
-        isEditing: false,
+        // isEditing: false,
         showAlert: true,
         alertType: 'success',
         alertText: 'Job Updated!',
@@ -346,7 +346,7 @@ function reducer(state, action) {
       return {
         ...state,
         isLoading: false,
-        isEditing: false,
+        // isEditing: false,
         showAlert: true,
         alertType: 'danger',
         alertText: action.payload.msg,

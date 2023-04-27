@@ -9526,7 +9526,10 @@ That's because we renamed `id` to `jobId` in the payload we passed in:
   };
 ```
 
-So change it in reducer as well.
+So change it in reducer as well to `action.payload.jobId`.
+
+Now we successfully can find the job using its `jobId`.
+
 
 ---
 
