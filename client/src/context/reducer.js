@@ -229,80 +229,13 @@ function reducer(state, action) {
     }
 
     case SET_EDIT_JOB: {
-      console.log("-------- Reducer: SET_EDIT_JOB --------");
-
-      console.log(`
-      -------- jobs --------
-
-      state.jobs:
-        ${state.jobs}
-      
-      `);
-
-      console.log(`
-      typeof state.jobs:
-        ${typeof state.jobs}
-      `);
-
-      console.log(`Printing out every entry within jobs:`);
-
-      for(let entry of Object.entries(state.jobs)){
-        console.log(entry);
-      }
-
-      console.log(`Printing out every value within jobs:`);
-
-      console.log('---- Iterating via for-loop -> "state.jobs[i]"')
-      for(let i=0; i<state.jobs.length; i++){
-        console.log(state.jobs[i]);
-      }
-
-      console.log('---- Iterating via for-of -> "Object.values(state.jobs)"')
-      for(let value of Object.values(state.jobs)){
-        console.log(value);
-      }
-      
-      console.log(typeof Object.values(state.jobs));
-      console.log(Object.values(state.jobs));
-      console.log(`------- end of jobs --------`);
-
-      console.log(`action.payload.id: ${action.payload.jobId}`);
-
       const job = Object.values(state.jobs).find( (job) => 
         job._id === action.payload.jobId
       );
 
-      // let job;
-
-      // for(let value of Object.values(state.jobs)){
-      //   if(value._id === action.payload.jobId){
-      //     job = value;
-      //   }
-      // }
-
-      console.log(`
-      -------- job variable --------
-
-      job: 
-        ${job}
-
-      -------- end of job variable --------`);
-
       const {
         _id, position, company, jobLocation, jobType, status
       } = job;
-
-      console.log(` 
-      -------- destructured properties of job variable --------
-
-      _id: ${job._id}
-      position: ${job.position}
-      company: ${job.company}
-      jobLocation: ${job.jobLocation}
-      jobType: ${job.jobType}
-      status: ${job.status}
-
-      -------- end of destructured properties --------`);
 
       return {
         ...state,
