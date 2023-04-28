@@ -10272,3 +10272,31 @@ async function populate(){
 
 Finally create a `Job` out of the `jsonProducts` data we were able to parse from the file.
 
+# Structure of the Stats Page
+
+The Stats page will be made via MongoDB's [Aggregation Pipeline](https://www.mongodb.com/docs/manual/core/aggregation-pipeline/).
+
+An aggregation pipeline consists of one or more stages that process documents:
+
+- Each stage performs an operation on the input documents. e.g., a stage can filter documents, group documents, and calculate values
+- The documents that are output from a stage are passed to the next stage
+- An aggregation piepline can return results for groups of documents. e.g., return the total, average, maximum, and minimum values
+
+To use the Aggregation Pipeline in our controller, we need to consult mongoose's [Aggregate](https://mongoosejs.com/docs/api/aggregate.html) method.
+
+Let's create the function `showStats` in the job controller which should aggregate the Job documents by first matching the ones created by the user, then grouping up by status. 
+
+Import mongoose in `jobsController` to use the aggregation methods
+
+```js
+import mongoose from 'mongoose';
+
+const showStats = async (req, res) => {
+  let stats = await Job.aggregate([
+    { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
+    { $group: { _id: '$status', count: { $sum: 1 } } },
+  ]);
+
+  res.status(StatusCodes.OK).json({ stats });
+};
+```
