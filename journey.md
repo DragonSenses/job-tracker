@@ -10152,3 +10152,43 @@ export default function Job(props) {
 Get request has been receieved and would result in a 200 response if it were not for the fact that the condition evaluated to false. 
 
 Have to look deeper into this one later.
+
+Everytime we navigate to the All Jobs page we get a `GET 304 /api/v1/jobs`
+
+```sh
+[0] GET /api/v1/jobs 304 39.820 ms - -
+```
+
+# Mock Data
+
+We will want some mock data. We will use [Mockaroo](https://mockaroo.com/) to setup test data for the application.
+
+There is:
+
+- Field Name
+- Type
+- Options
+
+Here are the fields I put:
+
+|Field Name|Type|Options|
+|----------|----|-------|
+|company| Company Name | --- |
+|position| Job Title | --- |
+|jobLocation| City | --- |
+|jobType| Custom List | full-time, part-time, remote, internship |
+| status | Custom List | interview, declined, pending |
+| createdBy | Regular Expression | ^6[a-f0-9]{23}$ |
+| createdAt | Datetime | 01/01/2022 to 01/01/2023 format: ISO 8601 (UTC) |
+
+Then at the bottom banner it says [Generate Data] [Preview] [Save AS...] [Derive From Example] [More] buttons.
+
+Let's click the Preview to confirm that it will create the data we want.
+
+Here are some sample regex expression that satisfied these requirements:
+- 24 characters long
+- Starts with 6
+- Rest of the characters are hexadecimal
+
+`^6[a-f0-9]{23}$`
+
