@@ -10192,3 +10192,6 @@ Here are some sample regex expression that satisfied these requirements:
 
 `^6[a-f0-9]{23}$`
 
+With this in place, let's check the `Preview` to see if this is the type of data we would like. If so, then click the `Generate Data`.
+
+This would produce a file in your Downloads folder called `MOCK_DATA.json`. Put this at the root of our project.
