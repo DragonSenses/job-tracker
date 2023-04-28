@@ -10382,3 +10382,24 @@ const showStats = async (req, res) => {
   res.status(StatusCodes.OK).json({ defaultStats, monthlyApplications });
 };
 ```
+
+## Stats Page | Front-End
+
+First we create the actions in `actions.js`:
+
+```js
+export const SHOW_STATS_BEGIN = 'SHOW_STATS_BEGIN';
+export const SHOW_STATS_SUCCESS = 'SHOW_STATS_SUCCESS';
+```
+
+and import these to appContext and reducer:
+```js
+  SHOW_STATS_BEGIN,
+  SHOW_STATS_SUCCESS,
+```
+
+Next we update the state for appContext.
+
+Then in showStats function we should start dispatching the actions, `authFetch` the route, dispatch another action with payload containing the `defaultStats` and `monthlyApplications`.
+
+Clear Alert after.
