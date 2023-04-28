@@ -10248,3 +10248,25 @@ populate();
 ```
 
 and immediately invoke it after.
+
+Let's setup the `try..catch`, then asynchronously connect to the database. After that we try to read the file from `MOCK_DATA.json` while making sure to parse it.
+
+Also make a meaningful error message in the `catch`, and exiting the process of Node.js with a status code of 1. See [Node.js process.exit](https://nodejs.org/api/process.html#processexitcode).
+
+```js
+async function populate(){
+  try{
+    await connectDB(process.env.MONGO_URL);
+    
+    const jsonProducts = JSON.parse(
+      await readFile(new URL('./mock-data.json', import.meta.url))
+    );
+
+  } catch(error){
+    console.log(`Error occured in populate: ${error}`);
+    console.log(error.message);
+    process.exit(1);
+  }
+}
+```
+
