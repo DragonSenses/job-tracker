@@ -10292,10 +10292,34 @@ Import mongoose in `jobsController` to use the aggregation methods
 import mongoose from 'mongoose';
 
 const showStats = async (req, res) => {
+
   let stats = await Job.aggregate([
     { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
     { $group: { _id: '$status', count: { $sum: 1 } } },
   ]);
+
+  res.status(StatusCodes.OK).json({ stats });
+};
+```
+- Get the all the job documents who matches the user
+- Group them by their status, and give a count of 1
+- The result of aggregate are JavaScript objects
+- Reduce the objects to calculate a single value based on the array. Using JavaScript's [reduce](https://javascript.info/array-methods#reduce-reduceright) method.
+```js
+import mongoose from 'mongoose';
+
+const showStats = async (req, res) => {
+  
+  let stats = await Job.aggregate([
+    { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
+    { $group: { _id: '$status', count: { $sum: 1 } } },
+  ]);
+
+    stats = stats.reduce((acc, curr) => {
+    const { _id: title, count } = curr;
+    acc[title] = count;
+    return acc;
+  }, {});
 
   res.status(StatusCodes.OK).json({ stats });
 };
