@@ -10270,3 +10270,5 @@ async function populate(){
 }
 ```
 
+Finally create a `Job` out of the `jsonProducts` data we were able to parse from the file.
+
