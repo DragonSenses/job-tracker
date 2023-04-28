@@ -10218,3 +10218,29 @@ try {
   console.error(err.message);
 }
 ```
+
+Next we need to import the following:
+- dotenv (to use our `.env` file)
+- `connectDB` method from our `db` folder
+- `Job` model
+
+So in `populate.js:`
+
+```js
+import { readFile } from 'fs/promises';
+
+import dotenv from 'dotenv';
+dotenv.config();
+
+import connectDB from './db/connect.js';
+import Job from './models/Job.js';
+```
+
+Next we create the function `populate()`
+
+```js
+
+function async populate(){
+  
+}
+```
