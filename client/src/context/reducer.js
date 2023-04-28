@@ -24,6 +24,8 @@ import {
   EDIT_JOB_BEGIN,
   EDIT_JOB_SUCCESS,
   EDIT_JOB_ERROR,
+  SHOW_STATS_BEGIN,
+  SHOW_STATS_SUCCESS,
 } from "./actions";
 
 import { initialState } from './appContext.js';
