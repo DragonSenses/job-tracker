@@ -2,6 +2,7 @@ import Job from '../models/Job.js';
 import { StatusCodes } from 'http-status-codes';
 import { BadRequestError, NotFoundError } from '../errors/index.js';
 import checkPermissions from '../utils/checkPermissions.js';
+import mongoose from 'mongoose';
 
 const createJob = async (req, res) => {
   // Extract values from the request body
@@ -86,7 +87,12 @@ const deleteJob = async (req, res) => {
 };
 
 const showStats = async (req, res) => {
-  res.send('showStats');
+  let stats = await Job.aggregate([
+    { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
+    { $group: { _id: '$status', count: { $sum: 1 } } },
+  ]);
+
+  res.status(StatusCodes.OK).json({ stats });
 };
 
 export { createJob, getAllJobs, updateJob, deleteJob, showStats }
