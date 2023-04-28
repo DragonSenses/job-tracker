@@ -10195,3 +10195,26 @@ Here are some sample regex expression that satisfied these requirements:
 With this in place, let's check the `Preview` to see if this is the type of data we would like. If so, then click the `Generate Data`.
 
 This would produce a file in your Downloads folder called `MOCK_DATA.json`. Put this at the root of our project.
+
+## Filling the database with realistic looking data
+
+Let's populate our database with the mock data we generated.
+
+Create `populate.js` at the root of the project.
+
+This script will populate our databse with the mock data from `MOCK_DATA.json`.
+
+To do so we need to use Node.js [File System](https://nodejs.org/api/fs.html#fspromisesreadfilepath-options), or more specifically its `fsPromises.readFile()` method. To asycnhronously read the entire contents of the file.
+
+Here is an example of reading a `package.json`:
+
+```js
+import { readFile } from 'node:fs/promises';
+try {
+  const filePath = new URL('./package.json', import.meta.url);
+  const contents = await readFile(filePath, { encoding: 'utf8' });
+  console.log(contents);
+} catch (err) {
+  console.error(err.message);
+}
+```
