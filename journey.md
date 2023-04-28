@@ -10240,7 +10240,11 @@ Next we create the function `populate()`
 
 ```js
 
-function async populate(){
-  
+async function populate(){
+
 }
+
+populate();
 ```
+
+and immediately invoke it after.
