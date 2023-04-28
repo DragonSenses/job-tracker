@@ -10324,3 +10324,61 @@ const showStats = async (req, res) => {
   res.status(StatusCodes.OK).json({ stats });
 };
 ```
+
+## Using default stats
+
+If any of the stats for the `status` of a job are empty, then set it to 0. We create a set of defaultStats which will determine a stat for every job status, and only set to 0 if nullish.
+
+```js
+jobsController.js;
+
+const showStats = async (req, res) => {
+
+  let stats = await Job.aggregate([
+    { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
+    { $group: { _id: '$status', count: { $sum: 1 } } },
+  ]);
+
+  stats = stats.reduce((acc, curr) => {
+    const { _id: title, count } = curr;
+    acc[title] = count;
+    return acc;
+  }, {});
+
+  const defaultStats = {
+    pending: stats.pending || 0,
+    interview: stats.interview || 0,
+    declined: stats.declined || 0,
+  };
+
+  res.status(StatusCodes.OK).json({ defaultStats });
+};
+```
+
+We will also store an array that determines the amount of monthly applications the user has made.
+
+ALl of this we will respond as an OK status code along with parsing the `defaultStats` and `monthlyApplications`.
+
+```js
+jobsController.js;
+
+const showStats = async (req, res) => {
+  let stats = await Job.aggregate([
+    { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
+    { $group: { _id: '$status', count: { $sum: 1 } } },
+  ]);
+  stats = stats.reduce((acc, curr) => {
+    const { _id: title, count } = curr;
+    acc[title] = count;
+    return acc;
+  }, {});
+
+  const defaultStats = {
+    pending: stats.pending || 0,
+    interview: stats.interview || 0,
+    declined: stats.declined || 0,
+  };
+  let monthlyApplications = [];
+  res.status(StatusCodes.OK).json({ defaultStats, monthlyApplications });
+};
+```
