@@ -10383,6 +10383,21 @@ const showStats = async (req, res) => {
 };
 ```
 
+## Stats | Back-End | Testing
+
+In Postman, try to send a GET request in the stats url. Make sure to setup the Bearer token in Authorization.
+
+### 1st Error -> Cannot invoke mongoose's ObjectId without new
+
+In jobsController add `new` keyword before invoking `ObjectId`.
+
+```js
+  let stats = await Job.aggregate([
+    { $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) } },
+    { $group: { _id: '$status', count: { $sum: 1 } } },
+  ]);
+```
+
 ## Stats Page | Front-End
 
 First we create the actions in `actions.js`:
@@ -10402,4 +10417,3 @@ Next we update the state for appContext.
 
 Then in showStats function we should start dispatching the actions, `authFetch` the route, dispatch another action with payload containing the `defaultStats` and `monthlyApplications`.
 
-Clear Alert after.
