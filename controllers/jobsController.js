@@ -104,11 +104,9 @@ const showStats = async (req, res) => {
     return acc;
   }, {});
 
-  stats = stats.reduce((acc, curr) => {
-    const { _id: title, count } = curr;
-    acc[title] = count;
-    return acc;
-  }, {});
+  console.log(`Finished reduce(), logging stats:
+  type of stats: ${typeof stats}
+  stats: ${stats}`);
 
   const defaultStats = {
     pending: stats.pending || 0,

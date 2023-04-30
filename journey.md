@@ -10400,7 +10400,46 @@ In jobsController add `new` keyword before invoking `ObjectId`.
 
 ### 2nd Error -> `stats.reduce` is not a function
 
-Did some extensive error logging.
+Did some extensive error logging. Let's save the current version of `showStats`:
+
+```js
+const showStats = async (req, res) => {
+  console.log("======== Starting Show Stats | Backend ========");
+
+  let stats = await Job.aggregate([
+    { $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) } },
+    { $group: { _id: '$status', count: { $sum: 1 } } },
+  ]);
+
+  console.log(`Finished Job.aggregate(), logging stats:
+  type of stats: ${typeof stats}
+  stats: ${stats}`);
+
+  stats = stats.reduce((acc, curr) => {
+    const { _id: title, count } = curr;
+    acc[title] = count;
+    return acc;
+  }, {});
+
+  stats = stats.reduce((acc, curr) => {
+    const { _id: title, count } = curr;
+    acc[title] = count;
+    return acc;
+  }, {});
+
+  const defaultStats = {
+    pending: stats.pending || 0,
+    interview: stats.interview || 0,
+    declined: stats.declined || 0,
+  };
+
+  let monthlyApplications = [];
+  
+  res.status(StatusCodes.OK).json({ defaultStats, monthlyApplications });
+};
+```
+
+Another error we see is that we have duplicate code. SO it is resulting in the 2nd `stats` not being treated as an array which contains the `reduce()` method. So it should be removed.
 
 ## Stats Page | Front-End
 
@@ -10423,3 +10462,25 @@ Then in showStats function we should start dispatching the actions, `authFetch` 
 
 
 
+```js
+const showStats = async () => {
+  dispatch({ type: SHOW_STATS_BEGIN });
+  const url = '/jobs/stats';
+  try{
+    const { data } = await authFetch(url);
+
+    dispatch({
+      type: SHOW_STATS_SUCCESS,
+      payload: {
+        stats: data.defaultStats,
+        monthlyApplications: data.monthlyApplications,
+      },
+    })
+  } catch(error){
+    console.log(error.response);
+    logoutUser();
+  }
+
+  clearAlert();
+};
+```
