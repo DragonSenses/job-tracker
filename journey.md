@@ -10441,6 +10441,23 @@ const showStats = async (req, res) => {
 
 Another error we see is that we have duplicate code. SO it is resulting in the 2nd `stats` not being treated as an array which contains the `reduce()` method. So it should be removed.
 
+### Postman testing
+
+Finally the next GET request to `{{base_url}}/jobs/stats` is sent, and we finally get a proper response in JSON:
+
+```json
+{
+    "defaultStats": {
+        "pending": 4,
+        "interview": 0,
+        "declined": 0
+    },
+    "monthlyApplications": []
+}
+```
+
+So the back-end works! Right now monthlyApplications are empty. 
+
 ## Stats Page | Front-End
 
 First we create the actions in `actions.js`:
