@@ -338,10 +338,31 @@ export default function AppProvider(props) {
     }
   };
 
+  const showStats = async () => {
+    dispatch({ type: SHOW_STATS_BEGIN });
+    const url = '/jobs/stats';
+    try{
+      const { data } = await authFetch(url);
+  
+      dispatch({
+        type: SHOW_STATS_SUCCESS,
+        payload: {
+          stats: data.defaultStats,
+          monthlyApplications: data.monthlyApplications,
+        },
+      })
+    } catch(error){
+      console.log(error.response);
+      logoutUser();
+    }
+  
+    clearAlert();
+  };
+
   return (
     <AppContext.Provider value = {{...state, 
     displayAlert, registerUser, loginUser, toggleSidebar, logoutUser, updateUser, handleChange,
-    clearValues, createJob, getJobs, setEditJob, deleteJob, editJob, }}>
+    clearValues, createJob, getJobs, setEditJob, deleteJob, editJob, showStats, }}>
       {children}
     </AppContext.Provider>
   )

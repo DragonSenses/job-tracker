@@ -10477,12 +10477,12 @@ Next we update the state for appContext.
 
 Then in showStats function we should start dispatching the actions, `authFetch` the route, dispatch another action with payload containing the `defaultStats` and `monthlyApplications`.
 
-
-
 ```js
 const showStats = async () => {
   dispatch({ type: SHOW_STATS_BEGIN });
+
   const url = '/jobs/stats';
+  
   try{
     const { data } = await authFetch(url);
 
@@ -10500,4 +10500,7 @@ const showStats = async () => {
 
   clearAlert();
 };
+
+// Pass it to AppContext.Provider's value prop
+value = { showStats }
 ```
