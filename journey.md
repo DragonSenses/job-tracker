@@ -10398,6 +10398,10 @@ In jobsController add `new` keyword before invoking `ObjectId`.
   ]);
 ```
 
+### 2nd Error -> `stats.reduce` is not a function
+
+Did some extensive error logging.
+
 ## Stats Page | Front-End
 
 First we create the actions in `actions.js`:
@@ -10416,4 +10420,6 @@ and import these to appContext and reducer:
 Next we update the state for appContext.
 
 Then in showStats function we should start dispatching the actions, `authFetch` the route, dispatch another action with payload containing the `defaultStats` and `monthlyApplications`.
+
+
 
