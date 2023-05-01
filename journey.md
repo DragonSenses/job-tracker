@@ -10482,7 +10482,7 @@ const showStats = async () => {
   dispatch({ type: SHOW_STATS_BEGIN });
 
   const url = '/jobs/stats';
-  
+
   try{
     const { data } = await authFetch(url);
 
@@ -10503,4 +10503,29 @@ const showStats = async () => {
 
 // Pass it to AppContext.Provider's value prop
 value = { showStats }
+```
+
+Now notice we pass in the data that we got from the backend into the payload, when we dispatch the show stats success. To be used in the front-end.
+
+### Stats Page | Reducer
+
+Handle the two new actions of the reducer.
+
+```js
+    case SHOW_STATS_BEGIN: {
+      return {
+        ...state,
+        isLoading: true,
+        showAlert: false,
+      };
+    }
+    
+    case SHOW_STATS_SUCCESS: {
+      return {
+        ...state,
+        isLoading: false,
+        stats: action.payload.stats,
+        monthlyApplications: action.payload.monthlyApplications,
+      };
+    }
 ```
