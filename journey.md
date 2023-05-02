@@ -10529,3 +10529,33 @@ Handle the two new actions of the reducer.
       };
     }
 ```
+
+## Stats Page - Structure II
+
+We have to now work on the Stats component under pages.
+
+```js
+import React from 'react';
+import { useAppContext } from '../../context/appContext';
+import { Loading } from '../../components';
+
+export default function Stats() {
+  const {
+    showStats,
+    isLoading,
+    monthlyApplications,
+  } = useAppContext();
+
+
+  if(isLoading){
+    return <Loading center />;
+  }
+
+  return (
+    <h1>Stats Page</h1>
+  );
+}
+```
+
+If the page is in the process of retrieving data then we should render the `Loading` component. Next destructure out `showStats` function, `isLoading` and `monthlyApplications` from app context.
+
