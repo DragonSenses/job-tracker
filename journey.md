@@ -10640,3 +10640,21 @@ export default function StatsContainer() {
 }
 ```
 
+For now we have `defaultStats` as an empty array, but we will populate them with the catageries we want to display the stats for the user. 
+
+What we will render will be every Stat, so we will have to use `map()`. It also means we have to create another component, a `StatItem` component.
+
+Let's create one with rfc, then import it.
+
+What to render in `StatsContainer`:
+
+```js
+  return (
+    <Wrapper>
+      {defaultStats.map((item, index) => {
+        return <StatItem key={index} {...item} />;
+      })};
+    </Wrapper>
+  );
+```
+
