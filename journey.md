@@ -10621,3 +10621,22 @@ export default function Stats() {
 ```
 
 Here we import the following components along with rendering it together inside a `Fragment` in React [Fragment docs](https://react.dev/reference/react/Fragment). Which is used with `<>...</>` a shortcut syntax.
+
+### `StatsContainer` component
+
+```js
+import React from 'react';
+import { useAppContext } from '../../context/appContext';
+import Wrapper from '../assets/wrappers/StatsContainer';
+
+export default function StatsContainer() {
+  const { stats } = useAppContext();
+
+  const defaultStats = [];
+
+  return (
+    <Wrapper>StatsContainer</Wrapper>
+  );
+}
+```
+
