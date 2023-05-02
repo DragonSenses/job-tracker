@@ -10559,3 +10559,30 @@ export default function Stats() {
 
 If the page is in the process of retrieving data then we should render the `Loading` component. Next destructure out `showStats` function, `isLoading` and `monthlyApplications` from app context.
 
+We should also use `useEffect` to synchronize changes with the `showStats` function.
+
+```js
+import React, { useEffect } from 'react';
+import { useAppContext } from '../../context/appContext';
+import { Loading } from '../../components';
+
+export default function Stats() {
+  const {
+    showStats,
+    isLoading,
+    monthlyApplications,
+  } = useAppContext();
+
+  useEffect(() => {
+    showStats();
+  }, []);
+
+  if(isLoading){
+    return <Loading center />;
+  }
+
+  return (
+    <h1>Stats Page</h1>
+  );
+}
+```

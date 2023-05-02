@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAppContext } from '../../context/appContext';
 import { Loading } from '../../components';
 
@@ -9,6 +9,9 @@ export default function Stats() {
     monthlyApplications,
   } = useAppContext();
 
+  useEffect(() => {
+    showStats();
+  }, []);
 
   if(isLoading){
     return <Loading center />;
