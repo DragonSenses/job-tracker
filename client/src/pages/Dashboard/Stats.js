@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useAppContext } from '../../context/appContext';
-import { Loading } from '../../components';
+import { ChartsContainer, Loading, StatsContainer } from '../../components';
 
 export default function Stats() {
   const {
@@ -18,6 +18,9 @@ export default function Stats() {
   }
 
   return (
-    <h1>Stats Page</h1>
+    <>
+      <StatsContainer />
+      { monthlyApplications.length > 0 && <ChartsContainer />}
+    </>
   );
 }

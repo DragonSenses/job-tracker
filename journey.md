@@ -10586,3 +10586,38 @@ export default function Stats() {
   );
 }
 ```
+
+**There will be two components rendered inside the stat page. At the top side we will have a `StatsContainer` and on the bottom will have a `ChartsContainer` that visually displays the applications only if monthlyApplications exceed 0.
+
+Let's create those components under the `components` folder.
+
+```js
+import React, { useEffect } from 'react';
+import { useAppContext } from '../../context/appContext';
+import { ChartsContainer, Loading, StatsContainer } from '../../components';
+
+export default function Stats() {
+  const {
+    showStats,
+    isLoading,
+    monthlyApplications,
+  } = useAppContext();
+
+  useEffect(() => {
+    showStats();
+  }, []);
+
+  if(isLoading){
+    return <Loading center />;
+  }
+
+  return (
+    <>
+      <StatsContainer />
+      { monthlyApplications.length > 0 && <ChartsContainer />}
+    </>
+  );
+}
+```
+
+Here we import the following components along with rendering it together inside a `Fragment` in React [Fragment docs](https://react.dev/reference/react/Fragment). Which is used with `<>...</>` a shortcut syntax.
