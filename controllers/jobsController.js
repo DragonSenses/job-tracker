@@ -3,6 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { BadRequestError, NotFoundError } from '../errors/index.js';
 import checkPermissions from '../utils/checkPermissions.js';
 import mongoose from 'mongoose';
+import moment from 'moment';
 
 const createJob = async (req, res) => {
   // Extract values from the request body
@@ -132,6 +133,15 @@ const showStats = async (req, res) => {
     {$limit: 6 },
   ]);
   
+  monthlyApplications = monthlyApplications.map((item) => {
+    const {
+      _id: { year, month },
+      count,
+    } = item;
+    
+    const date = year;
+  });
+
   res.status(StatusCodes.OK).json({ defaultStats, monthlyApplications });
 };
 
