@@ -115,10 +115,10 @@ const showStats = async (req, res) => {
   };
 
   let monthlyApplications = await Job.aggregate([
-    {$match: },
-    {$group: },
-    {$sort: },
-    {$limit: },
+    {$match: { createdBy: mongoose.Types.ObjectId(req.user.userId) }},
+    {$group: {  }},
+    {$sort: { '_id.year': -1, '_id.month': -1 }},
+    {$limit: 6 },
   ]);
   
   res.status(StatusCodes.OK).json({ defaultStats, monthlyApplications });

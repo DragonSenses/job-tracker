@@ -10753,3 +10753,10 @@ let monthlyApplications = await Job.aggregate([
   {$limit: },
 ]);
 ```
+
+We can create our Aggregation Pipeline in Mongoose, see the [docs on Aggregation](https://www.mongodb.com/docs/manual/core/aggregation-pipeline/).
+
+- The `$match` stage: Filters the Job documents to jobs made by the current user. Passes the remaining documents to the `$group` stage.
+- The `$group` stage: Groups the remaining documents by their year & month. 
+- The `$sort` stage: Sorts the documents by the total order value for each group in descending order (-1).
+- The `$limit` stage: Limits it to 6 jobs
