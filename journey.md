@@ -10758,5 +10758,6 @@ We can create our Aggregation Pipeline in Mongoose, see the [docs on Aggregation
 
 - The `$match` stage: Filters the Job documents to jobs made by the current user. Passes the remaining documents to the `$group` stage.
 - The `$group` stage: Groups the remaining documents by their year & month. 
+  - Use `$sum` to calculate the sum, available during `$group` stage. See the docs on [sum aggregate](https://www.mongodb.com/docs/manual/reference/operator/aggregation/sum/)
 - The `$sort` stage: Sorts the documents by the total order value for each group in descending order (-1).
 - The `$limit` stage: Limits it to 6 jobs
