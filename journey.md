@@ -10735,3 +10735,21 @@ export default function StatItem(props) {
 }
 ```
 
+## Stats Page | Aggregate Jobs based on Year & Month
+
+In `jobsController`, we want to pass some parameters to the aggregation pipeline in this order:
+- match, by those created by `this` user
+- group, by its year and month, give it a count of 1 for each
+- sort, by year and month,
+- limit, by 6
+
+Let's try to make a template and call it `monthlyApplications`
+
+```js
+let monthlyApplications = await Job.aggregate([
+  {$match: },
+  {$group: },
+  {$sort: },
+  {$limit: },
+]);
+```
