@@ -118,8 +118,8 @@ const showStats = async (req, res) => {
     {$match: { createdBy: mongoose.Types.ObjectId(req.user.userId) }},
     {$group: {
       _id: {
-        year: { },
-        month: { },
+        year: { $year: '$year' },
+        month: { $month: '$month' },
       },
       count: { $sum: 1 },
       },
