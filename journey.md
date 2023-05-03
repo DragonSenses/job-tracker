@@ -10763,3 +10763,23 @@ We can create our Aggregation Pipeline in Mongoose, see the [docs on Aggregation
   - Use `$sum` to calculate the sum, available during `$group` stage. See the docs on [sum aggregate](https://www.mongodb.com/docs/manual/reference/operator/aggregation/sum/)
 - The `$sort` stage: Sorts the documents by the total order value for each group in descending order (-1).
 - The `$limit` stage: Limits it to 6 jobs
+
+```js
+  let monthlyApplications = await Job.aggregate([
+    {$match: { createdBy: mongoose.Types.ObjectId(req.user.userId) }},
+    {$group: {
+      _id: {
+        year: { 
+          $year: '$createdAt' 
+        },
+        month: { 
+          $month: '$createdAt' 
+        },
+      },
+      count: { $sum: 1 },
+      },
+    },
+    {$sort: { '_id.year': -1, '_id.month': -1 }},
+    {$limit: 6 },
+  ]);
+```
