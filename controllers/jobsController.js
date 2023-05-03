@@ -145,7 +145,7 @@ const showStats = async (req, res) => {
       .format('MMM YYYY');
 
     return { date, count };
-  });
+  }).reverse();
 
   res.status(StatusCodes.OK).json({ defaultStats, monthlyApplications });
 };
