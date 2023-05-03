@@ -10783,3 +10783,16 @@ We can create our Aggregation Pipeline in Mongoose, see the [docs on Aggregation
     {$limit: 6 },
   ]);
 ```
+
+# Refactoring the data: `monthlyApplications`
+
+So far we need to do an extra step, as testing in Postman shows that we want to transform the data into something more digestable. The dates are one of those things that need to be refactored.
+
+We can map each item by its `date` and `count` so we need to destructure `_id`'s then `year` and `month`, its `count`. Next create a date using these values.. The date should be in a more readable format. Let's use `moment.js` like we did in the front-end.
+
+```sh
+npm i moment
+```
+
+Then create the date, and return it along with the count for each item in `monthlyApplications`.
+
