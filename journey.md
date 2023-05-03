@@ -10735,6 +10735,8 @@ export default function StatItem(props) {
 }
 ```
 
+### Fix component's `index` to export the proper components
+
 ## Stats Page | Aggregate Jobs based on Year & Month
 
 In `jobsController`, we want to pass some parameters to the aggregation pipeline in this order:
