@@ -114,7 +114,12 @@ const showStats = async (req, res) => {
     declined: stats.declined || 0,
   };
 
-  let monthlyApplications = [];
+  let monthlyApplications = await Job.aggregate([
+    {$match: },
+    {$group: },
+    {$sort: },
+    {$limit: },
+  ]);
   
   res.status(StatusCodes.OK).json({ defaultStats, monthlyApplications });
 };
