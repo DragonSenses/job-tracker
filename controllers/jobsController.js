@@ -139,7 +139,12 @@ const showStats = async (req, res) => {
       count,
     } = item;
     
-    const date = year;
+    const date = moment()
+      .month(month - 1)
+      .year(year)
+      .format('MMM YYYY');
+
+    return { date, count };
   });
 
   res.status(StatusCodes.OK).json({ defaultStats, monthlyApplications });

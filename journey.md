@@ -10795,4 +10795,33 @@ npm i moment
 ```
 
 Then create the date, and return it along with the count for each item in `monthlyApplications`.
+Put this after the aggregation pipeline:
 
+```js
+  monthlyApplications = monthlyApplications.map((item) => {
+    const {
+      _id: { year, month },
+      count,
+    } = item;
+    
+    const date = year;
+  });
+```
+
+Remember that in moment the data accepts values 0-11, such that month must be subtracted by 1 to get the right month.
+
+```js
+  monthlyApplications = monthlyApplications.map((item) => {
+    const {
+      _id: { year, month },
+      count,
+    } = item;
+    
+    const date = moment()
+      .month(month - 1)
+      .year(year)
+      .format('MMM YYYY');
+
+    return { date, count };
+  });
+```
