@@ -10658,7 +10658,7 @@ What to render in `StatsContainer`:
   );
 ```
 
-Next we will fill out the `defaultStats` array with objects containing each stat, their count, an icon, color and background color.
+Next we will fill out the `defaultStats` array with objects containing each stat's count, an icon, color and background color.
 
 ```js
 import React from 'react';
@@ -10703,3 +10703,35 @@ export default function StatsContainer() {
   );
 }
 ```
+
+### StatItem component
+
+So for every Stat Item we render out, we should have the following:
+
+- `title`, or the name of the stat
+- `count`, the stat count
+- `icon`, an icon to represent the stat
+- `color`, to color the Stat
+- `bcg`, background color
+
+Let's pass these in as `props` and destructure them out for usage.
+
+```js
+import React from 'react';
+import Wrapper from '../assets/wrappers/StatItem';
+
+export default function StatItem(props) {
+  const { count, title, icon, color, bcg } = props;
+
+  return (
+    <Wrapper color={color} bcg={bcg}>
+      <header>
+        <span className="count">{count}</span>
+        <div className="icon">{icon}</div>
+      </header>
+      <h5 className="title">{title}</h5>
+    </Wrapper>
+  );
+}
+```
+
