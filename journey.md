@@ -10825,3 +10825,21 @@ Remember that in moment the data accepts values 0-11, such that month must be su
     return { date, count };
   });
 ```
+
+After some Postman testing, the data passed in from the pipeline is actually in the reverse order that we want. So we need to append the `map()` operation with a `reverse()` operation.
+
+```js
+  monthlyApplications = monthlyApplications.map((item) => {
+    const {
+      _id: { year, month },
+      count,
+    } = item;
+    
+    const date = moment()
+      .month(month - 1)
+      .year(year)
+      .format('MMM YYYY');
+
+    return { date, count };
+  }).reverse();
+```
