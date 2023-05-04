@@ -12,6 +12,14 @@ import {
 
 export default function AreaChartComponent() {
   return (
-    <div>AreaChart</div>
+    <ResponsiveContainer width='100%' height={300}>
+      <AreaChart>
+        <CartesianGrid />
+        <XAxis />
+        <YAxis />
+        <Tooltip />
+        <Area />
+      </AreaChart>
+    </ResponsiveContainer>
   );
 }
