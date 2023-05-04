@@ -1,13 +1,13 @@
 import React from 'react';
 
 import {
-  BarChart,
   Bar,
-  XAxis,
-  YAxis,
+  BarChart,
   CartesianGrid,
+  ResponsiveContainer,
   Tooltip,
-  ResponsiveContainer
+  XAxis,
+  YAxis
 } from 'recharts';
 
 export default function BarChartComponent({ data }) {
