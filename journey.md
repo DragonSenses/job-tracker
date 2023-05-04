@@ -10879,3 +10879,41 @@ In order to speed up development time and make the charts more visually appealin
 ```sh
 npm install recharts
 ```
+
+## BarChart Component
+
+Let's setup the React Functional Component along with the things we plan to use from `recharts`.
+
+```js
+import React from 'react';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer
+} from 'recharts';
+
+export default function BarChart() {
+  return (
+    <div>BarChart</div>
+  );
+}
+```
+
+Here we have an error, `BarChart` has already been declared. I would like to keep the name `BarChart.js` as a component so instead we should rename the function to `BarChartComponent`. Then the React element we want to return from the function should be a `ResponsiveContainer` that contains the `BarChart` component from `recharts`.
+
+```js
+export default function BarChartComponent() {
+  return (
+    <ResponsiveContainer width='100%' height={300}>
+      <BarChart>
+        
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
+```
+

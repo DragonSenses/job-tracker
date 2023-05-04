@@ -1,7 +1,21 @@
 import React from 'react';
 
-export default function BarChart() {
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer
+} from 'recharts';
+
+export default function BarChartComponent() {
   return (
-    <div>BarChart</div>
+    <ResponsiveContainer width='100%' height={300}>
+      <BarChart>
+        
+      </BarChart>
+    </ResponsiveContainer>
   );
 }
