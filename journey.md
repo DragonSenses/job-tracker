@@ -10884,6 +10884,8 @@ npm install recharts
 
 Let's setup the React Functional Component along with the things we plan to use from `recharts`.
 
+With help of the [recharts guide](https://recharts.org/en-US/guide/getting-started) we can get started with visually displaying our stats.
+
 ```js
 import React from 'react';
 import {
@@ -10905,15 +10907,19 @@ export default function BarChart() {
 
 Here we have an error, `BarChart` has already been declared. I would like to keep the name `BarChart.js` as a component so instead we should rename the function to `BarChartComponent`. Then the React element we want to return from the function should be a `ResponsiveContainer` that contains the `BarChart` component from `recharts`.
 
+Let's pass in the data first from the props and pass it to `BarChart`. Also give BarChart a margin of `top: 50`.
+
 ```js
-export default function BarChartComponent() {
+export default function BarChartComponent({ data }) {
   return (
     <ResponsiveContainer width='100%' height={300}>
-      <BarChart>
+      <BarChart data={data} margin={{ top: 50 }}>
         
       </BarChart>
     </ResponsiveContainer>
   );
 }
 ```
+
+Next let's add the remaining components that want to be drawn.
 

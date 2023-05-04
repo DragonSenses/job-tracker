@@ -10,11 +10,11 @@ import {
   ResponsiveContainer
 } from 'recharts';
 
-export default function BarChartComponent() {
+export default function BarChartComponent({ data }) {
   return (
     <ResponsiveContainer width='100%' height={300}>
-      <BarChart>
-        
+      <BarChart data={data} margin={{ top: 50 }}>
+
       </BarChart>
     </ResponsiveContainer>
   );
