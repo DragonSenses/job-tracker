@@ -10843,3 +10843,39 @@ After some Postman testing, the data passed in from the pipeline is actually in 
     return { date, count };
   }).reverse();
 ```
+
+# ChartsContainer component
+
+Going to work on the ChartsContainer.
+
+```js
+import React, {useState} from 'react';
+import { useAppContext } from '../context/appContext';
+import Wrapper from '../assets/wrappers/ChartsContainer';
+
+export default function ChartsContainer() {
+  const { monthlyApplications: data } = useAppContext();
+
+  return (
+    <Wrapper>
+      <h4>Monthly Applications</h4>
+
+      <button type='button' onClick={}>
+
+      </button>
+    </Wrapper>
+  );
+}
+```
+
+Going to import Wrapper, get `monthlyApplications` from global context and rename to `data` (for shorter name to pass as props).
+
+In the ChartsContainer we are going to need to create 2 components to visually display the stats on the front page. One of them is a `BarChart` component, which we should be able to to create a state variable for so that we can re-render visually if a stat has changed. 
+
+The next component to create is the `AreaChart` which will be the graph that supports the `BarChart` component.
+
+In order to speed up development time and make the charts more visually appealing we need a package with reusuable charting library component called [Recharts](https://recharts.org). Remember to install this in the `client` folder, the front-end.
+
+```sh
+npm install recharts
+```
