@@ -10946,3 +10946,28 @@ For the `XAxis` the `dataKey` will be `'date'`. As for the `YAxis`, the prop `al
 `Tooltip` will remain as is.
 
 `Bar` will have a prop `dataKey` of `count`, with a `barSize` of 75, and a `fill` of `#2cb1bc`.
+
+
+## AreaChart Component
+
+Similarly, AreaChart component will be made the same way. In `AreaChart.js`, under components folder, the function name will be `AreaChartComponent`. The imports are all the same except for `Bar` and `BarChart`, they will be replaced with `Area` and `AreaChart`.
+
+```js
+import React from 'react';
+
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis
+} from 'recharts';
+
+export default function AreaChartComponent() {
+  return (
+    <div>AreaChart</div>
+  );
+}
+```
