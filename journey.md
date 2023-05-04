@@ -10923,3 +10923,26 @@ export default function BarChartComponent({ data }) {
 
 Next let's add the remaining components that want to be drawn.
 
+```js
+export default function BarChartComponent({ data }) {
+  return (
+    <ResponsiveContainer width='100%' height={300}>
+      <BarChart data={data} margin={{ top: 50 }}>
+        <CartesianGrid />
+        <XAxis />
+        <YAxis />
+        <Tooltip />
+        <Bar />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
+```
+
+For the `CartesianGrid` we can give it the props `stroke = #ccc` and a `strokeDasharray ="3 3"` for a dashed line for increased readability.
+
+For the `XAxis` the `dataKey` will be `'date'`. As for the `YAxis`, the prop `allowDecimals={false}` so we won't have decimals. 
+
+`Tooltip` will remain as is.
+
+`Bar` will have a prop `dataKey` of `count`, with a `barSize` of 75, and a `fill` of `#2cb1bc`.
