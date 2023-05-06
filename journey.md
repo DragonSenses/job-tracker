@@ -11109,3 +11109,40 @@ Here are the things we plan to do:
   res.status(StatusCodes.OK)
      .json({ jobs, totalJobs: jobs.length, numOfPages: 1 });
 ```
+
+- Just to save what we have so far:
+```js
+const getAllJobs = async (req, res) => {
+  // Create queryObject that keeps track of the user
+  const queryObject = { 
+    createdBy: req.user.userId,
+  };
+
+  // Find the jobs created by the user from the request
+  const jobs = await Job.find(queryObject);
+
+  // Destructure the necessary variables from request's query
+  const { search, status, jobType, sort } = req.query;
+
+  // Find the job results of the user WITHOUT await
+  let result = Job.find(queryObject);
+  
+  // Chain sort conditions to filter results
+  // TODO later...
+
+  // Await jobs filtered out by sort conditions
+  const jobsFiltered = await result;
+
+  // Respond with 200 and a json containing the jobs, totalJobs, and pages
+  res.status(StatusCodes.OK)
+     .json({ jobs, totalJobs: jobs.length, numOfPages: 1 });
+};
+```
+
+## Adding `Status` to the query
+
+We want to add one more property to the `queryObject` called `status`.
+
+Status will keep track of the stages of the query and sort. For now we will just check for if status is not `'all'` then we have to set the status of the `queryObject`.
+
+Updated version:
