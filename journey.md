@@ -11032,3 +11032,30 @@ export default function AreaChartComponent({ data }) {
   );
 }
 ```
+`
+With the components made, we can now use them within `ChartsContainer`
+
+## Wrapping up ChartsContainer component
+
+- Import AreaChart component and BarChart component directly
+```js
+import AreaChart from './AreaChart';
+import BarChart from './BarChart';
+```
+
+- Set `barChart` as a state variable, with `setBarChart` as the set function. We pass in `true` as the .
+
+```js
+const [barChart, setBarChart] = useState(true);
+```
+
+- Create a button that will have its `onClick` handler `setBarChart` or not. This will toggle between `AreaChart` or `BarChart`
+- After the button, conditionally render the corresponding Chart component based on the state variable `barChart`
+
+```js
+<button type='button' onClick={() => setBarChart(!barChart)}>
+  {barChart ? 'AreaChart' : 'BarChart'}
+</button>
+
+{barChart ? <BarChart data={data} /> : <AreaChart data={data} />}
+```
