@@ -11059,3 +11059,53 @@ const [barChart, setBarChart] = useState(true);
 
 {barChart ? <BarChart data={data} /> : <AreaChart data={data} />}
 ```
+
+# Filtering Results
+
+The next step is to filter out the results of `Get All Jobs`.
+
+Let's start in the back-end. Back in the `jobsController.js` we will modify the `getAllJobs` function:
+
+```js
+const getAllJobs = async (req, res) => {
+  // Find the jobs created the user from the request
+  const jobs = await Job.find({ createdBy: req.user.userId });
+
+  // Respond with 200 and a json containing the jobs, totalJobs, and pages
+  res.status(StatusCodes.OK)
+     .json({ jobs, totalJobs: jobs.length, numOfPages: 1 });
+};
+```
+
+Here are the things we plan to do:
+
+- From the request's `query` we should destructure out `search`, `status`, `jobType` and `sort`
+- Create a query Object that stores one property -> `createdBy` which is set to `req.user.userId` to keep track of the user who made the request
+
+```js
+  const { search, status, jobType, sort } = req.query;
+
+  const queryObject = {
+    createdBy: req.user.userId,
+  };
+```
+
+- Next we have to find every Job document in the model that relates to the user. We do not use await.
+- At this stage we should chain each sort condition
+- Now we use await to the result and store the result inside a variable called `jobs`
+
+```js
+ // NO AWAIT
+  let result = Job.find(queryObject);
+
+  // chain sort conditions
+
+  const jobs = await result;
+```
+
+- Finally, send back the response with a OK status code along with converting it into `json` containing `jobs`, `totalJobs`, `numOfPages`. This is already included.
+
+```js
+  res.status(StatusCodes.OK)
+     .json({ jobs, totalJobs: jobs.length, numOfPages: 1 });
+```
