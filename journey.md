@@ -11146,3 +11146,72 @@ We want to add one more property to the `queryObject` called `status`.
 Status will keep track of the stages of the query and sort. For now we will just check for if status is not `'all'` then we have to set the status of the `queryObject`.
 
 Updated version:
+
+```js
+const getAllJobs = async (req, res) => {
+  // Destructure the necessary variables from request's query
+  const { search, status, jobType, sort } = req.query;
+
+  // Create queryObject that keeps track of the user
+  const queryObject = { 
+    createdBy: req.user.userId,
+  };
+
+  // Set the status of the query if not `all`
+  if (status !== 'all'){
+    queryObject.status = status;
+  }
+
+  // Find the jobs created by the user from the request (WITHOUT await)
+  let result = Job.find(queryObject);
+  
+  // Chain sort conditions to filter results
+  // TODO later...
+
+  // Await jobs filtered out by sort conditions
+  const jobs = await result;
+
+  // Respond with 200 and a json containing the jobs, totalJobs, and pages
+  res.status(StatusCodes.OK)
+     .json({ jobs, totalJobs: jobs.length, numOfPages: 1 });
+};
+```
+
+## Adding `jobType` to the query
+
+Adding one more property to `queryObject`, which will be the `jobType` if it is not set to `'all'`.
+
+```js
+const getAllJobs = async (req, res) => {
+  // Destructure the necessary variables from request's query
+  const { search, status, jobType, sort } = req.query;
+
+  // Create queryObject that keeps track of the user
+  const queryObject = { 
+    createdBy: req.user.userId,
+  };
+
+  // Set the status of the query if not `all`
+  if (status !== 'all'){
+    queryObject.status = status;
+  }
+
+  // Set the jobType of the query if not 'all'
+  if (jobType !== 'all'){
+    queryObject.jobType = jobType;
+  }
+
+  // Find the jobs created by the user from the request (WITHOUT await)
+  let result = Job.find(queryObject);
+  
+  // Chain sort conditions to filter results
+  // TODO later...
+
+  // Await jobs filtered out by sort conditions
+  const jobs = await result;
+
+  // Respond with 200 and a json containing the jobs, totalJobs, and pages
+  res.status(StatusCodes.OK)
+     .json({ jobs, totalJobs: jobs.length, numOfPages: 1 });
+};
+```
