@@ -10947,6 +10947,21 @@ For the `XAxis` the `dataKey` will be `'date'`. As for the `YAxis`, the prop `al
 
 `Bar` will have a prop `dataKey` of `count`, with a `barSize` of 75, and a `fill` of `#2cb1bc`.
 
+```js
+export default function BarChartComponent({ data }) {
+  return (
+    <ResponsiveContainer width='100%' height={300}>
+      <BarChart data={data} margin={{ top: 50 }}>
+        <CartesianGrid stroke="#ccc" strokeDasharray="3 3"/>
+        <XAxis dataKey='date' />
+        <YAxis allowDecimals={false} />
+        <Tooltip />
+        <Bar dataKey='count' fill='#2cb1bc' barSize={75} />
+      </BarChart >
+    </ResponsiveContainer>
+  );
+}
+```
 
 ## AreaChart Component
 
@@ -10967,7 +10982,53 @@ import {
 
 export default function AreaChartComponent() {
   return (
-    <div>AreaChart</div>
+    <AreaChart>
+      <Area />
+    </AreaChart>
+  );
+}
+```
+
+Just like in the recharts guide, that was the 1st step.
+
+### 1. Choose the type of chart you need
+
+In this case, it is AreaChart. With Area within.
+
+### 2. Add components that you want to be drawn
+
+Wrap the entire `AreaChart` with `ResponsiveContainer. Then add the rest of the components we imported.
+
+```js
+export default function AreaChartComponent() {
+  return (
+    <ResponsiveContainer width='100%' height={300}>
+      <AreaChart>
+        <CartesianGrid />
+        <XAxis />
+        <YAxis />
+        <Tooltip />
+        <Area />
+      </AreaChart>
+    </ResponsiveContainer>
+  );
+}
+```
+
+### 3. Adjust the props of components
+
+```js
+export default function AreaChartComponent({ data }) {
+  return (
+    <ResponsiveContainer width='100%' height={300}>
+      <AreaChart data={data} margin={{ top:50 }}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis />
+        <YAxis />
+        <Tooltip />
+        <Area />
+      </AreaChart>
+    </ResponsiveContainer>
   );
 }
 ```
