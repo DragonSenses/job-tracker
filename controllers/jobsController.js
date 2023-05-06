@@ -25,8 +25,25 @@ const createJob = async (req, res) => {
 };
 
 const getAllJobs = async (req, res) => {
-  // Find the jobs created the user from the request
-  const jobs = await Job.find({ createdBy: req.user.userId });
+  // Create queryObject that keeps track of the user
+  const queryObject = { 
+    createdBy: req.user.userId,
+  };
+
+  // Find the jobs created by the user from the request
+  const jobs = await Job.find(queryObject);
+
+  // Destructure the necessary variables from request's query
+  const { search, status, jobType, sort } = req.query;
+
+  // Find the job results of the user WITHOUT await
+  let result = Job.find(queryObject);
+  
+  // Chain sort conditions to filter results
+  // TODO later...
+
+  // Await jobs filtered out by sort conditions
+  const jobsFiltered = await result;
 
   // Respond with 200 and a json containing the jobs, totalJobs, and pages
   res.status(StatusCodes.OK)
