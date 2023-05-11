@@ -11313,3 +11313,23 @@ const initialState = {
 
 We add `search`, `searchStatus`, `searchType`, `sort` & `sortOptions` as properties to `initialState` object.
 
+Next we would like a way to clear out our search filters. Let's create a function that does this, and pass it into the `value` prop of `AppProvider`. For now, it just logs a string to show that its been invoked.
+
+```js
+const clearFilters = () => {
+  console.log('Clear Filters');
+}
+```
+
+Next we should remember the `handleChange` function inside `appContext`:
+
+```js
+  const handleChange = ({ name, value }) => {
+    dispatch({
+      type: HANDLE_CHANGE,
+      payload: { name, value },
+    });
+  };
+```
+
+Going to reuse this functionality to handle our Search function.
