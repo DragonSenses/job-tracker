@@ -48,10 +48,10 @@ const initialState = {
   position: '',
   company: '',
   jobLocation: userLocation || '',
-  jobTypeOptions: ['full-time', 'part-time', 'remote', 'internship'],
   jobType: 'full-time',
-  statusOptions: ['interview', 'declined', 'pending'],
+  jobTypeOptions: ['full-time', 'part-time', 'remote', 'internship'],
   status: 'pending',
+  statusOptions: ['interview', 'declined', 'pending'],
   isEditing: false,
   editJobId: '',
   jobs: [],
@@ -60,6 +60,11 @@ const initialState = {
   page: 1,
   stats: {},
   monthlyApplications: [],
+  search: '',
+  searchStatus: 'all',
+  searchType: 'all',
+  sort: 'latest',
+  sortOptions: ['latest', 'oldest', 'a-z', 'z-a'],
 }
 
 const AppContext = React.createContext();
