@@ -43,11 +43,30 @@ const getAllJobs = async (req, res) => {
     queryObject.jobType = jobType;
   }
 
+  // Add position property to queryObject if search is non-empty
+  if (search) {
+    queryObject.position = { $regex: search, $options: 'i' };
+  }
+
   // Find the jobs created by the user from the request (WITHOUT await)
   let result = Job.find(queryObject);
   
   // Chain sort conditions to filter results
-  // TODO later...
+  switch(sort){
+    case 'latest': {
+      result = result.sort('-createdAt');
+    }
+  
+    case 'oldest': {
+      result = result.sort('createdAt');
+    }
+  
+    // ...
+  
+    default: {
+      return;
+    }
+  }
 
   // Await jobs filtered out by sort conditions
   const jobs = await result;
