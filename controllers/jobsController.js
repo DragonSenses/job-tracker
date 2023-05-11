@@ -38,6 +38,11 @@ const getAllJobs = async (req, res) => {
     queryObject.status = status;
   }
 
+  // Set the jobType of the query if not 'all'
+  if (jobType !== 'all'){
+    queryObject.jobType = jobType;
+  }
+
   // Find the jobs created by the user from the request (WITHOUT await)
   let result = Job.find(queryObject);
   
