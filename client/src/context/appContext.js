@@ -364,10 +364,14 @@ export default function AppProvider(props) {
     clearAlert();
   };
 
+  const clearFilters = () => {
+    console.log('Clear Filters');
+  }
+
   return (
     <AppContext.Provider value = {{...state, 
     displayAlert, registerUser, loginUser, toggleSidebar, logoutUser, updateUser, handleChange,
-    clearValues, createJob, getJobs, setEditJob, deleteJob, editJob, showStats, }}>
+    clearValues, createJob, getJobs, setEditJob, deleteJob, editJob, showStats, clearFilters, }}>
       {children}
     </AppContext.Provider>
   )
