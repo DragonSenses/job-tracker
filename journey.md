@@ -11229,21 +11229,10 @@ if (search) {
 let result = Job.find(queryObject);
 
 // Chain Sort Conditions
-switch(sort){
-  case 'latest': {
-    result = result.sort('-createdAt');
-  }
-
-  case 'oldest': {
-    result = result.sort('createdAt');
-  }
-
-  // ...
-
-  default: {
-    break;
-  }
+if(sort === 'latest') {
+  result = result.sort('-createdAt');
 }
+// ...
 ```
 
 Inside `getAllJobs`:
@@ -11271,10 +11260,8 @@ const getAllJobs = async (req, res) => {
 
   let result = Job.find(queryObject);
   
-  // Chain sort conditions to filter results
-  switch(sort){
-    // ...
-  }
+  // Chain sort conditions
+  // if(sort === ...) { }
 
   const jobs = await result;
 
@@ -11289,28 +11276,21 @@ Let's add more conditions to filter out our results.
 
 ```js
 // Chain Sort Conditions
-switch(sort){
-  case 'latest': {
-    result = result.sort('-createdAt');
-  }
+if(sort === 'latest') {
+  result = result.sort('-createdAt');
+}
 
-  case 'oldest': {
-    result = result.sort('createdAt');
-  }
+if(sort === 'oldest') {
+  result = result.sort('createdAt');
+}
 
-  case 'a-z': {
-    result = result.sort('position');
-  }
+if(sort === 'a-z') {
+  result = result.sort('position');
+}
 
-  case 'z-a': {
-    result = result.sort('-position');
-  }
-
-  default: {
-    break;
-  }
+if(sort === 'z-a') {
+  result = result.sort('-position');
 }
 ```
 
-Here I am taking advantage of the fact **If there is no `break` then the execution continues with the next `case` without any checks**.
-
+So far sort conditions are by `createdAt` or date made and alphabetical order or reverse alphabetical order.

@@ -52,26 +52,20 @@ const getAllJobs = async (req, res) => {
   let result = Job.find(queryObject);
   
   // Chain sort conditions to filter results
-  switch(sort){
-    case 'latest': {
-      result = result.sort('-createdAt');
-    }
+  if(sort === 'latest') {
+    result = result.sort('-createdAt');
+  }
   
-    case 'oldest': {
-      result = result.sort('createdAt');
-    }
+  if(sort === 'oldest') {
+    result = result.sort('createdAt');
+  }
   
-    case 'a-z': {
-      result = result.sort('position');
-    }
+  if(sort === 'a-z') {
+    result = result.sort('position');
+  }
   
-    case 'z-a': {
-      result = result.sort('-position');
-    }
-  
-    default: {
-      break;
-    }
+  if(sort === 'z-a') {
+    result = result.sort('-position');
   }
 
   // Await jobs filtered out by sort conditions
