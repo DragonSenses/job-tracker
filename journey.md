@@ -11302,13 +11302,7 @@ In `appContext` let's set up thhe search and all its variables that's needed in 
 What we add should look something like this:
 ```js
 const initialState = {
-  jobType: 'full-time',
-  jobTypeOptions: ['full-time', 'part-time', 'remote', 'internship'],
-  status: 'pending',
-  statusOptions: ['pending', 'interview', 'declined']
-  //
-  //
-  //
+  // ...
   search: '',
   searchStatus: 'all',
   searchType: 'all',
@@ -11317,7 +11311,5 @@ const initialState = {
 }
 ```
 
-We add `jobType`, `jobTypeOptions`, `status` & `statusOptions`.
-
-Then we add `search`, `searchStatus`, `searchType`, `sort` & `sortOptions`.
+We add `search`, `searchStatus`, `searchType`, `sort` & `sortOptions` as properties to `initialState` object.
 
