@@ -61,10 +61,16 @@ const getAllJobs = async (req, res) => {
       result = result.sort('createdAt');
     }
   
-    // ...
+    case 'a-z': {
+      result = result.sort('position');
+    }
+  
+    case 'z-a': {
+      result = result.sort('-position');
+    }
   
     default: {
-      return;
+      break;
     }
   }
 

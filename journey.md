@@ -11241,7 +11241,7 @@ switch(sort){
   // ...
 
   default: {
-    return;
+    break;
   }
 }
 ```
@@ -11282,3 +11282,35 @@ const getAllJobs = async (req, res) => {
      .json({ jobs, totalJobs: jobs.length, numOfPages: 1 });
 };
 ```
+
+## Chain Sort Conditions
+
+Let's add more conditions to filter out our results.
+
+```js
+// Chain Sort Conditions
+switch(sort){
+  case 'latest': {
+    result = result.sort('-createdAt');
+  }
+
+  case 'oldest': {
+    result = result.sort('createdAt');
+  }
+
+  case 'a-z': {
+    result = result.sort('position');
+  }
+
+  case 'z-a': {
+    result = result.sort('-position');
+  }
+
+  default: {
+    break;
+  }
+}
+```
+
+Here I am taking advantage of the fact **If there is no `break` then the execution continues with the next `case` without any checks**.
+
