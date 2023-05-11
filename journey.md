@@ -11215,3 +11215,70 @@ const getAllJobs = async (req, res) => {
      .json({ jobs, totalJobs: jobs.length, numOfPages: 1 });
 };
 ```
+
+# Search Functionality
+
+Now work on the search feature of `getAllJobs`.
+
+Search code:
+```js
+if (search) {
+  queryObject.position = { $regex: search, $options: 'i' };
+}
+
+let result = Job.find(queryObject);
+
+// Chain Sort Conditions
+switch(sort){
+  case 'latest': {
+    result = result.sort('-createdAt');
+  }
+
+  case 'oldest': {
+    result = result.sort('createdAt');
+  }
+
+  // ...
+
+  default: {
+    return;
+  }
+}
+```
+
+Inside `getAllJobs`:
+
+```js
+const getAllJobs = async (req, res) => {
+  const { search, status, jobType, sort } = req.query;
+
+  const queryObject = { 
+    createdBy: req.user.userId,
+  };
+
+  if (status !== 'all'){
+    queryObject.status = status;
+  }
+
+  if (jobType !== 'all') {
+    queryObject.jobType = jobType;
+  }
+
+  // Add position property to queryObject if search is non-empty
+  if (search) {
+    queryObject.position = { $regex: search, $options: 'i' };
+  }
+
+  let result = Job.find(queryObject);
+  
+  // Chain sort conditions to filter results
+  switch(sort){
+    // ...
+  }
+
+  const jobs = await result;
+
+  res.status(StatusCodes.OK)
+     .json({ jobs, totalJobs: jobs.length, numOfPages: 1 });
+};
+```
