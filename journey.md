@@ -11294,3 +11294,30 @@ if(sort === 'z-a') {
 ```
 
 So far sort conditions are by `createdAt` or date made and alphabetical order or reverse alphabetical order.
+
+## Setup Search in Global Context
+
+In `appContext` let's set up thhe search and all its variables that's needed in `initialState`.
+
+What we add should look something like this:
+```js
+const initialState = {
+  jobType: 'full-time',
+  jobTypeOptions: ['full-time', 'part-time', 'remote', 'internship'],
+  status: 'pending',
+  statusOptions: ['pending', 'interview', 'declined']
+  //
+  //
+  //
+  search: '',
+  searchStatus: 'all',
+  searchType: 'all',
+  sort: 'latest',
+  sortOptions: ['latest', 'oldest', 'a-z', 'z-a'],
+}
+```
+
+We add `jobType`, `jobTypeOptions`, `status` & `statusOptions`.
+
+Then we add `search`, `searchStatus`, `searchType`, `sort` & `sortOptions`.
+
