@@ -11425,3 +11425,54 @@ It simply passes in the event target's `name` and `value` as the payload, and in
 Recall how this was used:
 
 - Note how because we set up the `initalState` as an object with properties `name`, `email` & `password`,  `handleChange` function will access both the name of the input and value, then access the proper value in intialState object afterwards. That is why `handleChange` can be reused, because it is assigned to a prop and invoked in the `FormRow` component.
+
+Let's complete our `FormRow` component, which will function as the search bar.
+
+```js
+<FormRow
+  type='text'
+  name='search'
+  value={search}
+  handleChange={handleSearch}
+>
+</FormRow>
+```
+
+Let's also create the event handler function (called `handleSearch`) within `SearchContainer`.
+
+```js
+const handleSearch = (e) => {
+  if(isLoading) return;
+  handleChange({ name: e.target.name, value: e.target.value });
+}
+```
+
+Let's now put it together to handle a change whenever the user types search input into the `FormRow` component rendered inside the Wrapper. 
+
+```js
+export default function SearchContainer() {
+  const {
+    //...
+  } = useAppContext();
+
+
+
+
+  return (
+    <Wrapper>
+      <form action="" className="form">
+        <h4>search form</h4>
+        <div className="form-center">
+            <FormRow
+              type='text'
+              name='search'
+              value={search}
+              handleChange={handleSearch}
+            >
+            </FormRow>
+        </div>
+      </form>    
+    </Wrapper>
+  );
+}
+```
