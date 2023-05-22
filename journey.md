@@ -11512,3 +11512,69 @@ const handleSubmit = (e) => {
   clearFilters();
 };
 ```
+
+Next let's work on the other search options for the `form`, which the user will interact with via a `FormRowSelect` component.
+
+Let's refresh on what a `FormRowSelect` component looks like:
+
+```js
+export default function FormRowSelect({labelText, name, value, handleChange, list}) {
+  return (
+    <div className="form-row">
+    <label htmlFor={name} className='form-label'>
+      {labelText || name}
+    </label>
+
+    <select
+      name={name}
+      value={value}
+      onChange={handleChange}
+      className='form-select'
+    >
+      {list.map((itemValue, index) => {
+        return(
+          <option key={index} value={itemValue}>
+            {itemValue}
+          </option>
+        );
+      })}
+    </select>
+  </div> 
+  );
+}
+```
+
+Notice the parameters have `labelText`, `name`, `value`, `handleChange` and `list`.
+
+Let's create one that aids the user in filtering by job status:
+
+What is this `FormRowSelect` supposed to use? We destructured out `statusOptions` earlier from appContext, which is an array in the `initalState` object. 
+
+`statusOptions` contains the following:
+
+```js
+const initialState = {
+  // ...
+  statusOptions: ['interview', 'declined', 'pending'],
+  // ...
+}
+```
+
+Each of these options will be render in `FormRowSelect` during the mapping process. Let's also include one more option that covers all statusOptions (i.e., `all`). So our `list` prop for the `FormRowSelect` should be an array that includes `statusOptions` and `all`, likeso:
+
+```js
+  list={['all', ...statusOptions]}
+```
+
+The rest of the props should be easy to infer from the context, so let's create it:
+
+```js
+<FormRowSelect
+  labelText='job status'
+  name='searchStatus'
+  value={searchStatus}
+  handleChange={handleSearch}
+  list={['all', ...statusOptions]}
+>
+</FormRowSelect>
+```
