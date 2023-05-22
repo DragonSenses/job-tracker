@@ -1,9 +1,21 @@
 import React from 'react';
 import Wrapper from '../assets/wrappers/SearchContainer';
 import { FormRow, FormRowSelect } from '.';
+import { useAppContext } from '../context/appContext';
 
 export default function SearchContainer() {
-
+  const {
+    isLoading,
+    handleChange,
+    search,
+    searchStatus,
+    searchType,
+    sort,
+    sortOptions,
+    statusOptions,
+    jobTypeOptions,
+    clearFilters,
+  } = useAppContext();
 
   return (
     <Wrapper>

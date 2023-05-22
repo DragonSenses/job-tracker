@@ -11362,3 +11362,31 @@ export default function SearchContainer() {
   );
 }
 ```
+
+Next let's import the global context, and then destructure all the properties we need from the `initialState` to create the search functionality.
+
+```js
+import { useAppContext } from '../context/appContext';
+
+export default function SearchContainer() {
+  const {
+    isLoading,
+    handleChange,
+    search,
+    searchStatus,
+    searchType,
+    sort,
+    sortOptions,
+    statusOptions,
+    jobTypeOptions,
+    clearFilters,
+  } = useAppContext();
+
+  return (
+    // ...
+  );
+}
+```
+
+
+
