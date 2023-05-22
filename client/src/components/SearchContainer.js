@@ -40,6 +40,16 @@ export default function SearchContainer() {
           >
           </FormRow>
 
+          <FormRowSelect
+            labelText='job status'
+            name='searchStatus'
+            value={searchStatus}
+            handleChange={handleSearch}
+            list={['all', ...statusOptions]}
+          >
+          </FormRowSelect>
+
+
           <button
             className='btn btn-block btn-danger'
             disabled={isLoading}
