@@ -11388,5 +11388,40 @@ export default function SearchContainer() {
 }
 ```
 
+Notice how we also destructured `handleChange`. To refresh, here it is in the `appContext`:
 
+```js
+  const handleChange = ({ name, value }) => {
+    dispatch({
+      type: HANDLE_CHANGE,
+      payload: { name, value },
+    });
+  };
+```
 
+It dispatches an action, which is then handled in the reducer. Takes in two parameters: `name` and `value`. 
+
+Let's take a look at `AddJob.js` under `/pages/Dashboard/` where we use this functionality:
+
+```js
+  const handleJobInput = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    handleChange({name, value});
+  };
+```
+
+It simply passes in the event target's `name` and `value` as the payload, and in the reducer:
+
+```js
+    case HANDLE_CHANGE: {
+      return {
+        ...state,
+        [action.payload.name]: action.payload.value,
+      };
+    }
+```
+
+Recall how this was used:
+
+- Note how because we set up the `initalState` as an object with properties `name`, `email` & `password`,  `handleChange` function will access both the name of the input and value, then access the proper value in intialState object afterwards. That is why `handleChange` can be reused, because it is assigned to a prop and invoked in the `FormRow` component.
