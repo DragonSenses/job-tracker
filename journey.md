@@ -11492,7 +11492,7 @@ Then create 2 more buttons that should:
 1. Sort the search results by the options provided by the user
 2. Clear any previous options that filtered results so search can be done from a clean slate. This will use `clearFilters` function taken from `appContext`.
 
-Let's create the clear button first:
+Let's create the clear button first, which should be the last item in the `form`:
 
 ```js
 <button

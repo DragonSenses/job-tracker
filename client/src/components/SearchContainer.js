@@ -18,9 +18,14 @@ export default function SearchContainer() {
   } = useAppContext();
 
   const handleSearch = (e) => {
-    if(isLoading) return;
+    if (isLoading) return;
     handleChange({ name: e.target.name, value: e.target.value });
-  }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    clearFilters();
+  };
 
   return (
     <Wrapper>
@@ -34,8 +39,16 @@ export default function SearchContainer() {
             handleChange={handleSearch}
           >
           </FormRow>
+
+          <button
+            className='btn btn-block btn-danger'
+            disabled={isLoading}
+            onClick={handleSubmit}
+          >
+            clear filters
+          </button>
         </div>
-      </form>    
+      </form>
     </Wrapper>
   );
 }
