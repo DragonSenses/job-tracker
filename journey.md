@@ -11447,6 +11447,8 @@ const handleSearch = (e) => {
 }
 ```
 
+Notice how we should not invoke `handleChange` if the search is still ongoing (indicated by the `isLoading` variable).
+
 Let's now put it together to handle a change whenever the user types search input into the `FormRow` component rendered inside the Wrapper. 
 
 ```js
@@ -11455,8 +11457,10 @@ export default function SearchContainer() {
     //...
   } = useAppContext();
 
-
-
+  const handleSearch = (e) => {
+    if(isLoading) return;
+    handleChange({ name: e.target.name, value: e.target.value });
+  }
 
   return (
     <Wrapper>
@@ -11475,4 +11479,36 @@ export default function SearchContainer() {
     </Wrapper>
   );
 }
+```
+
+## Adding more Search Options
+
+We imported `FormRowSelect` earlier so we can make the user select options to aid in the search.
+
+User should be able to search by `status` and `jobType`.
+
+Then create 2 more buttons that should:
+
+1. Sort the search results by the options provided by the user
+2. Clear any previous options that filtered results so search can be done from a clean slate. This will use `clearFilters` function taken from `appContext`.
+
+Let's create the clear button first:
+
+```js
+<button
+  className='btn btn-block btn-danger'
+  disabled={isLoading}
+  onClick={handleSubmit}
+>
+  clear filters
+</button>
+```
+
+Now create the `handleSubmit` function which prevents the normal submit behavior, then calls `clearFilters()`.
+
+```js
+const handleSubmit = (e) => {
+  e.preventDefault();
+  clearFilters();
+};
 ```
