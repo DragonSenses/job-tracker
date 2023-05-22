@@ -11333,3 +11333,32 @@ Next we should remember the `handleChange` function inside `appContext`:
 ```
 
 Going to reuse this functionality to handle our Search function.
+
+## Search Container - Setup
+
+Let's setup `SearchContainer.js`.
+
+Our imports should have a Wrapper css file defining our styled-component. And we will also reuse components `FormRow` & `FormRowSelect`, both found in the same folder `components` as `SearchContainer`.
+
+The JSX element we should return is the `Wrapper` that includes a `form` element that containers a heading and div with a class of `form-center`. Within that we will have `FormRow` component.
+
+```js
+import React from 'react';
+import Wrapper from '../assets/wrappers/SearchContainer';
+import { FormRow, FormRowSelect } from '.';
+
+export default function SearchContainer() {
+  return (
+    <Wrapper>
+      <form action="" className="form">
+        <h4>search form</h4>
+        <div className="form-center">
+            <FormRow>
+
+            </FormRow>
+        </div>
+      </form>    
+    </Wrapper>
+  );
+}
+```
