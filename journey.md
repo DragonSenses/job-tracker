@@ -11678,3 +11678,17 @@ Finally, a `FormRowSelect` for sort.
 >
 </FormRowSelect>
 ```
+
+## Front-End testing
+
+Now after 
+
+1) Login to reissue an new token
+2) Navigate to All Jobs page
+
+We should see so far the Search Form with the proper labels and button.
+
+Now immediately after select something from the drop downs of job type and status, clicking the `[Clear]` button seems to have not done anything. We still need to code it!
+
+## Clear button in Search Form
+
