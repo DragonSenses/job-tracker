@@ -11692,3 +11692,24 @@ Now immediately after select something from the drop downs of job type and statu
 
 ## Clear button in Search Form
 
+In `action.js`:
+
+```js
+export const CLEAR_FILTERS = 'CLEAR_FILTERS';
+```
+
+Now in `appContext.js`:
+
+```js
+import { 
+  // ...
+  CLEAR_FILTERS,
+} from "./actions";
+
+const clearFilters = () => {
+  dispatch({ type: CLEAR_FILTERS });
+}
+```
+
+And finally in the reducer:
+
