@@ -10844,6 +10844,44 @@ After some Postman testing, the data passed in from the pipeline is actually in 
   }).reverse();
 ```
 
+# Testing `showStats` back-end
+
+First test it in Postman.
+
+1. Send a `POST` Login Request
+2. Send a `GET` stats request
+
+Here is the response:
+```json
+{
+    "msg": "Class constructor ObjectId cannot be invoked without 'new'"
+}
+```
+
+In the server, because I setup extensive logging, I can see:
+```sh
+[0] POST /api/v1/auth/login 200 110.330 ms - 379
+[0] ======== Starting Show Stats | Backend ========
+[0] Finished Job.aggregate(), logging stats:
+[0]   type of stats: object
+[0]   stats: [object Object]
+[0] Finished reduce(), logging stats:
+[0]   type of stats: object
+[0]   stats: [object Object]
+[0] TypeError: Class constructor ObjectId cannot be invoked without 'new'
+[0]     at showStats (file:///C:/Users/.../GitHub/job-tracker/controllers/jobsController.js:162:42)        
+[0]     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+[0] GET /api/v1/jobs/stats 500 36.479 ms - 68
+```
+
+So the error matches up, a general HTTP 500 server-side error.
+
+The offending line of code:
+
+```js
+    {$match: { createdBy: mongoose.Types.ObjectId(req.user.userId) }},
+```
+
 # ChartsContainer component
 
 Going to work on the ChartsContainer.
