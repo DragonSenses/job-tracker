@@ -59,7 +59,10 @@ export default function SearchContainer() {
           </FormRowSelect>
 
           <FormRowSelect
-
+            name='sort'
+            value={sort}
+            handleChange={handleSearch}
+            list={['all', ...sortOptions]}
           >
           </FormRowSelect>
 
@@ -74,4 +77,4 @@ export default function SearchContainer() {
       </form>
     </Wrapper>
   );
-}
+};

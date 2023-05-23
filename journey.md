@@ -11591,3 +11591,15 @@ Let's create another `FormRowSelect` this time with `job type`.
 >
 </FormRowSelect>
 ```
+
+Finally, a `FormRowSelect` for sort.
+
+```js
+<FormRowSelect
+  name='sort'
+  value={sort}
+  handleChange={handleSearch}
+  list={['all', ...sortOptions]}
+>
+</FormRowSelect>
+```
