@@ -11732,3 +11732,69 @@ Return everything in the state, then set the following values to their respectiv
 - `searchType` to `all`
 - `sort` to `latest`
 
+Now that the button is finally wired up and implemented, we can get back to working on the `AllJobs` page!
+
+# Refactor `Get All Jobs`
+
+It is time to refactor the `getJobs` function in `AppContext`. So far:
+
+```js
+  const getJobs = async () => {
+    let url = `/jobs`;
+    
+    dispatch({ type: GET_JOBS_BEGIN });
+
+    try {
+      const data = await authFetch(url);
+
+      const { jobs, totalJobs, numOfPages } = data.data;
+
+      dispatch({
+        type: GET_JOBS_SUCCESS,
+        payload: {
+          jobs,
+          totalJobs,
+          numOfPages,
+        },
+      });
+
+    } catch(error){
+      console.log(`Error triggered in getJobs() appContext.js! 
+      Here is the Error Response:
+      ${error.response}`);
+      logoutUser();
+    }
+    clearAlert();
+  };
+```
+
+## Improvements to make
+
+`getJobs` should be able to call the user's data on all their jobs. But now that we have the search functionality , we should integrate it. How? With the API & URL.
+
+## **Recap on *API* Requests**
+
+- API is a set of commands, functions , protocols, and objects that programmers can use to create software or interact with an external system
+
+- API consists of: **Endpoint, Paths, Parameters & Authentication**
+
+- Endpoint is the starting URL, while Paths and Parameters narrow down on specific piece of data from an external server
+
+- If Endpoints are the root of the tree (of the file/folder structure hierarchy) then we need to add a branch of `Paths`.
+
+- `Parameters` go at the end of the URL after a question mark, with a key value pair (e.g., `?contains=debugging`). Every subsequent query follows an ampersand after the question mark.
+
+- Finally, there is Authentication of the API, which is used to monetize and limit usage to a threshold (e.g., A call to Open Weather Map API requires your personal `appid`)
+
+## URL changes based on the search parameters
+
+In the `getJobs` function, we simply have the path which will be appended to the endpoint:
+
+```js
+    let url = `/jobs`;
+```
+
+But when we search, we want to be able to add our parameters, to request specific information on the user's data. 
+
+Let's modify the URL before we begin to dispatch the action `GET_JOBS_BEGIN`.
+
