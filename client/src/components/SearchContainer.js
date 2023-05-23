@@ -49,6 +49,19 @@ export default function SearchContainer() {
           >
           </FormRowSelect>
 
+          <FormRowSelect
+            labelText='job type'
+            name='searchType'
+            value={searchType}
+            handleChange={handleSearch}
+            list={['all', ...jobTypeOptions]}
+          >
+          </FormRowSelect>
+
+          <FormRowSelect
+
+          >
+          </FormRowSelect>
 
           <button
             className='btn btn-block btn-danger'

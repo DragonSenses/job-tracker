@@ -11578,3 +11578,16 @@ The rest of the props should be easy to infer from the context, so let's create 
 >
 </FormRowSelect>
 ```
+
+Let's create another `FormRowSelect` this time with `job type`.
+
+```js
+<FormRowSelect
+  labelText='job type'
+  name='searchType'
+  value={searchType}
+  handleChange={handleSearch}
+  list={['all', ...jobTypeOptions]}
+>
+</FormRowSelect>
+```
