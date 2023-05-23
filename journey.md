@@ -10882,6 +10882,43 @@ The offending line of code:
     {$match: { createdBy: mongoose.Types.ObjectId(req.user.userId) }},
 ```
 
+## Looking into the docs
+
+The docs on mongoose's [ObjectId](https://mongoosejs.com/docs/schematypes.html#objectids).
+
+`ObjectId` is a class, and ObjectIds are objects.
+
+So let's add `new` in front of `mongoose.Types.ObjectId()` to treat it as a proper class constructor which creates the ObjectId with the passed in `req.user.userId` as parameter.
+
+```js
+// ...
+  let monthlyApplications = await Job.aggregate([
+    {$match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) }},
+    // ...
+```
+
+Now send a `GET` stats request, and now we have the output we wanted:
+
+```json
+{
+    "defaultStats": {
+        "pending": 4,
+        "interview": 0,
+        "declined": 0
+    },
+    "monthlyApplications": [
+        {
+            "date": "Mar 2023",
+            "count": 1
+        },
+        {
+            "date": "Apr 2023",
+            "count": 3
+        }
+    ]
+}
+```
+
 # ChartsContainer component
 
 Going to work on the ChartsContainer.
