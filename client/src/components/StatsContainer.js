@@ -35,7 +35,7 @@ export default function StatsContainer() {
     <Wrapper>
       {defaultStats.map((item, index) => {
         return <StatItem key={index} {...item} />;
-      })};
+      })}
     </Wrapper>
   );
 }
