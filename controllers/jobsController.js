@@ -159,7 +159,7 @@ const showStats = async (req, res) => {
   };
 
   let monthlyApplications = await Job.aggregate([
-    {$match: { createdBy: mongoose.Types.ObjectId(req.user.userId) }},
+    {$match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) }},
     {$group: {
       _id: {
         year: { 
