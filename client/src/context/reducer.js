@@ -26,6 +26,7 @@ import {
   EDIT_JOB_ERROR,
   SHOW_STATS_BEGIN,
   SHOW_STATS_SUCCESS,
+  CLEAR_FILTERS,
 } from "./actions";
 
 import { initialState } from './appContext.js';
@@ -299,6 +300,16 @@ function reducer(state, action) {
         isLoading: false,
         stats: action.payload.stats,
         monthlyApplications: action.payload.monthlyApplications,
+      };
+    }
+
+    case CLEAR_FILTERS: {
+      return {
+        ...state,
+        search: '',
+        searchStatus: 'all',
+        searchType: 'all',
+        sort: 'latest',
       };
     }
 

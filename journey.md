@@ -11713,3 +11713,22 @@ const clearFilters = () => {
 
 And finally in the reducer:
 
+```js
+
+    case CLEAR_FILTERS: {
+      return {
+        ...state,
+        search: '',
+        searchStatus: 'all',
+        searchType: 'all',
+        sort: 'latest',
+      };
+    }
+```
+
+Return everything in the state, then set the following values to their respective default values.
+- `search` to empty string
+- `searchStatus` to `all`
+- `searchType` to `all`
+- `sort` to `latest`
+
