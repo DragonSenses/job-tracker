@@ -69,7 +69,17 @@ const getAllJobs = async (req, res) => {
   }
 
   // Await jobs filtered out by sort conditions
-  const jobs = await result;
+  let jobs = await result;
+
+  // Pagination Variables
+  const limit = 10;
+  const skip = 1;
+
+  // Chain operations to modify the query based on the page variables
+  result = result.skip(skip).limit(limit);  
+
+  // Since the query operations are async, we need to await again
+  jobs = await result;
 
   // Respond with 200 and a json containing the jobs, totalJobs, and pages
   res.status(StatusCodes.OK)
