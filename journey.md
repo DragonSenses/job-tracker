@@ -11899,7 +11899,28 @@ const getAllJobs = async (req, res) => {
 };
 ```
 
+## Pagination
+
 There is something we are missing that we planned to add at some point: **pagination!**.
 
-Where: pagination should happen after we receive the `jobs` from the `result`.
+Where: pagination should happen after we receive the total amount of `jobs` from the awaited `result`.
 
+How: We can setup the pagination by defining how many results we want to limit a page to
+
+We can do so by manipulating the `result` variable, but we need to find out what exactly we are working it in order to perform operations on it. The line of code that declares and assigns a value to `result`:
+
+```js
+  let result = Job.find(queryObject);
+```
+To find out what it returns, as a refresher here are the docs: on [Model.find()](https://mongoosejs.com/docs/api/model.html#Model.find()).
+
+It returns a `<<Query>>`, which allows us to use methods such as [limit()](https://mongoosejs.com/docs/api/query.html#Query.prototype.limit()) and [skip()](https://mongoosejs.com/docs/api/query.html#Query.prototype.skip()).
+
+Let's create the `limit` and `skip` variables first:
+
+```js
+const limit = 10;
+const skip = 1;
+```
+
+Then we modify the query
