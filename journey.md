@@ -11821,3 +11821,6 @@ let url = `/jobs?status=${searchStatus}&jobType=${searchType}&sort=${sort}`;
 
 We will add `search` only if `search` is non-empty and the user filled something in. Let's add it as the last parameter after checking:
 
+if(search) {
+  url = url + `&search=${search}`;
+}
