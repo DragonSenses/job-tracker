@@ -11824,3 +11824,29 @@ We will add `search` only if `search` is non-empty and the user filled something
 if(search) {
   url = url + `&search=${search}`;
 }
+
+## Adding search variables from context to `JobsContainer`
+
+Now that we have the search variables setup, we need to make sure to add it to the `JobsContainer`. Also update the `useEffect`'s dependency array to include the search variables.
+
+```js
+export default function JobsContainer() {
+  const {
+    getJobs,
+    jobs,
+    isLoading,
+    page,
+    totalJobs,
+    search,
+    searchStatus,
+    searchType,
+    sort,
+  } = useAppContext();
+
+  useEffect(() => {
+    getJobs();
+  }, [search, searchStatus, searchType, sort]);
+
+// ...
+```
+

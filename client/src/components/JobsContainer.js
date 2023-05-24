@@ -12,11 +12,15 @@ export default function JobsContainer() {
     isLoading,
     page,
     totalJobs,
+    search,
+    searchStatus,
+    searchType,
+    sort,
   } = useAppContext();
 
   useEffect(() => {
     getJobs();
-  }, []);
+  }, [search, searchStatus, searchType, sort]);
 
   if (isLoading) {
     return <Loading center />;
