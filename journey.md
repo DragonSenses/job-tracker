@@ -11782,7 +11782,16 @@ It is time to refactor the `getJobs` function in `AppContext`. So far:
 
 - If Endpoints are the root of the tree (of the file/folder structure hierarchy) then we need to add a branch of `Paths`.
 
-- `Parameters` go at the end of the URL after a question mark, with a key value pair (e.g., `?contains=debugging`). Every subsequent query follows an ampersand after the question mark.
+- `Parameters` go at the end of the URL after a question mark, with a key value pair (e.g., `?contains=debugging`). 
+
+- Every subsequent query follows an ampersand after the question mark.
+
+  e.g., for an API that contains programming jokes, given parameters that:
+  - Blacklists NSFW
+  - Type of joke is single line
+  - Contains the word "debugging"
+  - Parameters: `?blacklistFlags=nsfw&type=single&contains=debugging`
+  - `https://sv443.net/jokeapi/v2/joke/Programming?blacklistFlags=nsfw&type=single&contains=debugging`
 
 - Finally, there is Authentication of the API, which is used to monetize and limit usage to a threshold (e.g., A call to Open Weather Map API requires your personal `appid`)
 
@@ -11791,10 +11800,24 @@ It is time to refactor the `getJobs` function in `AppContext`. So far:
 In the `getJobs` function, we simply have the path which will be appended to the endpoint:
 
 ```js
-    let url = `/jobs`;
+let url = `/jobs`;
 ```
 
 But when we search, we want to be able to add our parameters, to request specific information on the user's data. 
 
 Let's modify the URL before we begin to dispatch the action `GET_JOBS_BEGIN`.
+
+We want to include every search parameters as part of the URL. So first we destructure out any variables that deals with search in the state:
+
+```js
+const { search, searchStatus, searchType, sort } = state;
+```
+
+Now append the all parameters except `search` to the `/jobs` path, and assign it to the `url`.
+
+```js
+let url = `/jobs?status=${searchStatus}&jobType=${searchType}&sort=${sort}`;
+```
+
+We will add `search` only if `search` is non-empty and the user filled something in. Let's add it as the last parameter after checking:
 
