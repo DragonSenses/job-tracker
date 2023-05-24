@@ -11932,7 +11932,6 @@ Then we modify the query by chaining the operations we need to modify it:
 Finally, since the query operations are `async` we need to `await` the new results again:
 
 ```js
-
   // Await jobs filtered out by sort conditions
   let jobs = await result;
 
@@ -11948,3 +11947,29 @@ Finally, since the query operations are `async` we need to `await` the new resul
 ```
 
 I changed the variable declaration from `const` to `let` for `jobs` since we will have to reuse it again.
+
+## Pages, distributing the results to the pages
+
+We need to do some math in order to distribute the amount of jobs to each page. Things to note:
+
+
+```js
+  // Await jobs filtered out by sort conditions
+  let jobs = await result;
+
+  // Pagination Variables
+  const limit = 10;
+  const skip = 1;
+
+  // Chain operations to modify the query based on the page variables
+  result = result.skip(skip).limit(limit);  
+
+  // Since the query operations are async, we need to await again
+  jobs = await result;
+```
+
+We are going to need to do some calculation to find out the best way to limit the results, setup skip points, then calculate the result.
+
+Let's try to make the problem a bit concrete, let's say we have 75 total job results returned from the query. How do we best divide this while keeping in mind the limit (i.e., 10) and the skip(i.e., 1).
+
+For 75 results, we want to have a number of 8 pages. With 8 pages each showing 10 results, then the final page showing 5 results.
