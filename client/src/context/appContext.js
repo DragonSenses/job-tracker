@@ -270,7 +270,10 @@ export default function AppProvider(props) {
 
   
   const getJobs = async () => {
-    let url = `/jobs`;
+    const { search, searchStatus, searchType, sort } = state;
+
+    // let url = `/jobs`;
+    let url = `/jobs?status=${searchStatus}&jobType=${searchType}&sort=${sort}`;
     
     dispatch({ type: GET_JOBS_BEGIN });
 
