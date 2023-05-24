@@ -301,7 +301,8 @@ export default function AppProvider(props) {
       console.log(`Error triggered in getJobs() appContext.js! 
       Here is the Error Response:
       ${error.response}`);
-      logoutUser();
+      // Still Testing so don't logout user for now
+      // logoutUser();
     }
     clearAlert();
   };
