@@ -11923,4 +11923,28 @@ const limit = 10;
 const skip = 1;
 ```
 
-Then we modify the query
+Then we modify the query by chaining the operations we need to modify it:
+
+```js
+  result = result.skip(skip).limit(limit);  
+```
+
+Finally, since the query operations are `async` we need to `await` the new results again:
+
+```js
+
+  // Await jobs filtered out by sort conditions
+  let jobs = await result;
+
+  // Pagination Variables
+  const limit = 10;
+  const skip = 1;
+
+  // Chain operations to modify the query based on the page variables
+  result = result.skip(skip).limit(limit);  
+
+  // Since the query operations are async, we need to await again
+  jobs = await result;
+```
+
+I changed the variable declaration from `const` to `let` for `jobs` since we will have to reuse it again.
