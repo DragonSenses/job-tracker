@@ -12092,3 +12092,34 @@ What we want to put under pagination is that if the number of pages is greater t
 ```
 
 We will be using `page` variable later when we implement the `PageBtnContainer`.
+
+## `PageBtnContainer` component
+
+Let's work on the imports, for now I'd like to use to icons from `react-icons/hi` to represent the buttons for the pages.
+
+Next we import the appContext and Wrapper to style the component
+
+```js
+import { HiChevronDoubleLeft, HiChevronDoubleRight } from 'react-icons/hi';
+import { useAppContext } from '../context/appContext';
+import Wrapper from '../assets/wrappers/PageBtnContainer';
+```
+
+We use `appContext` so that we can use the variables `page` and `numOfPages`. So we destructure those out of the global context.
+
+```js
+const { page, numOfPages } = useAppContext();
+```
+
+Next we should create two event handler functions which will handle navigation between pages, a previous button and a next button.
+
+```js
+const prevPage = () => {
+  console.log('previous page');
+};
+
+const nextPage = () => {
+  console.log('next page');
+};
+``
+
