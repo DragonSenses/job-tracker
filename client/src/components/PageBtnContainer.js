@@ -17,6 +17,16 @@ export default function PageBtnContainer() {
   };
 
   return (
-    <div>PageBtnContainer</div>
+    <Wrapper>
+      <button className="prev-btn" onClick={prevPage}>
+        <HiChevronDoubleLeft />
+        prev
+      </button>
+
+      <button className="next-btn" onClick={nextPage}>
+        next
+        <HiChevronDoubleRight />
+      </button>
+    </Wrapper>
   );
 };
