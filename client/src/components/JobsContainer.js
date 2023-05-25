@@ -4,18 +4,20 @@ import { useEffect } from 'react';
 import Loading from './Loading';
 import Job from './Job';
 import Wrapper from '../assets/wrappers/JobsContainer';
+import PageBtnContainer from './PageBtnContainer';
 
 export default function JobsContainer() {
   const {
     getJobs,
     jobs,
     isLoading,
-    page,
     totalJobs,
     search,
     searchStatus,
     searchType,
     sort,
+    page,
+    numOfPages,
   } = useAppContext();
 
   useEffect(() => {
