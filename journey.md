@@ -11948,6 +11948,10 @@ Finally, since the query operations are `async` we need to `await` the new resul
 
 I changed the variable declaration from `const` to `let` for `jobs` since we will have to reuse it again.
 
+### Why use `skip` in the Query?
+
+For now skip is 1, but when we setup pagination we need to be able to skip the results that have already been shown. e.g., if we are on page 2 (with page 1 being the start) we want to skip the results of page 1. On page 3, we need to skip the results of page 1 and 2.
+
 ## Pages, distributing the results to the pages
 
 We need to do some math in order to distribute the amount of jobs to each page. Things to note:
@@ -11972,4 +11976,22 @@ We are going to need to do some calculation to find out the best way to limit th
 
 Let's try to make the problem a bit concrete, let's say we have 75 total job results returned from the query. How do we best divide this while keeping in mind the limit (i.e., 10) and the skip(i.e., 1).
 
-For 75 results, we want to have a number of 8 pages. With 8 pages each showing 10 results, then the final page showing 5 results.
+For 75 results, we want to have a number of 8 pages. With 7 pages showing 10 results each, and the final page showing 5 results.
+
+Let's redefine our pagination variables to leave that as default. What we want to do is be able to change the number of pages, how much to limit, and how many to skip based off that.
+
+Recall that in the `request`, which we refer to as `req.query`, we have the variables `page` and `limit`. Let's assign our variables with these.
+
+First we need to find out the page number, with the default being 1 (in global context it is 1). Based on that page number we will decide to skip the remaining elements. If we are on the 1st page, we skip none. On 2nd page, we skip 10 (or the first 10 results since we already showed that). On 3rd page, we skip the first 20 results. And so forth.
+
+```js
+// Pagination Variables
+const page = Number(req.query.page) || 1;
+
+const limit = Number(req.query.limit) || 10;
+
+const skip = (page - 1) * limit;
+
+// Await jobs filtered out by sort conditions AND processed through pagination
+const jobs = await result;
+```
