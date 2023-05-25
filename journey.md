@@ -12151,4 +12151,27 @@ Let's also create a div named `btn-container`, in between the buttons.
 
 This will contain the buttons for the pages, so user can click on the button and navigate directly to the page.
 
-We will have to create a new component for it to render.
+We will have to create a new component for it to render. On second thought, it would be better to just render it within the `btn-container`
+
+### Turn `pages` into buttons for `btn-container`
+
+Let's work on the logic that converts our pages into a `pageNumber` button. We also have to keep in mind that the current page should css class of `pageBtn active` so the user knows where they are currently. These buttons will provide an alternative way for the user to navigate through pages directly.
+
+Before that we need to convert `pages` somehow to a number. This is a case whhere we can use [Array.from](https://javascript.info/iterable#array-from). It takes an iterable or array-like value and makes a "real" Array from it. We can then call array methods on it.
+
+The syntax for `Array.from(obj[, mapFn, thisArg])`
+
+Optional Arguments:
+- `mapFn` can be a function that will be applied to each element before adding it to the array
+- `thisArg` allows us to set `this` for it.
+
+Let's create a variable called `pages` that uses `Array.from()` to create our indices so that it can be mapped later to a button.
+
+```js
+const pages = Array.from( 
+  { length: numOfPages },
+  (index) => {
+    return index++;
+  }
+);
+```
