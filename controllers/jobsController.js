@@ -83,10 +83,13 @@ const getAllJobs = async (req, res) => {
   jobs = await result;
 
   // Calculate the variables needed to send back as a response
+  const totalJobs = await Job.countDocuments(queryObject);
+
+  const numOfPages = totalJobs/limit;
 
   // Respond with 200 and a json containing the jobs, totalJobs, and pages
   res.status(StatusCodes.OK)
-     .json({ jobs, totalJobs: jobs.length, numOfPages: 1 });
+     .json({ jobs, totalJobs, numOfPages });
 };
 
 const updateJob = async (req, res) => {
