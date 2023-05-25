@@ -12121,5 +12121,24 @@ const prevPage = () => {
 const nextPage = () => {
   console.log('next page');
 };
-``
+```
 
+### Working on the JSX element to return
+
+Just like other components before, we will return a styled-component named `Wrapper`. Then create two buttons that will store the previous and next buttons.
+
+```js
+return (
+  <Wrapper>
+    <button className="prev-btn" onClick={prevPage}>
+      <HiChevronDoubleLeft />
+      prev
+    </button>
+
+    <button className="next-btn" onClick={nextPage}>
+      next
+      <HiChevronDoubleRight />
+    </button>
+  </Wrapper>
+);
+```
