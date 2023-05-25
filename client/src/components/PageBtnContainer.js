@@ -33,7 +33,12 @@ export default function PageBtnContainer() {
       <div className="btn-container">
         {pages.map((pageNumber) => {
           return (
-            <button>
+            <button
+              type='button'
+              className={(pageNumber === page) ? 'pageBtn active' : 'pageBtn'}
+              key={pageNumber}
+              onClick={() => console.log(page)}
+            >
               {pageNumber}
             </button>
           );

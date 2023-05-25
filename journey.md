@@ -12188,3 +12188,32 @@ Then we can finally render the page buttons within `btn-container`:
   })}
 </div>
 ```
+
+### Adding the properties for each page `button` 
+
+Let's add the props to the button during the mapping.
+
+- The `type` should be button.
+  ```js
+  <button
+    type='button'
+  >
+    {pageNumber}
+  </button>
+  ```
+
+- Remember that we want the user to know which `pageBtn` is the active one, so we must set its CSS class to active if the `pageNumber` is equal to the current `page`
+  ```js
+    className={(pageNumber === page) ? 'pageBtn active' : 'pageBtn'}
+  ```
+
+- Next the `key` should be set to `pageNumber` for each page mapped
+  ```js
+  key={pageNumber}
+  ```
+
+- Finally, let's give it a `onClick` function to let us know the button is working. So just log the current page:
+  ```js
+  onClick={() => console.log(page)}
+  ```
+
