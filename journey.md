@@ -12022,3 +12022,13 @@ How do we count the amount of jobs within the filtered out documents? Let's use 
 ```js
 const totalJobs = await Job.countDocuments(queryObject);
 ```
+
+We also need to calculate the number of pages.
+
+```js
+  const numOfPages = totalJobs/limit;
+```
+
+Actually, given the previous example of 75 job results. The numOfPages will turn out to be `75/10` = `7`, because of integer division. We need an extra page to accomodate the last 5 results. 
+
+We could just add +1 to the `totalJobs/limit` expression, but in the case that the `limit = 1` then we would have an extra page. So what if we instead rounded up the expression with `Math.ciel()`, this would yield the extra page needed to accomodate the results without having to give us the extra page.
