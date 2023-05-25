@@ -12142,3 +12142,13 @@ return (
   </Wrapper>
 );
 ```
+
+Let's also create a div named `btn-container`, in between the buttons.
+
+```js
+<div className="btn-container">buttons</div>
+```
+
+This will contain the buttons for the pages, so user can click on the button and navigate directly to the page.
+
+We will have to create a new component for it to render.

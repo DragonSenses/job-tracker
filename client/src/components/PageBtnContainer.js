@@ -23,6 +23,8 @@ export default function PageBtnContainer() {
         prev
       </button>
 
+      <div className="btn-container">buttons</div>
+
       <button className="next-btn" onClick={nextPage}>
         next
         <HiChevronDoubleRight />
