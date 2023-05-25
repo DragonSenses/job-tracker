@@ -12175,3 +12175,16 @@ const pages = Array.from(
   }
 );
 ```
+
+Then we can finally render the page buttons within `btn-container`:
+```js
+<div className="btn-container">
+  {pages.map((pageNumber) => {
+    return (
+      <button>
+        {pageNumber}
+      </button>
+    );
+  })}
+</div>
+```
