@@ -16,6 +16,13 @@ export default function PageBtnContainer() {
     console.log('next page');
   };
 
+  const pages = Array.from( 
+    { length: numOfPages },
+    (index) => {
+      return index++;
+    }
+  );
+
   return (
     <Wrapper>
       <button className="prev-btn" onClick={prevPage}>
@@ -23,7 +30,15 @@ export default function PageBtnContainer() {
         prev
       </button>
 
-      <div className="btn-container">buttons</div>
+      <div className="btn-container">
+        {pages.map((pageNumber) => {
+          return (
+            <button>
+              {pageNumber}
+            </button>
+          );
+        })}
+      </div>
 
       <button className="next-btn" onClick={nextPage}>
         next
