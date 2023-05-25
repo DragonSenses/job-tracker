@@ -12049,4 +12049,46 @@ export default function JobsContainer() {
     page,
     numOfPages,
   } = useAppContext();
+
+  return (
+    // ...
+  );
+}
 ```
+
+Now inside the render of `JobsContainer`, we can finally setup the pagination:
+
+Right now it looks like this:
+```js
+  return (
+    <Wrapper>
+      <h5>
+        {totalJobs} job{jobs.length > 1 && 's'} found
+      </h5>
+      <div className='jobs'>
+        {jobs.map((job) => {
+          return <Job key={job._id} {...job} />
+        })}
+      </div>
+
+      {/* pagination */}
+      
+    </Wrapper>
+  );
+```
+
+What we want to put under pagination is that if the number of pages is greater than 1 (the default) then we should render the `PagesBtnContainer`. Otherwise, if it is only just 1 then it should just remain on the single page and no need to render the component.
+
+```js
+  return (
+    <Wrapper>
+      {/* Rendering the Jobs... */}
+
+      {/* pagination */}
+      {numOfPages > 1 && <PageBtnContainer />}
+
+    </Wrapper>
+  );
+```
+
+We will be using `page` variable later when we implement the `PageBtnContainer`.

@@ -48,6 +48,7 @@ export default function JobsContainer() {
       </div>
 
       {/* pagination */}
+      {numOfPages > 1 && <PageBtnContainer />}
       
     </Wrapper>
   );
