@@ -11995,3 +11995,30 @@ const skip = (page - 1) * limit;
 // Await jobs filtered out by sort conditions AND processed through pagination
 const jobs = await result;
 ```
+
+## Changing the status response
+
+As of now we have the response as:
+
+```js
+  // Respond with 200 and a json containing the jobs, totalJobs, and pages
+  res.status(StatusCodes.OK)
+     .json({ jobs, totalJobs: jobs.length, numOfPages: 1 });
+```
+
+We hard-coded `numOfPages` and calculated `totalJobs` based on the length of the array.
+
+We need to update these so they reflect the real amount. We have to store them as variables and pass them into the response:
+
+```js
+  res.status(StatusCodes.OK)
+     .json({ jobs, totalJobs, numOfPages });
+```
+
+The `totalJobs` should be the total amount of jobs within the query. But the query has been filtered out! 
+
+How do we count the amount of jobs within the filtered out documents? Let's use mongoose's [countDocuments()](https://mongoosejs.com/docs/api/model.html#Model.countDocuments()) method, whichh counts number of doucments matching filter in a database collection.
+
+```js
+const totalJobs = await Job.countDocuments(queryObject);
+```
