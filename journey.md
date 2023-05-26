@@ -12217,3 +12217,15 @@ Let's add the props to the button during the mapping.
   onClick={() => console.log(page)}
   ```
 
+## Change Page
+
+Now lets setup the logic for the next and previous buttons that change the page.
+
+1. We have to create the action `CHANGE_PAGE`. 
+2. Create a function that dispatches this action along with the the payload for a page in `appContext`.
+3. Handle the action in reducer
+
+```js
+export const CHANGE_PAGE = 'CHANGE_PAGE';
+```
+
