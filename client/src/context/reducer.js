@@ -27,6 +27,7 @@ import {
   SHOW_STATS_BEGIN,
   SHOW_STATS_SUCCESS,
   CLEAR_FILTERS,
+  CHANGE_PAGE,
 } from "./actions";
 
 import { initialState } from './appContext.js';
@@ -310,6 +311,13 @@ function reducer(state, action) {
         searchStatus: 'all',
         searchType: 'all',
         sort: 'latest',
+      };
+    }
+
+    case CHANGE_PAGE: {
+      return {
+        ...state,
+        page: action.payload.page
       };
     }
 
