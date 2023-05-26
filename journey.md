@@ -12224,6 +12224,7 @@ Now lets setup the logic for the next and previous buttons that change the page.
 1. We have to create the action `CHANGE_PAGE`. 
 2. Create a function that dispatches this action along with the the payload for a page in `appContext`.
 3. Handle the action in reducer
+4. Use the passed dowwn `changePage` function in the `PageBtnContainer` component
 
 actions
 ```js
@@ -12259,3 +12260,14 @@ const changePage = (page) => {
 ```
 
 - Handle the action in the reducer
+
+```js
+case CHANGE_PAGE: {
+  return {
+    ...state,
+    page: action.payload.page
+  };
+}
+```
+
+- Use the function in `PageBtnContainer`
