@@ -6,7 +6,11 @@ import Wrapper from '../assets/wrappers/PageBtnContainer';
 
 export default function PageBtnContainer() {
 
-  const { page, numOfPages } = useAppContext();
+  const { 
+    page,
+    numOfPages,
+    changePage,
+  } = useAppContext();
 
   const prevPage = () => {
     console.log('previous page');
@@ -37,7 +41,7 @@ export default function PageBtnContainer() {
               type='button'
               className={(pageNumber === page) ? 'pageBtn active' : 'pageBtn'}
               key={pageNumber}
-              onClick={() => console.log(page)}
+              onClick={() => changePage(pageNumber)}
             >
               {pageNumber}
             </button>

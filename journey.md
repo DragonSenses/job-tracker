@@ -12314,3 +12314,13 @@ We want to change the `onClick`'s function to that of `changePage`.
   );
 ```
 
+Actually there is an error here, what we should pass down is not `page` but `pageNumber`.
+
+```js
+// Instead of
+onClick={() => changePage(page)}
+
+// Use this
+onClick={() => changePage(pageNumber)}
+```
+
