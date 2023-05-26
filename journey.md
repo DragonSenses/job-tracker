@@ -12270,4 +12270,47 @@ case CHANGE_PAGE: {
 }
 ```
 
-- Use the function in `PageBtnContainer`
+- Use the function in `PageBtnContainer`, by destructuring it out of app context. Then use that function in the onClick of the page buttons.
+
+When we map the pages to a button, we gave it a prop of:
+```js
+<button
+  onClick={() => console.log(page)}
+>
+  {pageNumber}
+</button>
+```
+
+We want to change the `onClick`'s function to that of `changePage`.
+
+```js
+  const { 
+    page,
+    numOfPages,
+    changePage,
+  } = useAppContext();
+
+  return (
+    <Wrapper>
+      { /* prev button */ }
+
+      <div className="btn-container">
+        {pages.map((pageNumber) => {
+          return (
+            <button
+              type='button'
+              className={(pageNumber === page) ? 'pageBtn active' : 'pageBtn'}
+              key={pageNumber}
+              onClick={() => changePage(page)}
+            >
+              {pageNumber}
+            </button>
+          );
+        })}
+      </div>
+
+      { /* next button */ }
+    </Wrapper>
+  );
+```
+
