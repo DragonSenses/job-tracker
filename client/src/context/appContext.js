@@ -31,6 +31,7 @@ import {
   SHOW_STATS_BEGIN,
   SHOW_STATS_SUCCESS,
   CLEAR_FILTERS,
+  CHANGE_PAGE,
 } from "./actions";
 
 const user = localStorage.getItem('user');
@@ -380,13 +381,21 @@ export default function AppProvider(props) {
     dispatch({ type: CLEAR_FILTERS });
   }
 
+  const changePage = (page) => {
+    dispatch({
+      type: CHANGE_PAGE,
+      payload: { page }
+    });
+  };
+
   return (
     <AppContext.Provider value = {{...state, 
     displayAlert, registerUser, loginUser, toggleSidebar, logoutUser, updateUser, handleChange,
-    clearValues, createJob, getJobs, setEditJob, deleteJob, editJob, showStats, clearFilters, }}>
+    clearValues, createJob, getJobs, setEditJob, deleteJob, editJob, showStats, clearFilters,
+    changePage, }}>
       {children}
     </AppContext.Provider>
-  )
+  );
 }
 
 const useAppContext = () => {
