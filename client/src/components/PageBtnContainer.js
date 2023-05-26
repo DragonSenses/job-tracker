@@ -13,7 +13,13 @@ export default function PageBtnContainer() {
   } = useAppContext();
 
   const prevPage = () => {
-    console.log('previous page');
+    let prevPage = page - 1;
+
+    if (prevPage < 1) {
+      prevPage = numOfPages;
+    }
+
+    changePage(prevPage);
   };
   
   const nextPage = () => {
