@@ -12324,3 +12324,40 @@ onClick={() => changePage(page)}
 onClick={() => changePage(pageNumber)}
 ```
 
+That's because when `pageChange` is handled in thhe reducer, it will go specifically to that page and re-render. What we need is not the page itself but the `pageNumber`. We will see how that is used as well in the previous and next buttons.
+
+## Previous and Next Button logic
+
+Now that the page change works for the page buttons. We need to work on the prev and next button's `onClick` handlers.
+
+We can re-use the same code to change the page, we just have to setup the logic such that we know what page to change to in the handlers. 
+
+We have to think of the edge cases where when calling previous page, i.e., when we are already at the first page. We can either:
+
+- Set the page back to 1
+- Make the button unusable
+- Route back to the other end of the pages (i.e., a call on previous on the first page will go to the last page)
+
+I will go with the last one where it treats the buttons navigation as a way to traverse the pages in a circular manner. This is what I think is best for use experience as they don't have to click multiple nexts to get to the last page.
+
+Let's work on the previous button:
+
+```js
+  const prevPage = () => {
+    console.log('previous page');
+  };
+```
+
+We should have a variable that stores the next page number, that is page - 1, then changePage to that number.
+
+```js
+  const prevPage = () => {
+    let prevPage = page - 1;
+
+    if (prevPage < 1) {
+      prevPage = numOfPages;
+    }
+
+    changePage(prevPage);
+  };
+```
