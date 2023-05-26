@@ -12225,7 +12225,37 @@ Now lets setup the logic for the next and previous buttons that change the page.
 2. Create a function that dispatches this action along with the the payload for a page in `appContext`.
 3. Handle the action in reducer
 
+actions
 ```js
 export const CHANGE_PAGE = 'CHANGE_PAGE';
 ```
 
+- Import the action, create `changePage` function with a `page` parameter, and pass that function down to the `value` prop.
+
+appContext
+```js
+import { 
+  // ...
+  CHANGE_PAGE,
+} from "./actions";
+
+const changePage = (page) => {
+  dispatch({
+    type: CHANGE_PAGE,
+    payload: { page }
+  });
+};
+
+  return (
+  <AppContext.Provider value = {
+    {
+      ...state, 
+      // ...
+      changePage, 
+    }}>
+    {children}
+  </AppContext.Provider>
+)
+```
+
+- Handle the action in the reducer
