@@ -12351,13 +12351,27 @@ Let's work on the previous button:
 We should have a variable that stores the next page number, that is page - 1, then changePage to that number.
 
 ```js
-  const prevPage = () => {
-    let prevPage = page - 1;
+const prevPage = () => {
+  let prevPage = page - 1;
 
-    if (prevPage < 1) {
-      prevPage = numOfPages;
-    }
+  if (prevPage < 1) {
+    prevPage = numOfPages;
+  }
 
-    changePage(prevPage);
-  };
+  changePage(prevPage);
+};
+```
+
+Similarly, for the `nextPage()`
+
+```js
+const nextPage = () => {
+  let nextPage = page + 1;
+
+  if(nextPage > numOfPages){
+    nextPage = 1;
+  }
+
+  changePage(nextPage);
+};
 ```
