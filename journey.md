@@ -12375,3 +12375,18 @@ const nextPage = () => {
   changePage(nextPage);
 };
 ```
+
+# Invoke Page Change
+
+Now we have to go to `appContext` and add `page` state. Also add `page` as a parameter to the `url`.
+
+```js
+const getJobs = async () => {
+  // Destructure variables that deals with search parameters
+  const { search, searchStatus, searchType, sort, page } = state;
+
+  let url = `/jobs?page=${page}&status=${searchStatus}&jobType=${searchType}&sort=${sort}`;
+
+  // ...
+}
+```
