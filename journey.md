@@ -12390,3 +12390,19 @@ const getJobs = async () => {
   // ...
 }
 ```
+
+We want this to be able to trigger a page change when user calls for it.
+
+In the `JobsContainer`, lets destructure page from context and have a `useEffect()` hook to synchronize our page change.
+
+```js
+  const {
+    // ...
+    page,
+    numOfPages,
+  } = useAppContext();
+
+  useEffect(() => {
+    getJobs();
+  }, [search, searchStatus, searchType, sort, page]);
+```
