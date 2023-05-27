@@ -272,11 +272,12 @@ export default function AppProvider(props) {
   
   const getJobs = async () => {
     // Destructure variables that deals with search parameters
-    const { search, searchStatus, searchType, sort } = state;
+    const { search, searchStatus, searchType, sort, page } = state;
 
     // let url = `/jobs`;
-    let url = `/jobs?status=${searchStatus}&jobType=${searchType}&sort=${sort}`;
-
+    // let url = `/jobs?status=${searchStatus}&jobType=${searchType}&sort=${sort}`;
+    let url = `/jobs?page=${page}&status=${searchStatus}&jobType=${searchType}&sort=${sort}`;
+    
     // If `search` is non-empty, appended it to the URL
     if(search) {
       url = url + `&search=${search}`;
