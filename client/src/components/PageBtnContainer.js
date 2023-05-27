@@ -23,7 +23,13 @@ export default function PageBtnContainer() {
   };
   
   const nextPage = () => {
-    console.log('next page');
+    let nextPage = page + 1;
+  
+    if(nextPage > numOfPages){
+      nextPage = 1;
+    }
+  
+    changePage(nextPage);
   };
 
   const pages = Array.from( 
