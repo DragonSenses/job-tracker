@@ -12406,3 +12406,48 @@ In the `JobsContainer`, lets destructure page from context and have a `useEffect
     getJobs();
   }, [search, searchStatus, searchType, sort, page]);
 ```
+
+# Handle Change function should also reset the page back to 1
+
+Recall in the `AddJob` page when we used `handleChange()` as a way to change state values.
+
+In `appContext`
+```js
+  const handleChange = ({ name, value }) => {
+    dispatch({
+      type: HANDLE_CHANGE,
+      payload: { name, value },
+    });
+  };
+```
+
+In `AddJob`
+```js
+  const handleJobInput = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    handleChange({name, value});
+  };
+```
+
+In `reducer`
+```js
+case HANDLE_CHANGE: {
+  return {
+    ...state,
+    [action.payload.name]: action.payload.value,
+  };
+}
+```
+
+Then later we reused `handleChange` for the search functionality:
+
+In `SearchContainer`
+```js
+const handleSearch = (e) => {
+  if (isLoading) return;
+  handleChange({ name: e.target.name, value: e.target.value });
+};
+```
+
+Now every time we invoke `handleChange`, we want to make sure that the information is updated and also reset the page back to 1.
