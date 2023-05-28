@@ -12490,3 +12490,37 @@ or more specifically
 
 We can find what handles this in the `jobsController`.
 
+Possibly offending code:
+
+```js
+  // Await jobs filtered out by sort conditions
+  let jobs = await result;
+
+  // Pagination Variables
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  // Chain operations to modify the query based on the page variables
+  result = result.skip(skip).limit(limit);  
+
+  // Await filtered jobs processed through pagination
+  jobs = await result;
+```
+
+Let's try removing the first `let jobs = await result;`
+
+So now we have:
+
+```js
+  // Pagination Variables
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  // Chain operations to modify the query based on the page variables
+  result = result.skip(skip).limit(limit);  
+
+  // Await filtered jobs by sort conditions & processed through pagination
+  const jobs = await result;
+```
