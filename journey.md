@@ -12540,3 +12540,18 @@ So now we have:
   // Await filtered jobs by sort conditions & processed through pagination
   const jobs = await result;
 ```
+
+## Issue: Fixed! 
+
+It fixed the issue! Now we can finally see the `AllJobs` page working well.
+
+# Testing Pagination
+
+Right now it seems that no pagination occurs because we do not have enough in the jobs array. So let's add some so that we can see how it works.
+
+Alright we got it to work, at 11 job postings we can see another issue.
+
+The Prev and Next buttons work fine, they go through the right page. However, when the page buttons are rendered they appear as `NaN`, so it looks like this: `<< Prev [NaN NaN] Next >>`.
+
+## Attempt at fixing page button issue
+
