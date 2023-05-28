@@ -274,8 +274,10 @@ export default function AppProvider(props) {
     // Destructure variables that deals with search parameters
     const { search, searchStatus, searchType, sort, page } = state;
 
-    console.log(page);
-    
+    console.log(`page in the state is: ${page}
+      type is: ${typeof page}
+    `);
+
     // let url = `/jobs`;
     // let url = `/jobs?status=${searchStatus}&jobType=${searchType}&sort=${sort}`;
     let url = `/jobs?page=${page}&status=${searchStatus}&jobType=${searchType}&sort=${sort}`;

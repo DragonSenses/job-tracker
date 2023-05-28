@@ -12581,3 +12581,117 @@ const getJobs = async () => {
 
 So it means `page` state variable seems to have the issue.
 
+```js
+  const getJobs = async () => {
+    // Destructure variables that deals with search parameters
+    const { search, searchStatus, searchType, sort, page } = state;
+
+    console.log(`page in the state is: ${page}
+    type is: ${typeof page}`);
+```
+
+After this statement the log is:
+```sh
+page in the state is: 1
+    type is: number
+```
+
+However, logging the same thing in `PageBtnContainer` before the render:
+
+```js
+  return (
+    <Wrapper>
+      <button className="prev-btn" onClick={prevPage}>
+        <HiChevronDoubleLeft />
+        prev
+      </button>
+
+      {console.log(`
+      page: ${page}
+      type is: ${typeof page}
+      `)}
+
+      <div className="btn-container">
+        {pages.map((pageNumber) => {
+```
+
+Yields
+```sh
+  page: 1
+  type is: number
+```
+
+So it seems it isn't `page` state variable that's wrong, but rather `pageNumber` during the mapping.
+
+```js
+<div className="btn-container">
+  {pages.map((pageNumber) => {
+
+    console.log(`pageNumber is ${pageNumber}
+    Type is: ${typeof pageNumber}`);
+
+    return (
+```
+
+Going a bit further and logging pageNumber, in the console it yields:
+```sh
+pageNumber is NaN
+Type is: number
+```
+
+Let's look at all the things `pageNumber` is involved in. First off, its the mapping of an array-like object into an array called `pages`. So we need to find out if there is a problem with `pages` and the usage of `Array.from()`.
+
+Here is the code:
+```js
+  const pages = Array.from( 
+    { length: numOfPages },
+    (index) => {
+      return index++;
+    }
+  );
+```
+
+So right before the mapping but after logging the `pageNumber` we write another log statement on pages:
+
+```js
+  return (
+    <Wrapper>
+      <button className="prev-btn" onClick={prevPage}>
+        <HiChevronDoubleLeft />
+        prev
+      </button>
+
+      {console.log(`
+      --------
+      page: ${page}
+      type is: ${typeof page}
+      --------`)}
+
+      {console.log(`
+      --------
+      pages: ${pages}
+      type is: ${typeof pages}
+      --------`)}
+
+      <div className="btn-container">
+        {pages.map((pageNumber) => {
+          console.log(`pageNumber is ${pageNumber}
+          Type is: ${typeof pageNumber}`);
+```
+
+In the console:
+
+```sh
+PageBtnContainer.js:47 
+      --------
+      page: 1
+      type is: number
+      --------
+PageBtnContainer.js:53 
+      --------
+      pages: NaN,NaN
+      type is: object
+      --------
+````
+
+So looks like we found our culprit.

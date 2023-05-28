@@ -46,13 +46,23 @@ export default function PageBtnContainer() {
         prev
       </button>
 
-      {console.log(`page is ${page}`)}
+      {console.log(`
+      --------
+      page: ${page}
+      type is: ${typeof page}
+      --------`)}
+
+      {console.log(`
+      --------
+      pages: ${pages}
+      type is: ${typeof pages}
+      --------`)}
 
       <div className="btn-container">
         {pages.map((pageNumber) => {
           console.log(`pageNumber is ${pageNumber}
           Type is: ${typeof pageNumber}`);
-          
+
           return (
             <button
               type='button'
