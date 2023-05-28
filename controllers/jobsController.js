@@ -68,9 +68,6 @@ const getAllJobs = async (req, res) => {
     result = result.sort('-position');
   }
 
-  // Await jobs filtered out by sort conditions
-  let jobs = await result;
-
   // Pagination Variables
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
@@ -79,8 +76,8 @@ const getAllJobs = async (req, res) => {
   // Chain operations to modify the query based on the page variables
   result = result.skip(skip).limit(limit);  
 
-  // Await filtered jobs processed through pagination
-  jobs = await result;
+  // Await filtered jobs by sort conditions & processed through pagination
+  const jobs = await result;
 
   // Calculate the variables needed to send back as a response
   const totalJobs = await Job.countDocuments(queryObject);
