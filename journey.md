@@ -12555,3 +12555,28 @@ The Prev and Next buttons work fine, they go through the right page. However, wh
 
 ## Attempt at fixing page button issue
 
+Let's trace our components. 
+
+-`AllJobs` page
+  |- <JobsContainer /> 
+    |- `PageBtnContainer`
+
+So we have the error in `PageBtnContainer` component. Also another thing to notice is that:
+
+```sh
+[0] GET /api/v1/jobs?page=NaN&status=all&jobType=all&sort=latest 304 78.415 ms - -
+```
+
+It also shows up as NaN in the url.
+
+This is what the code looks like in `appContext`
+
+```js
+const getJobs = async () => {
+  // Destructure variables that deals with search parameters
+  const { search, searchStatus, searchType, sort, page } = state;
+
+  let url = `/jobs?page=${page}&status=${searchStatus}&jobType=${searchType}&sort=${sort}`;
+```
+
+So it means `page` state variable seems to have the issue.
