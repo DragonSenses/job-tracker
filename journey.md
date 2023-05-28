@@ -12463,3 +12463,30 @@ case HANDLE_CHANGE: {
   };
 }
 ```
+
+## Testing
+
+We got a:
+
+```js
+[0] GET /api/v1/jobs?page=1&status=all&jobType=all&sort=latest 500 38.139 ms - 102
+[0] MongooseError: Query was already executed: Job.find({ createdBy: new ObjectId("6418d6ab92ff594a02b6f24a...
+[0]     at model.Query.exec (C:\...\GitHub\job-tracker\node_modules\mongoose\lib\query.js:4307:17)
+[0]     at Query.then (C:\...\GitHub\job-tracker\node_modules\mongoose\lib\query.js:4440:15)
+[0]     at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+[0]   originalStack: 'Error\n' +
+[0]     '    at model.Query.exec (C:\...\GitHub\\job-tracker\\node_modules\\mongoose\\lib\\query.js:4311:28)\n' +
+[0]     '    at Query.then (C:\...\GitHub\\job-tracker\\node_modules\\mongoose\\lib\\query.js:4440:15)\n' +   
+[0]     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)'
+[0] }
+[0] GET /api/v1/jobs?page=1&status=all&jobType=all&sort=latest 500 35.709 ms - 102
+```
+
+or more specifically
+
+```sh
+[0] MongooseError: Query was already executed: Job.find({ createdBy: new ObjectId("6418d6ab92ff594a02b6f24a...
+```
+
+We can find what handles this in the `jobsController`.
+
