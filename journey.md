@@ -12464,7 +12464,7 @@ case HANDLE_CHANGE: {
 }
 ```
 
-## Testing
+## The Issue: `MongooseError: Query was already executed`
 
 We got a:
 
@@ -12489,6 +12489,22 @@ or more specifically
 ```
 
 We can find what handles this in the `jobsController`.
+
+## Background information
+
+Here are the docs about [Duplicate Query Execution](https://mongoosejs.com/docs/migrating_to_6.html#duplicate-query-execution) in mongoose. 
+
+> Mongoose no longer allows executing the same query object twice. If you do, you'll get a `Query was already executed error`. Executing the same query instance twice is typically indicative of mixing callbacks and promises, but if you need to execute the same query twice, you can call Query#clone() to clone the query and re-execute it.
+
+This is interesting so we need to find the issue where our callbacks or promises are mixed up. I know that what triggers this error happens during the search functionality, so in the `jobsController`.
+
+That means we should look into any time I used `await` as there often is a callback. Here is mdn's [async function reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function). It states that:
+
+> Code after each `await` expression can be thought of as existing in a `.then` callback. In this way a promise chain is progressively constructed with each reentrant step through the function. The return value forms the final link in the chain.
+
+So lets fix our promises and callbacks.
+
+## The Fix
 
 Possibly offending code:
 
