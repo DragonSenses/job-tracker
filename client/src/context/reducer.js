@@ -166,6 +166,7 @@ function reducer(state, action) {
     case HANDLE_CHANGE: {
       return {
         ...state,
+        page: 1,
         [action.payload.name]: action.payload.value,
       };
     }

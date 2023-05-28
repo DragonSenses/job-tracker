@@ -12451,3 +12451,15 @@ const handleSearch = (e) => {
 ```
 
 Now every time we invoke `handleChange`, we want to make sure that the information is updated and also reset the page back to 1.
+
+Let's make it so that in the reducer `handleChange` performs this behavior, in which it resets the active page to 1 in the state:
+
+```js
+case HANDLE_CHANGE: {
+  return {
+    ...state,
+    page: 1,
+    [action.payload.name]: action.payload.value,
+  };
+}
+```
