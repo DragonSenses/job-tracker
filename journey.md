@@ -12780,3 +12780,24 @@ We can see that:
 
 We forgot to pass in the `element` argument to the `mapFn`. We want this to not be accessed by anyone but since JavaScript has no inherent privacy of classes (as of May, 2023) we should follow the convention of using `_` underscore for private methods and variables.
 
+## Fix: Pass in the private element argument
+
+Going to name it `_e` to show that it is private and should not be used. We also don't really use it within the mapping as we just need the index. So here is the solution:
+
+```js
+  const pages = Array.from( 
+    { length: numOfPages },
+    (_e, index) => {
+      console.log(`
+      index in pages is: ${index}
+      index is type: ${typeof index}`);
+      return index++;
+    }
+  );
+```
+
+And with that the page buttons properly render as a number instead of a `NaN`.
+
+## Next issue: active class does not show when hitting edge cases
+
+The active page button does not show when hitting the edge cases (calling next on last page, or previous on first page).
