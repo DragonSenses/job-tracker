@@ -12553,7 +12553,7 @@ Alright we got it to work, at 11 job postings we can see another issue.
 
 The Prev and Next buttons work fine, they go through the right page. However, when the page buttons are rendered they appear as `NaN`, so it looks like this: `<< Prev [NaN NaN] Next >>`.
 
-## Attempt at fixing page button issue
+## NaN Page Buttons | Attempt at fixing issue
 
 Let's trace our components. 
 
@@ -12749,4 +12749,20 @@ for (let num of range) {
 
 let arr = Array.from(range, num => num * num);
 console.log(arr) // 1, 4, 9, 16, 25
+```
+
+Looking at the example above we can see that it has somehow changes during the mapping process.
+
+Let's log the `index` within `pages` during the mapping function.
+
+```js
+  const pages = Array.from( 
+    { length: numOfPages },
+    (index) => {
+      console.log(`
+      index in pages is: ${index}
+      index is type: ${typeof index}`);
+      return index++;
+    }
+  );
 ```

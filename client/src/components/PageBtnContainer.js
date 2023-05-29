@@ -35,6 +35,9 @@ export default function PageBtnContainer() {
   const pages = Array.from( 
     { length: numOfPages },
     (index) => {
+      console.log(`
+      index in pages is: ${index}
+      index is type: ${typeof index}`);
       return index++;
     }
   );
