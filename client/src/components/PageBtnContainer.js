@@ -3,7 +3,6 @@ import { HiChevronDoubleLeft, HiChevronDoubleRight } from 'react-icons/hi';
 import { useAppContext } from '../context/appContext';
 import Wrapper from '../assets/wrappers/PageBtnContainer';
 
-
 export default function PageBtnContainer() {
 
   const { 
@@ -32,12 +31,9 @@ export default function PageBtnContainer() {
     changePage(nextPage);
   };
 
-  const pages = Array.from( 
+  const pages = Array.from(
     { length: numOfPages },
     (_e, index) => {
-      console.log(`
-      index in pages is: ${index}
-      index is type: ${typeof index}`);
       return index + 1;
     }
   );
@@ -49,22 +45,8 @@ export default function PageBtnContainer() {
         prev
       </button>
 
-      {console.log(`
-      --------
-      page: ${page}
-      type is: ${typeof page}
-      --------`)}
-
-      {console.log(`
-      --------
-      pages: ${pages}
-      type is: ${typeof pages}
-      --------`)}
-
       <div className="btn-container">
         {pages.map((pageNumber) => {
-          console.log(`pageNumber is ${pageNumber}
-          Type is: ${typeof pageNumber}`);
 
           return (
             <button
