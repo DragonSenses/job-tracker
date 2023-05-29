@@ -12766,3 +12766,17 @@ Let's log the `index` within `pages` during the mapping function.
     }
   );
 ```
+
+Here are the results
+```sh
+ index in pages is: undefined
+```
+
+So it is a problem with how the `Array.from()` is creating our pages. Looking into the docs of mdn [MDN: Array.from()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from)
+
+We can see that:
+
+> ...`mapFn` only receives two arguments (`element`, `index`) without the whole array, because the array is still under construction.
+
+We forgot to pass in the `element` argument to the `mapFn`. We want this to not be accessed by anyone but since JavaScript has no inherent privacy of classes (as of May, 2023) we should follow the convention of using `_` underscore for private methods and variables.
+
