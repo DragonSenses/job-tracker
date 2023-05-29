@@ -38,7 +38,7 @@ export default function PageBtnContainer() {
       console.log(`
       index in pages is: ${index}
       index is type: ${typeof index}`);
-      return index++;
+      return index + 1;
     }
   );
 
