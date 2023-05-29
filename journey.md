@@ -12798,6 +12798,27 @@ Going to name it `_e` to show that it is private and should not be used. We also
 
 And with that the page buttons properly render as a number instead of a `NaN`.
 
+## Next issue: Set initial page to 1. Page buttons are 0 and 1 currently.
+
+So another issue we have is that the page buttons rendered are `0` and `1` respectively. We wanted it to start at page 1.
+
+Again looking at the code above, the issue is within the mapping when we return our `index`.
+
+We use `index++`.
+
+### Solution: Use `index + 1` instead of `index++`
+
+`index + 1` will ensure that page 1 will be the first value. So let's make that change.
+
+```js
+  const pages = Array.from( 
+    { length: numOfPages },
+    (_e, index) => {
+      return index + 1;
+    }
+  );
+```
+
 ## Next issue: active class does not show when hitting edge cases
 
 The active page button does not show when hitting the edge cases (calling next on last page, or previous on first page).
