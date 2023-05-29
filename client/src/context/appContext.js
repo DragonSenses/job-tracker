@@ -141,16 +141,19 @@ export default function AppProvider(props) {
   const registerUser = async (currentUser) => {
     dispatch({ type: REGISTER_USER_BEGIN });
     try{
+
       const response = await axios.post('/api/v1/auth/register', currentUser);
-      // console.log(response);
       const { user, token, location } = response.data;
+
       dispatch({
         type: REGISTER_USER_SUCCESS,
         payload: { user, token, location },
       });
+
       addUserToLocalStorage({ user, token, location });
+      
     } catch(error){
-      // console.log(error.response);
+
       dispatch( {
         type: REGISTER_USER_ERROR,
         payload: { msg: error.response.data.msg },
@@ -190,15 +193,12 @@ export default function AppProvider(props) {
   };
 
   const updateUser = async (currentUser) => {
-    console.log(currentUser);
 
     dispatch({ type: UPDATE_USER_BEGIN });
 
     try{
       const { data } = await authFetch.patch('/auth/updateUser', currentUser);
       
-      console.log(data);
-
       const { user, location, token } = data;
 
       dispatch({
@@ -274,10 +274,6 @@ export default function AppProvider(props) {
     // Destructure variables that deals with search parameters
     const { search, searchStatus, searchType, sort, page } = state;
 
-    console.log(`page in the state is: ${page}
-      type is: ${typeof page}
-    `);
-
     // let url = `/jobs`;
     // let url = `/jobs?status=${searchStatus}&jobType=${searchType}&sort=${sort}`;
     let url = `/jobs?page=${page}&status=${searchStatus}&jobType=${searchType}&sort=${sort}`;
@@ -307,8 +303,7 @@ export default function AppProvider(props) {
       console.log(`Error triggered in getJobs() appContext.js! 
       Here is the Error Response:
       ${error.response}`);
-      // Still Testing so don't logout user for now
-      // logoutUser();
+      logoutUser();
     }
     clearAlert();
   };
@@ -382,7 +377,6 @@ export default function AppProvider(props) {
   };
 
   const clearFilters = () => {
-    console.log('Clear Filters');
     dispatch({ type: CLEAR_FILTERS });
   }
 
