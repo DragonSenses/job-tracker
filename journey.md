@@ -12692,6 +12692,61 @@ PageBtnContainer.js:53
       pages: NaN,NaN
       type is: object
       --------
-````
+```
 
 So looks like we found our culprit.
+
+We can diagnose the issue starting with the `pages` object. Again we use `Array.from()` to turn an iterable/array-like value into a "real" Array.
+
+```js
+  const pages = Array.from( 
+    { length: numOfPages },
+    (index) => {
+      return index++;
+    }
+  );
+```
+
+It makes a new array and copies all items to it. It's syntax:
+
+```js
+Array.from(obj[, mapFn, thisArg])
+```
+
+The optional second argument `mapFn` can be a function that will be applied to each element before adding it to the array, and `thisArg` allows us to set `this` for it.
+
+Example:
+```js
+let range = {
+  from: 1,
+  to: 5
+};
+
+// 1. call to for..of initially calls this
+range[Symbol.iterator] = function() {
+
+  // ...it returns the iterator object:
+  // 2. Onward, for..of works only with the iterator object below, asking it for next values
+  return {
+    current: this.from,
+    last: this.to,
+
+    // 3. next() is called on each iteration by the for..of loop
+    next() {
+      // 4. it should return the value as an object {done:.., value :...}
+      if (this.current <= this.last) {
+        return { done: false, value: this.current++ };
+      } else {
+        return { done: true };
+      }
+    }
+  };
+};
+
+for (let num of range) {
+  console.log(num); // 1, then 2, 3, 4, 5
+}
+
+let arr = Array.from(range, num => num * num);
+console.log(arr) // 1, 4, 9, 16, 25
+```
