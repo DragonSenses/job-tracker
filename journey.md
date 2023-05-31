@@ -12819,6 +12819,40 @@ We use `index++`.
   );
 ```
 
-## Next issue: active class does not show when hitting edge cases
+This also fixes the issue when the active page button is not getting the `active` css class.
 
-The active page button does not show when hitting the edge cases (calling next on last page, or previous on first page).
+# Finalizing the App for Production
+
+Let's begin removing the log statements that we used to debug our app. Will keep a list here:
+
+- components
+  |- PageBtnContainer
+
+- controllers
+  |- authController
+  |- jobsController
+
+Let's also handle any warnings, eslint errors, etc.
+
+## Front-End App Setup for Production
+
+Let's create a script that will build the client of the front-end application. In `package.json`, at the root of the project folder, we have:
+
+```json
+  "scripts": {
+    "server": "nodemon server --ignore client",
+    "client": "npm start --prefix client",
+    "start": "concurrently --kill-others-on-fail \" npm run server\" \" npm run client\""
+  },
+```
+
+Let's add the `build-client` script, which will chade directory to client and run the build:
+
+```json
+  "scripts": {
+    "build-client": "cd client && npm run build",
+    "server": "nodemon server --ignore client",
+    "client": "npm start --prefix client",
+    "start": "concurrently --kill-others-on-fail \" npm run server\" \" npm run client\""
+  },
+```
