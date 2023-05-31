@@ -12856,3 +12856,11 @@ Let's add the `build-client` script, which will chade directory to client and ru
     "start": "concurrently --kill-others-on-fail \" npm run server\" \" npm run client\""
   },
 ```
+
+Since we want to package our front-end app and serve it as a static asset. Here is the express docs on [Serving static files in Express](https://expressjs.com/en/starter/static-files.html#serving-static-files-in-express).
+
+We are going to do the following in the `server`:
+- We are going to need to grab the absolute path directory name using the variable `__dirname`. 
+- Then we will use `express.static()`, a built-in middleware to serve static files.
+- We will use `path.resolve()`, using the absolute path `__dirname` to the directory containing the source file. Note that this method will create the first absolute path that can be constructured from right to left. A stackoverflow post on the difference between [path.join vs path.resolve with __dirname](https://stackoverflow.com/questions/39110801/path-join-vs-path-resolve-with-dirname)
+
