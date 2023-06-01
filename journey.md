@@ -12922,6 +12922,19 @@ Now that the server can serve up the front-end as a static file as a response to
 
 ```sh
 npm i helmet
+npm i xss-clean
+npm i express-mongo-sanitize
+npm i express-rate-limit
+```
 
+Now to use them within the server, import then have express app use it. Put this after `express.json()`.
 
+```js
+import helmet from 'helmet';
+import xss from 'xss-clean';
+import mongoSanitize from 'express-mongo-sanitize';
+
+app.use(helmet());
+app.use(xss());
+app.use(mongoSanitize());
 ```
