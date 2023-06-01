@@ -12884,3 +12884,22 @@ if(process.env.NODE_ENV !== 'production'){
 const __dirname = dirname(fileURLToPath(import.meta.url));
 ```
 
+When we are going to deploy, we want to serve up the front-end as a static asset
+
+- Use express with `app.use()`
+- Serve up static asset with `express.static()`
+- Use `path.resolve()` to resolve a sequence of paths or path segements into an absolute path. [Nodejs path.resolve()](https://nodejs.org/api/path.html#pathresolvepaths)
+
+```js
+app.use(express.static(path.resolve(__dirname, './client/build')));
+```
+
+Now after the routes, let's define a `GET` route for `HTTP GET` method in Express. Here is the Express docs on [Routing](https://expressjs.com/en/guide/routing.html).
+
+- The server should send a file (i.e., the front-end static asset) back as a response to a `GET` request. It should give back an `index.html` from the `./client/build` directory.
+
+```js
+app.get('*', function(request, response){
+  response.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
+});
+```
