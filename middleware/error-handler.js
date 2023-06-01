@@ -1,8 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 
 const errorHandlerMiddleware = (err, req, res, next) => {
-  console.log(err);
-
   const defaultError = {
     statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
     msg: err.message || '500 - Something went wrong, try again later',
@@ -10,7 +8,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
 
   if(err.name === 'ValidationError'){
     defaultError.statusCode = StatusCodes.BAD_REQUEST;
-    // defaultError.msg = err.message;
+    
     defaultError.msg = Object.values(err.errors)
       .map((field) => field.message)
       .join(","); 
