@@ -21,6 +21,11 @@ import notFoundMiddleware from './middleware/not-found.js';
 import errorHandlerMiddleware from './middleware/error-handler.js';
 import authenticateUser from './middleware/authenticate.js';
 
+// Deployment
+import path from 'path';
+import { dirname } from 'path';
+import { fileURLtoPath } from 'url';
+
 if(process.env.NODE_ENV !== 'production'){
   app.use(morgan('dev'));
 }
