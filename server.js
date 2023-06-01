@@ -32,6 +32,9 @@ if(process.env.NODE_ENV !== 'production'){
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// Only for Deployment
+app.use(express.static(path.resolve(__dirname, './client/build')));
+
 app.use(express.json());
 
 app.get('/api/v1', (req, res) => {
@@ -40,6 +43,11 @@ app.get('/api/v1', (req, res) => {
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/jobs', authenticateUser, jobsRouter);
+
+// Only for Deployment
+app.get('*', function(request, response){
+  response.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
+});
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
