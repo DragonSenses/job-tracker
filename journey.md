@@ -12864,3 +12864,23 @@ We are going to do the following in the `server`:
 - Then we will use `express.static()`, a built-in middleware to serve static files.
 - We will use `path.resolve()`, using the absolute path `__dirname` to the directory containing the source file. Note that this method will create the first absolute path that can be constructured from right to left. A stackoverflow post on the difference between [path.join vs path.resolve with __dirname](https://stackoverflow.com/questions/39110801/path-join-vs-path-resolve-with-dirname)
 
+The imports:
+
+```js
+import path from 'path';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+```
+
+- `dirname` from `path` is a method that returns the directory name of a `path` [Nodejs path.dirname()](https://nodejs.org/api/path.html#pathdirnamepath)
+- `fileURLtoPath` ensures a cross-platform valid absolute path string. It converts a URL string into a fully-resolve platform-specific Node.js file path [Nodejs url.fileURLToPath(url)](https://nodejs.org/api/url.html#urlfileurltopathurl)
+- WE will have that url in `import.meta.ural`
+
+```js
+if(process.env.NODE_ENV !== 'production'){
+  app.use(morgan('dev'));
+}
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+```
+
