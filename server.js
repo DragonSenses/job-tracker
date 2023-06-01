@@ -24,11 +24,13 @@ import authenticateUser from './middleware/authenticate.js';
 // Deployment
 import path from 'path';
 import { dirname } from 'path';
-import { fileURLtoPath } from 'url';
+import { fileURLToPath } from 'url';
 
 if(process.env.NODE_ENV !== 'production'){
   app.use(morgan('dev'));
 }
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.use(express.json());
 
