@@ -12832,6 +12832,10 @@ Let's begin removing the log statements that we used to debug our app. Will keep
   |- authController
   |- jobsController
 
+- middleware
+  |- authenticate
+  |- error-handler
+
 Let's also handle any warnings, eslint errors, etc.
 
 ## Front-End App Setup for Production
@@ -12902,4 +12906,22 @@ Now after the routes, let's define a `GET` route for `HTTP GET` method in Expres
 app.get('*', function(request, response){
   response.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
 });
+```
+
+Now that the server can serve up the front-end as a static file as a response to a GET request. We should also take caution on ensuring security for the users.
+
+# Security Packages
+
+- [helmet](https://www.npmjs.com/package/helmet) helps secure Express apps by setting HTTP response headers.
+
+- [xss-clean](https://www.npmjs.com/package/xss-clean) is a Node.js Connect middleware to sanitize user input coming from POST body, GET queries, and url params.
+
+- [express-mongo-sanitize](https://www.npmjs.com/package/express-mongo-sanitize) is a Express 4.x middleware which sanitizes user-supplied data to prevent MongoDB Operator Injection.
+
+- [express-rate-limit](https://www.npmjs.com/package/express-rate-limit) is a Basic rate-limiting middleware for Express. Use to limit repeated requests to public APIs and/or endpoints such as password reset.
+
+```sh
+npm i helmet
+
+
 ```
