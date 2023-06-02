@@ -12938,3 +12938,42 @@ app.use(helmet());
 app.use(xss());
 app.use(mongoSanitize());
 ```
+
+## Update on xss-clean
+
+As of June 1, 2023 the package `xss-clean` is no longer supported. So we need to remove it.
+
+npm docs on [Uninstalling packages and dependencies](https://docs.npmjs.com/uninstalling-packages-and-dependencies).
+
+```sh
+npm uninstall xss-clean
+```
+
+Instead, use [xss-filters](https://github.com/YahooArchive/xss-filters).
+
+Use the npm package
+- [xss-filters](https://www.npmjs.com/package/xss-filters) secure output filtering to prevent XSS (Cross-site Scripting).
+
+```sh
+npm install xss-filters --save
+```
+
+Then on the server we `require`, or in our case import:
+
+```js
+import xssFilters from 'xss-filters';
+```
+
+Then we can now use it within the server directly:
+```js
+var express = require('express');
+var app = express();
+var xssFilters = require('xss-filters');
+ 
+app.get('/', function(req, res){
+  var firstname = req.query.firstname; //an untrusted input collected from user
+  res.send('<h1> Hello, ' + xssFilters.inHTMLData(firstname) + '!</h1>');
+});
+ 
+app.listen(3000);
+```
