@@ -26,6 +26,11 @@ import path from 'path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
+// Security Packages
+import helmet from 'helmet';
+import mongoSanitize from 'express-mongo-sanitize';
+import xssFilters from 'xss-filters';
+
 if(process.env.NODE_ENV !== 'production'){
   app.use(morgan('dev'));
 }
@@ -36,6 +41,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 app.use(express.static(path.resolve(__dirname, './client/build')));
 
 app.use(express.json());
+
+// Use security packages for Express app
+app.use(helmet());
+app.use(mongoSanitize());
 
 app.get('/api/v1', (req, res) => {
   res.send('Hello');
