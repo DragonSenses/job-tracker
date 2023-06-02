@@ -12977,3 +12977,20 @@ app.get('/', function(req, res){
  
 app.listen(3000);
 ```
+
+## Limit Requests
+
+```sh
+npm i express-rate-limit
+```
+
+Used to limit repeated requests to public APIs and/or endpoints such as password reset.
+
+This means we are going to use it to limit how many times one can attempt to log-in or register. So use this package within the log-in and register route.
+
+Let's write out the code in `authRoutes.js`
+
+The import:
+```js
+import rateLimiter from 'express-rate-limit';
+```
