@@ -12994,3 +12994,29 @@ The import:
 ```js
 import rateLimiter from 'express-rate-limit';
 ```
+
+Now use it to create our API's limiter:
+```js
+const apiLimiter = rateLimiter({
+  // ...
+});
+```
+
+Here are our `post` requests for the `/register` and `/login` routes:
+```js
+router.route('/register').post(register);
+router.route('/login').post(login);
+```
+
+We will use the limiter on these routes specifically. All we have to do is add our limiter as the first argument to post.
+
+[Express Routing](https://expressjs.com/en/guide/routing.html), of notable interest is `express.Router` section which we use here an instance of a complete middleware and routing system.
+
+[Express router.route(path)](https://expressjs.com/en/4x/api.html#router.route), describes `router.route()` method which is a single route thats used to handle HTTP verbs with optional middleware.
+
+We will pass in the limiter as middleware in the `post()` like so:
+
+```js
+router.route('/register').post(apiLimiter, register);
+router.route('/login').post(apiLimiter, login);
+```
