@@ -12978,6 +12978,54 @@ app.get('/', function(req, res){
 app.listen(3000);
 ```
 
+## Using xss-filters
+
+The documentation on [xss-filters](https://www.npmjs.com/package/xss-filters), stops malicious & untrutsted inputs from being executed as scripts.
+
+Any time the user inputs data, before we save it to the database we should sanitize the inputs.
+
+Let's try it in the `jobsController`, with `createJob`.
+
+```js
+const createJob = async (req, res) => {
+  // Extract values from the request body
+  const { position, company } = req.body;
+
+  // Check if any of the values are empty
+  if(!position || !company) {
+    throw new BadRequestError('Please Provide All Values');
+  }
+
+  // Set the createdBy property to that of the user in the request
+  req.body.createdBy = req.user.userId;
+
+  // Create the job in the database
+  const job = await Job.create(req.body);
+
+  // Respond with 201, and a json of the job
+  res.status(StatusCodes.CREATED).json({ job });
+};
+```
+
+When we create the job in the database, we should also sanitize the input from the request body. To do so, we use `xssFilters.inHTMLData(req.body)`.
+
+```js
+import xssFilters from 'xss-filters';
+
+const createJob = async (req, res) => {
+  const { position, company } = req.body;
+  if(!position || !company) {
+    throw new BadRequestError('Please Provide All Values');
+  }
+  req.body.createdBy = req.user.userId;
+
+  // Create the job in the database
+  const job = await Job.create(xssFilters.inHTMLData(req.body));
+
+  res.status(StatusCodes.CREATED).json({ job });
+};
+```
+
 ## Limit Requests
 
 ```sh
