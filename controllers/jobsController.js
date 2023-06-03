@@ -7,40 +7,21 @@ import moment from 'moment';
 import xssFilters from 'xss-filters';
 
 const createJob = async (req, res) => {
-  // Extract values from the request body
+  // 1. Extract values from the request body
   const { position, company } = req.body;
-  console.log(req.body);
-  console.log(`${position}, ${company}, ${xssFilters.inHTMLData(position)}, ${xssFilters.inHTMLData(company)}`);
-  req.body.company = "CeVIO (edited)";
-  console.log(req.body);
-  console.log(`${position}, ${company}, ${xssFilters.inHTMLData(position)}, ${xssFilters.inHTMLData(company)}`);
-  // Check if any of the values are empty
+
+  // 2. Check if any of the values are empty
   if(!position || !company) {
     throw new BadRequestError('Please Provide All Values');
   }
 
-  console.log(req.user.userId);
-  // Set the createdBy property to that of the user in the request
+  // 3. Set the createdBy property to that of the user in the request body
   req.body.createdBy = req.user.userId;
 
-  // console.log(`Sanitized request: ${xssFilters.inHTMLData(req.body)}`);
-
-  // let obj = req.body;
-
-  // for(let key in obj){
-  //   console.log(`${key} : ${obj[key]}`);
-  // }
-
-  // obj = xssFilters.inHTMLData(req.body)
-
-  // for(let key in obj){
-  //   console.log(`${key} : ${obj[key]}`);
-  // }
-
-  // Create the job in the database
+  // 4. Create the job in the database
   const job = await Job.create(req.body);
 
-  // Respond with 201, and a json of the job
+  // 5. Respond with 201, and a json of the job
   res.status(StatusCodes.CREATED).json({ job });
 };
 
