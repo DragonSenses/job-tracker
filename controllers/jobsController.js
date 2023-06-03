@@ -15,13 +15,17 @@ const createJob = async (req, res) => {
     throw new BadRequestError('Please Provide All Values');
   }
 
-  // 3. Set the createdBy property to that of the user in the request body
+  // 3. Sanitize user inputs and save it to the request body
+  req.body.company = xssFilters.inHTMLData(company);
+  req.body.position = xssFilters.inHTMLData(position);
+
+  // 4. Set the createdBy property for req.body to that of the user
   req.body.createdBy = req.user.userId;
 
-  // 4. Create the job in the database
+  // 5. Create the job in the database
   const job = await Job.create(req.body);
 
-  // 5. Respond with 201, and a json of the job
+  // 6. Respond with 201, and a json of the job
   res.status(StatusCodes.CREATED).json({ job });
 };
 
