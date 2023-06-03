@@ -13072,6 +13072,135 @@ const createJob = async (req, res) => {
 };
 ```
 
+### Testing XSS Inputs
+
+Going to test some inputs into `createJob` using Postman.
+
+1. Valid Job JSON
+
+```json
+{
+  "company" : "CeVIO",
+  "position": "Software Developer"
+}
+```
+
+Response:
+```json
+{
+    "job": {
+        "company": "CeVIO",
+        "position": "Software Developer",
+        "status": "pending",
+        "jobType": "full-time",
+        "jobLocation": "my city",
+        "createdBy": "6418d6ab92ff594a02b6f24a",
+        "_id": "647bc8f362dd3429be947bbb",
+        "createdAt": "2023-06-03T23:12:51.055Z",
+        "updatedAt": "2023-06-03T23:12:51.055Z",
+        "__v": 0
+    }
+}
+```
+
+2. Reflected XSS in the `position` parameter
+
+Let's have the following JavaScript code as an input:
+
+```js
+<script>alert(1)</script>
+```
+
+Input:
+
+```json
+{
+  "company" : "CeVIO",
+  "position": "<script>alert(1)</script>"
+}
+```
+
+Result:
+```json
+{
+    "job": {
+        "company": "CeVIO",
+        "position": "&lt;script>alert(1)&lt;/script>",
+        "status": "pending",
+        "jobType": "full-time",
+        "jobLocation": "my city",
+        "createdBy": "6418d6ab92ff594a02b6f24a",
+        "_id": "647bc97b62dd3429be947bbd",
+        "createdAt": "2023-06-03T23:15:07.550Z",
+        "updatedAt": "2023-06-03T23:15:07.550Z",
+        "__v": 0
+    }
+}
+```
+
+Looks like it did a proper xss-filter by converting the script inside the `position` parameter:
+
+```json
+{
+  "position": "<script>alert(1)</script>"
+}
+```
+
+Into 
+
+```json
+{
+  "job": {
+      "position": "&lt;script>alert(1)&lt;/script>",
+  }
+}
+```
+
+Thwarting JavaScript executions.
+
+3. XSS with `img` payload
+
+```json
+{
+  "company" : "CeVIO",
+  "position": "<img src=//evil-DNS>"
+}
+```
+
+Result:
+
+```json
+{
+    "job": {
+        "company": "CeVIO",
+        "position": "&lt;img src=//evil-DNS>"
+    }
+}
+```
+
+
+4. XSS with `iframe`
+
+Let's try it in the `company` parameter
+
+```json
+{
+  "company" : "<iframe src='jar://test.html'></iframe>",
+  "position": "Developer"
+}
+```
+
+Result:
+
+```json
+{
+    "job": {
+        "company": "&lt;iframe src='jar://test.html'>&lt;/iframe>",
+        "position": "Developer",
+    }
+}
+```
+
 ## Limit Requests
 
 ```sh
