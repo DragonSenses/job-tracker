@@ -12978,7 +12978,7 @@ app.get('/', function(req, res){
 app.listen(3000);
 ```
 
-## Using xss-filters
+## Sanitize input using xss-filters
 
 The documentation on [xss-filters](https://www.npmjs.com/package/xss-filters), stops malicious & untrutsted inputs from being executed as scripts.
 
@@ -13025,6 +13025,63 @@ const createJob = async (req, res) => {
   res.status(StatusCodes.CREATED).json({ job });
 };
 ```
+
+### Testing sanitized input in Postman
+
+Now let's go to Postman, log-in request the create a job.
+
+The json test:
+```json
+{
+  "company" : "CeVIO",
+  "position": "Audio Engineer"
+}
+```
+The log statements in `jobController`:
+```js
+  console.log(`Sanitized request: ${xssFilters.inHTMLData(req.body)}`);
+
+  let obj = req.body;
+
+  for(let key in obj){
+    console.log(`${key} : ${obj[key]}`);
+  }
+
+  obj = xssFilters.inHTMLData(req.body)
+
+  for(let key in obj){
+    console.log(`${key} : ${obj[key]}`);
+  }
+
+  // Create the job in the database
+  const job = await Job.create(xssFilters.inHTMLData(req.body));
+```
+
+The results:
+
+```sh
+[0] Sanitized request: [object Object]
+[0] company : CeVIO
+[0] position : Audio Engineer
+[0] createdBy : 6418d6ab92ff594a02b6f24a
+[0] 0 : [
+[0] 1 : o
+[0] 2 : b
+[0] 3 : j
+[0] 4 : e
+[0] 5 : c
+[0] 6 : t
+[0] 7 :
+[0] 8 : O
+[0] 9 : b
+[0] 10 : j
+[0] 11 : e
+[0] 12 : c
+[0] 13 : t
+[0] 14 : ]
+[0] POST /api/v1/jobs 500 15.997 ms - 80
+```
+
 
 ## Limit Requests
 
