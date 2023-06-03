@@ -13066,3 +13066,20 @@ app.post('/create-account', createAccountLimiter, (request, response) => {
 	//...
 })
 ```
+
+In our particular apiLimiter, we'd want to limit the requests to 10 every 15 minutes.
+
+- `legacyHeaders` is set to `true` for backward compatibility. It will send on all response the legacy rate limit headers for limit (X-RateLimit-Limit), current usage (X-RateLimit-Remaining) and reset time (if the store provides it). And also the middleware sends the `Retry-After` header on all blocked requests.
+
+- `standardHeaders` enable support for headers conforming to the [ratelimit standardization draft](https://github.com/ietf-wg-httpapi/ratelimit-headers/blob/main/draft-ietf-httpapi-ratelimit-headers.md) adoptbed by the IETF (`RateLimit-Limit`, `RateLimit-Remaining`, and, if the store supports it, `RateLimit-Reset`). If set to true, the middleware also sends the `Retry-After` header on all blocked requests. May be used in conjunction with, or instead of the `legacyHeaders` option.
+
+```js
+const apiLimiter = rateLimiter({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 requests per `window` (here, per 15 minutes)
+  message:
+		'Too many accounts created from this IP, please try again after 15 minutes',
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+```
