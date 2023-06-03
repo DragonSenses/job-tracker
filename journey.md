@@ -13020,3 +13020,49 @@ We will pass in the limiter as middleware in the `post()` like so:
 router.route('/register').post(apiLimiter, register);
 router.route('/login').post(apiLimiter, login);
 ```
+
+Now in the [express-rate-limit docs](https://www.npmjs.com/package/express-rate-limit) under Usage, we can see an examples of how to use the rate limiter. The most relevant are:
+
+1. To use it in a 'regular' web server (e.g. anything that uses `express.static()`), where the rate-limiter should only apply to certain requests:
+
+```js
+import rateLimit from 'express-rate-limit'
+
+const apiLimiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
+
+// Apply the rate limiting middleware to API calls only
+app.use('/api', apiLimiter)
+```
+
+2. To create multiple instances to apply different rules to different endpoints:
+
+```js
+import rateLimit from 'express-rate-limit'
+
+const apiLimiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
+
+app.use('/api/', apiLimiter)
+
+const createAccountLimiter = rateLimit({
+	windowMs: 60 * 60 * 1000, // 1 hour
+	max: 5, // Limit each IP to 5 create account requests per `window` (here, per hour)
+	message:
+		'Too many accounts created from this IP, please try again after an hour',
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
+
+app.post('/create-account', createAccountLimiter, (request, response) => {
+	//...
+})
+```
