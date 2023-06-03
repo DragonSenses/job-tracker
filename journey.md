@@ -12980,7 +12980,7 @@ app.listen(3000);
 
 ## Sanitize input using xss-filters
 
-The documentation on [xss-filters](https://www.npmjs.com/package/xss-filters), stops malicious & untrutsted inputs from being executed as scripts.
+The documentation on [xss-filters](https://www.npmjs.com/package/xss-filters), stops malicious & untrusted inputs from being executed as scripts.
 
 Any time the user inputs data, before we save it to the database we should sanitize the inputs.
 
@@ -13007,7 +13007,9 @@ const createJob = async (req, res) => {
 };
 ```
 
-When we create the job in the database, we should also sanitize the input from the request body. To do so, we use `xssFilters.inHTMLData(req.body)`.
+When we create the job in the database, we should also sanitize the input from the request body. To do so, we use `xssFilters.inHTMLData(inputData)` on any inputs we are extracting from the request `POST` body. 
+
+In this case, we should use `xssFilters` on `company` and `position`. Let's look at the code once again:
 
 ```js
 import xssFilters from 'xss-filters';
@@ -13020,68 +13022,55 @@ const createJob = async (req, res) => {
   req.body.createdBy = req.user.userId;
 
   // Create the job in the database
-  const job = await Job.create(xssFilters.inHTMLData(req.body));
+  const job = await Job.create(req.body);
 
   res.status(StatusCodes.CREATED).json({ job });
 };
 ```
 
-### Testing sanitized input in Postman
+### Sanitize user input coming from POST Body
 
-Now let's go to Postman, log-in request the create a job.
+Before we add the request details into the database in the following line:
 
-The json test:
-```json
-{
-  "company" : "CeVIO",
-  "position": "Audio Engineer"
-}
-```
-The log statements in `jobController`:
 ```js
-  console.log(`Sanitized request: ${xssFilters.inHTMLData(req.body)}`);
-
-  let obj = req.body;
-
-  for(let key in obj){
-    console.log(`${key} : ${obj[key]}`);
-  }
-
-  obj = xssFilters.inHTMLData(req.body)
-
-  for(let key in obj){
-    console.log(`${key} : ${obj[key]}`);
-  }
-
-  // Create the job in the database
-  const job = await Job.create(xssFilters.inHTMLData(req.body));
+// Create the job in the database
+const job = await Job.create(req.body);
 ```
 
-The results:
+We need to sanitize the inputs and resave it to the request object.
 
-```sh
-[0] Sanitized request: [object Object]
-[0] company : CeVIO
-[0] position : Audio Engineer
-[0] createdBy : 6418d6ab92ff594a02b6f24a
-[0] 0 : [
-[0] 1 : o
-[0] 2 : b
-[0] 3 : j
-[0] 4 : e
-[0] 5 : c
-[0] 6 : t
-[0] 7 :
-[0] 8 : O
-[0] 9 : b
-[0] 10 : j
-[0] 11 : e
-[0] 12 : c
-[0] 13 : t
-[0] 14 : ]
-[0] POST /api/v1/jobs 500 15.997 ms - 80
+```js
+// Sanitize the inputs
+req.body.company = xssFilters.inHTMLData(company);
+req.body.position = xssFilters.inHTMLData(position);
 ```
 
+So now we have 6 steps within `createJob`:
+
+```js
+const createJob = async (req, res) => {
+  // 1. Extract values from the request body
+  const { position, company } = req.body;
+
+  // 2. Check if any of the values are empty
+  if(!position || !company) {
+    throw new BadRequestError('Please Provide All Values');
+  }
+
+  // 3. Sanitize user inputs and save it to the request body
+  req.body.company = xssFilters.inHTMLData(company);
+  req.body.position = xssFilters.inHTMLData(position);
+
+  // 4. Set the createdBy property for req.body to that of the user
+  req.body.createdBy = req.user.userId;
+
+  // 5. Create the job in the database
+  const job = await Job.create(req.body);
+
+  // 6. Respond with 201, and a json of the job
+  res.status(StatusCodes.CREATED).json({ job });
+};
+```
 
 ## Limit Requests
 
