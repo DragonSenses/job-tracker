@@ -83,6 +83,23 @@ export default function Register() {
         />
 
         <button type="submit" className="btn btn-block" disabled={isLoading}>submit</button>
+        
+        {/* Demo User Testing */}
+        <button
+          type='button'
+          className='btn btn-block btn-hipster'
+          disabled={isLoading}
+          onClick={() => {
+            registerUser({
+              currentUser: { email: 'testUser@test.com', password: 'test' },
+              endPoint: 'login',
+              alertText: 'Login Successful! Redirecting...',
+            });
+          }}
+        >
+          {isLoading ? 'loading...' : 'demo app'}
+        </button>
+        {/* End User Testing */}
 
         <p>
           {values.isMember ? "Not a member yet?" : "Already a member?"}

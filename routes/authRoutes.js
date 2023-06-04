@@ -15,8 +15,15 @@ const apiLimiter = rateLimiter({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
+// router.route('/register').post(apiLimiter, register);
+// router.route('/login').post(apiLimiter, login);
+// router.route('/updateUser').patch(authenticateUser, updateUser);
+
+import testUser from '../middleware/testUser.js';
+
 router.route('/register').post(apiLimiter, register);
 router.route('/login').post(apiLimiter, login);
-router.route('/updateUser').patch(authenticateUser, updateUser);
+// Restrict testUser here
+router.route('/updateUser').patch(authenticateUser, testUser, updateUser);
 
 export default router

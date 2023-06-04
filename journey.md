@@ -13729,7 +13729,7 @@ const Register = () => {
           className='btn btn-block btn-hipster'
           disabled={isLoading}
           onClick={() => {
-            setupUser({
+            registerUser({
               currentUser: { email: 'testUser@test.com', password: 'test' },
               endPoint: 'login',
               alertText: 'Login Successful! Redirecting...',
@@ -13753,7 +13753,7 @@ The button
   className='btn btn-block btn-hipster'
   disabled={isLoading}
   onClick={() => {
-    setupUser({
+    registerUser({
       currentUser: { email: 'testUser@test.com', password: 'test' },
       endPoint: 'login',
       alertText: 'Login Successful! Redirecting... (Test)',
@@ -13774,7 +13774,7 @@ The button
 
 ### Check for test user in authenticate middleware
 
-Check if the `payload.userId` is the same as `testUserID` and save this boolean in `authenticate` middleware.
+Check if the `payload.userId` is the same as `testUserID` and save this boolean in `./middleware/authenticate.js`.
 
 ```js
 const testUser = (payload.userId === 'testUserId');
@@ -13850,7 +13850,6 @@ import testUser from '../middleware/testUser.js';
 
 ```js
 router.route('/').post(testUser, createJob).get(getAllJobs);
-// remember about :id
 router.route('/stats').get(showStats);
 router.route('/:id').delete(testUser, deleteJob).patch(testUser, updateJob);
 ```
