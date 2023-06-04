@@ -13246,6 +13246,61 @@ const updateJob = async (req, res) => {
 
 Now we finished the `jobsController` let's move on to the `authController`.
 
+We don't need to sanitize the inputs within the login / register as the User model will handle the validation checks. As for password, the pre-save hook will encrypt the password input anyways. 
+
+However, where we do want to sanitize is when the user updates their profile in the Profile page. So before we save the new details of the user in the database, we should sanitize here.
+
+So far this is what updateUserl ooks like in `authController`:
+
+```js
+const updateUser = async (req, res) => {
+  const { email, name, lastName, location} = req.body;
+
+  if(!email || !name || !lastName || !location) {
+    throw new BadRequestError("Please provide all values");
+  }
+
+  const user = await User.findOne({_id: req.user.userId});
+
+  user.email = email;
+  user.name = name;
+  user.lastName = lastName;
+  user.location = location;
+
+  await user.save();
+
+  const token = user.createToken();
+
+  res.status( StatusCodes.OK ).json({ user, token, location: user.location });
+};
+```
+
+We have to sanitize the inputs from `req.body`before they get assigned.
+
+```js
+const updateUser = async (req, res) => {
+  const { email, name, lastName, location} = req.body;
+
+  if(!email || !name || !lastName || !location) {
+    throw new BadRequestError("Please provide all values");
+  }
+
+  const user = await User.findOne({_id: req.user.userId});
+
+  // Sanitize the inputs before saving the updated info in the user
+  user.email = xssFilters.inHTMLData(email);
+  user.name = xssFilters.inHTMLData(name);
+  user.lastName = xssFilters.inHTMLData(lastName);
+  user.location = xssFilters.inHTMLData(location);
+
+  await user.save();
+
+  const token = user.createToken();
+
+  res.status( StatusCodes.OK ).json({ user, token, location: user.location });
+};
+```
+
 ## Limit Requests
 
 ```sh

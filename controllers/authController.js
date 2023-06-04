@@ -2,6 +2,7 @@ import User from '../models/User.js';
 import { StatusCodes } from 'http-status-codes';
 import { BadRequestError } from '../errors/index.js';
 import { UnAuthenticatedError } from '../errors/index.js';
+import xssFilters from 'xss-filters';
 
 const register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -69,10 +70,11 @@ const updateUser = async (req, res) => {
 
   const user = await User.findOne({_id: req.user.userId});
 
-  user.email = email;
-  user.name = name;
-  user.lastName = lastName;
-  user.location = location;
+  // Sanitize the inputs before saving the updated info in the user
+  user.email = xssFilters.inHTMLData(email);
+  user.name = xssFilters.inHTMLData(name);
+  user.lastName = xssFilters.inHTMLData(lastName);
+  user.location = xssFilters.inHTMLData(location);
 
   await user.save();
 
