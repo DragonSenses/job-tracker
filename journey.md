@@ -13406,3 +13406,139 @@ const apiLimiter = rateLimiter({
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 ```
+
+# Updating Search Functionality with debounce
+
+What is debounce? 
+
+Debouncing is a programming practice used to remove unwanted input noise form buttons, switches or other use input. It is used to prevent extra activations or slow functions from triggering too often.
+
+Debounce is a term that comes from electronics. It refers to the process of removing the small ripple of current that forms when a mechanical switch is pushed in an electrical circuit that makes a series of short contacts. 
+
+An example is pressing a button on a TV remote, the signal travels to the microchip of the remote so quickly that before you manage to release the button, it bounces, and the microchip registers your click multiple times. To mitigate this, once a signal from the button is received, the microchip stops processing signals from the button for a few microseconds while it's physically impossible for you to press it again.
+
+**In software development, *debounce* is used to delay a function call until after a certain amount of time has passed since the last time the function was called. This can be useful for handling user input, such as when you want to wait until the user has finished typing before performing an action.**
+
+We want to trigger a function, but only once per use case (not multiple times per character as the current iteration seems to do). To activate the search query, but only after a user has finished typing it.
+
+Debounce time is a a time specified by the system developer, during which a signal must be present so that it can be recognized and can be further processed by the system. Debounce times prevent brief glitches from being mistakenly recognized as a signal.
+
+For example, in computer programming, debounce time is the maximum interval between clicks on a key. It's used to refer to the speed at which your mouse can click again after a first click.
+
+In `SearchContainer.js`:
+
+```js
+import React from 'react';
+import Wrapper from '../assets/wrappers/SearchContainer';
+import { FormRow, FormRowSelect } from '.';
+import { useAppContext } from '../context/appContext';
+
+export default function SearchContainer() {
+  const {
+    isLoading,
+    handleChange,
+    search,
+    searchStatus,
+    searchType,
+    sort,
+    sortOptions,
+    statusOptions,
+    jobTypeOptions,
+    clearFilters,
+  } = useAppContext();
+
+  const handleSearch = (e) => {
+    if (isLoading) return;
+    handleChange({ name: e.target.name, value: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    clearFilters();
+  };
+
+  return (
+    <Wrapper>
+      <form action="" className="form">
+        <h4>search form</h4>
+        <div className="form-center">
+          <FormRow
+            type='text'
+            name='search'
+            value={search}
+            handleChange={handleSearch}
+          >
+          </FormRow>
+
+          <FormRowSelect
+            labelText='job status'
+            name='searchStatus'
+            value={searchStatus}
+            handleChange={handleSearch}
+            list={['all', ...statusOptions]}
+          >
+          </FormRowSelect>
+
+          <FormRowSelect
+            labelText='job type'
+            name='searchType'
+            value={searchType}
+            handleChange={handleSearch}
+            list={['all', ...jobTypeOptions]}
+          >
+          </FormRowSelect>
+
+          <FormRowSelect
+            name='sort'
+            value={sort}
+            handleChange={handleSearch}
+            list={['all', ...sortOptions]}
+          >
+          </FormRowSelect>
+
+          <button
+            className='btn btn-block btn-danger'
+            disabled={isLoading}
+            onClick={handleSubmit}
+          >
+            clear filters
+          </button>
+        </div>
+      </form>
+    </Wrapper>
+  );
+};
+```
+
+Here is what we will add to make the debounce.
+
+- [`useMemo()`](https://react.dev/reference/react/useMemo) React Hook lets you cache the result of a calculation between re-renders. It is used to optimize the performance of your application by memoizing the output of a function so that it does not need to be recalculated every time there is a change in the application. The hook returns a memoized value that will only be recomputed when one of its dependencies has changed.
+
+- [Memoization](https://en.wikipedia.org/wiki/Memoization) is caching return values. By storing the results of expensive function calls and returning the cached result when the same inputs occur again.
+
+- [`useState()`](https://react.dev/reference/react/useState) a React Hook that lets you add a state variable to your component. In this case, our state variable will be `localSearch`.
+
+Let's import the above hooks:
+
+```js
+import { useState, useMemo } from 'react';
+```
+
+Then create our state variables along with the `set` function.
+
+```js
+export default function SearchContainer() {
+  const [localSearch, setLocalSearch ] = useState('');
+  // ...
+}
+```
+
+Let's remove the `isLoading` check within `handleSearch` for now, since the functionality will change.
+
+```js
+  const handleSearch = (e) => {
+    // if (isLoading) return;
+    handleChange({ name: e.target.name, value: e.target.value });
+  };
+```
+
