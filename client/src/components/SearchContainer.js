@@ -42,6 +42,10 @@ export default function SearchContainer() {
     };
   }
 
+  const optimizedDebounce = useMemo(() => {
+    debounce();
+  }, []);
+
   return (
     <Wrapper>
       <form action="" className="form">
@@ -50,8 +54,8 @@ export default function SearchContainer() {
           <FormRow
             type='text'
             name='search'
-            value={search}
-            handleChange={handleSearch}
+            value={localSearch}
+            handleChange={optimizedDebounce}
           >
           </FormRow>
 
