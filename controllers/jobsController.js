@@ -30,33 +30,36 @@ const createJob = async (req, res) => {
 };
 
 const getAllJobs = async (req, res) => {
-  // Destructure the necessary variables from request's query
+  // 1. Destructure the necessary variables from request's query
   const { search, status, jobType, sort } = req.query;
 
-  // Create queryObject that keeps track of the user
+  // 2. Sanitize the search input from the query
+  req.query.search = xssFilters.inHTMLData(search);
+
+  // 3. Create queryObject that keeps track of the user
   const queryObject = { 
     createdBy: req.user.userId,
   };
 
-  // Set the status of the query if not `all`
+  // 4. Set the status of the query if not `all`
   if (status !== 'all'){
     queryObject.status = status;
   }
 
-  // Set the jobType of the query if not 'all'
+  // 5. Set the jobType of the query if not 'all'
   if (jobType !== 'all'){
     queryObject.jobType = jobType;
   }
 
-  // Add position property to queryObject if search is non-empty
+  // 6. Add position property to queryObject if search is non-empty
   if (search) {
     queryObject.position = { $regex: search, $options: 'i' };
   }
 
-  // Find the jobs created by the user from the request (WITHOUT await)
+  // 7. Find the jobs created by the user from the request (WITHOUT await)
   let result = Job.find(queryObject);
   
-  // Chain sort conditions to filter results
+  // 8. Chain sort conditions to filter results
   if(sort === 'latest') {
     result = result.sort('-createdAt');
   }
@@ -73,79 +76,84 @@ const getAllJobs = async (req, res) => {
     result = result.sort('-position');
   }
 
-  // Pagination Variables
+  // 9. Pagination Variables
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
   const skip = (page - 1) * limit;
 
-  // Chain operations to modify the query based on the page variables
+  // 10. Chain operations to modify the query based on the page variables
   result = result.skip(skip).limit(limit);  
 
-  // Await filtered jobs by sort conditions & processed through pagination
+  // 11. Await filtered jobs by sort conditions & processed through pagination
   const jobs = await result;
 
-  // Calculate the variables needed to send back as a response
+  // 12. Calculate the variables needed to send back as a response
   const totalJobs = await Job.countDocuments(queryObject);
 
-  // Number of pages should accomodate the remainder with an extra page
+  // 13. Number of pages should accomodate the remainder with an extra page
   const numOfPages = Math.ceil(totalJobs/limit);
 
-  // Respond with 200 and a json containing the jobs, totalJobs, and pages
+  // 14. Respond with 200 and a json containing the jobs, totalJobs, and pages
   res.status(StatusCodes.OK)
      .json({ jobs, totalJobs, numOfPages });
 };
 
 const updateJob = async (req, res) => {
-  // Extract job ID from the request
+  // 1. Extract job ID from the request
   const { id: jobId } = req.params;
 
-  // Extract company and position from the request's body
+  // 2. Extract company and position from the request's body
   const { company, position } = req.body;
 
-  // Check if any of these values are empty
+  // 3. Check if any of these values are empty
   if (!company || !position) {
     throw new BadRequestError('Please Provide All Values');
   }
 
-  // Find the job in the database
+  // 4. Sanitize user inputs and save it to the request body
+  req.body.company = xssFilters.inHTMLData(company);
+  req.body.position = xssFilters.inHTMLData(position);
+
+  // 5. Find the job in the database
   const job = await Job.findOne({ _id: jobId });
 
-  // If job is not found
+  // 6. If job is not found throw error
   if (!job) {
     throw new NotFoundError(`No job with id ${jobId}`);
   }
 
+  // 7. Check permissions of the user created the job
   checkPermissions(req.user, job.createdBy);
 
-  // Find and update the job, run validation & return a new document
+  // 8. Find and update the job, run validation & return a new document
   const updatedJob = await Job.findOneAndUpdate({ _id: jobId}, req.body, {
     new: true,
     runValidators: true,
   });
 
-  // Send a 200 Response with a json of the newly updated job
+  // 9. Send a 200 Response with a json of the newly updated job
   res.status(StatusCodes.OK).json( { updatedJob });
 };
 
 const deleteJob = async (req, res) => {
-  // Extract job id from the request
+  // 1. Extract job id from the request
   const { id: jobId } = req.params;
 
-  // Access the corresponding job document through our Job model with findOne()
+  // 2. Access the corresponding job document through our Job model with findOne()
   const job = await Job.findOne({ _id: jobId });
 
-  // Check if we found the job
+  // 3. Check if we found the job
   if(!job){
     throw new NotFoundError(`No job with id: ${jobId}`);
   }
 
-  // Check if user has permissions
+  // 4. Check if user has permissions
   checkPermissions(req.user, job.createdBy);
 
-  // Remove the job document from the model
+  // 5. Remove the job document from the model
   await job.deleteOne();
 
-  // Respond with OK status and a msg to indicate to front-end that job is deleted
+  // 6. Respond with OK status and a msg to indicate to front-end that job is deleted
   res.status(StatusCodes.OK).json({ msg: 'Job removed successfully.' });
 };
 
