@@ -13301,6 +13301,89 @@ const updateUser = async (req, res) => {
 };
 ```
 
+### Sanitizing inputs directly without the express-monog-sanitize middleware
+
+[express-mongo-sanitize docs](https://www.npmjs.com/package/express-mongo-sanitize) for more details.
+
+An alternative to bypass the middleware and use the module directly is to use the sanitize function, which will sanitize inputs against [query selector injection attacks](https://blog.websecurify.com/2014/08/hacking-nodejs-and-mongodb). This is when you retrieve user input, and you parse that input to execute the Mongo command.
+
+At first I was doing this without realizing that the `express-mongo-sanitize` package was already declared as a piece of express middleware, before defining routes. 
+
+In server:
+```js
+// To remove data using these defaults:
+app.use(mongoSanitize());
+```
+
+The changes have already been rolled back, but will store the changes here for posterity. 
+
+In `authController.js`,
+```js
+const register = async (req, res) => {
+  const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    // next(new Error());  // If not using http-status-codes
+    throw new BadRequestError("Please provide all values");
+  }
+
+  // Sanitize user input
+  const cleanEmail = sanitize(req.body.email);
+  const cleanName = sanitize(req.body.name);
+
+  const userAlreadyExists = await User.findOne({cleanEmail});
+
+  if(userAlreadyExists){
+    throw new BadRequestError(`The email: ${cleanEmail} is already in use.`);
+  }
+
+  // Instead of req.body, pass in the input fields
+  const user = await User.create({ cleanName, cleanEmail, password });
+
+  const token = user.createToken();
+
+  res.status(StatusCodes.CREATED).json({
+    user: {
+      email: user.email,
+      lastName: user.lastName,
+      location: user.location,
+      name: user.name
+    }, 
+    token,
+    location: user.location,
+  });
+};
+
+const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  if(!email || !password) {
+    throw new BadRequestError("Please provide all values");
+  }
+
+  // Sanitize user input
+  const cleanEmail = sanitize(req.body.email);
+
+  // Get the user in db whose email matches with the one from request
+  const user = await User.findOne({ cleanEmail }).select('+password');
+
+  if(!user) {
+    throw new UnAuthenticatedError("Invalid Credentials");
+  }
+
+  // Compare password
+  const isPasswordCorrect = await user.comparePassword(password);
+
+  if(!isPasswordCorrect) {
+    throw new UnAuthenticatedError("Invalid Credentials");
+  }
+
+  const token = user.createToken();
+  user.password = undefined;
+  res.status( StatusCodes.OK ).json({ user, token, location: user.location });
+};
+```
+
 ## Limit Requests
 
 ```sh
@@ -13899,3 +13982,24 @@ router.route('/login').post(apiLimiter, login);
 // Restrict testUser here
 router.route('/updateUser').patch(authenticateUser, testUser, updateUser);
 ```
+
+## Running Test User
+
+Now run the app with `npm run start`. On the landing page, click log-in. We should see the `[Demo App]` button for the testUser.
+
+Now this is what we will have to do:
+
+1. Open up Postman and head to the `POST` Register User
+
+```json
+{
+  "name": "testUserId",
+  "password": "test",
+  "email":"testUser@test.com"
+}
+```
+
+In the email field type: `testUser@test.com`
+For the passwword type: `test`
+
+Then click `[Demo App]` button
