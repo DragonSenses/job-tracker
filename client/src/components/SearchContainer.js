@@ -10,7 +10,6 @@ export default function SearchContainer() {
   const {
     isLoading,
     handleChange,
-    search,
     searchStatus,
     searchType,
     sort,
@@ -31,20 +30,20 @@ export default function SearchContainer() {
     clearFilters();
   }; 
 
-  const debounce = () => {
-    let timerId;
-    return (e) => {
-      setLocalSearch(e.target.value);
-      clearTimeout(timerId);
-      timerId = setTimeout(() => {
-        handleChange({ name: e.target.name, value: e.target.value });
-      }, 1000);
-    };
-  }
-
   const optimizedDebounce = useMemo(() => {
-    debounce();
-  }, []);
+    const debounce = () => {
+      let timerId;
+      return (e) => {
+        setLocalSearch(e.target.value);
+        clearTimeout(timerId);
+        timerId = setTimeout(() => {
+          handleChange({ name: e.target.name, value: e.target.value });
+        }, 1000);
+      };
+    }
+
+    return debounce();
+  }, [handleChange]);
 
   return (
     <Wrapper>

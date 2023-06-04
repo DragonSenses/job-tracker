@@ -13411,15 +13411,13 @@ const apiLimiter = rateLimiter({
 
 What is debounce? 
 
-Debouncing is a programming practice used to remove unwanted input noise form buttons, switches or other use input. It is used to prevent extra activations or slow functions from triggering too often.
+Debouncing is a programming practice used to remove unwanted input noise form buttons, switches or other user input. It is used to prevent extra activations or slow functions from triggering too often.
 
 Debounce is a term that comes from electronics. It refers to the process of removing the small ripple of current that forms when a mechanical switch is pushed in an electrical circuit that makes a series of short contacts. 
 
 An example is pressing a button on a TV remote, the signal travels to the microchip of the remote so quickly that before you manage to release the button, it bounces, and the microchip registers your click multiple times. To mitigate this, once a signal from the button is received, the microchip stops processing signals from the button for a few microseconds while it's physically impossible for you to press it again.
 
 **In software development, *debounce* is used to delay a function call until after a certain amount of time has passed since the last time the function was called. This can be useful for handling user input, such as when you want to wait until the user has finished typing before performing an action.**
-
-We want to trigger a function, but only once per use case (not multiple times per character as the current iteration seems to do). To activate the search query, but only after a user has finished typing it.
 
 Debounce time is a a time specified by the system developer, during which a signal must be present so that it can be recognized and can be further processed by the system. Debounce times prevent brief glitches from being mistakenly recognized as a signal.
 
