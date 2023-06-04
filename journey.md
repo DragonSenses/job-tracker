@@ -13575,3 +13575,130 @@ const debounce = () => {
 - Then we use `setTimeout` to invoke `handleChange` function once after the interval of time 1000ms.
 
 This will effective suspend calls to `handleChange()` until there's 1000ms of inactivty, then invokes it once with the latest arguments.
+
+Let's use the debounce function together with `useMemo()` hook.
+
+```js
+const optimizedDebounce = useMemo(() => debounce(), [localSearch]);
+```
+
+Now within the `FormRow` search component:
+
+```js
+  return (
+    <Wrapper>
+      <form action="" className="form">
+        <h4>search form</h4>
+        <div className="form-center">
+
+          <FormRow
+            type='text'
+            name='search'
+            value={search}
+            handleChange={handleSearch}
+          >
+          </FormRow>
+```
+
+Lets replace the value to `localSearch` and give the `handleChange` the `optimizedDebounce` function.
+
+```js
+  return (
+    <Wrapper>
+      <form action="" className="form">
+        <h4>search form</h4>
+        <div className="form-center">
+
+          <FormRow
+            type='text'
+            name='search'
+            value={localSearch}
+            handleChange={optimizedDebounce}
+          >
+          </FormRow>
+```
+
+## Fixing the dependency array and linting error
+
+So far these two lines of code:
+
+```js
+  const debounce = () => {
+    let timerId;
+    return (e) => {
+      setLocalSearch(e.target.value);
+      clearTimeout(timerId);
+      timerId = setTimeout(() => {
+        handleChange({ name: e.target.name, value: e.target.value });
+      }, 1000);
+    };
+  }
+
+  const optimizedDebounce = useMemo(() => debounce(), [debounce]);
+```
+
+Work but *eslint(react-hooks/exhaustive-deps)* throws a problem:
+
+```sh
+The 'debounce' function makes the dependencies of useMemo Hook (at line 45) change on every render. Move it inside the useMemo callback. Alternatively, wrap the definition of 'debounce' in its own useCallback() Hook.
+```
+
+- So instead went with `useMemo()` with an empty dependencies array which will calculate the value only once, on mount.
+
+```js
+const optimizedDebounce = useMemo(() => {
+  debounce();
+}, []);
+```
+
+- Without dependencies array, it will calculate the value on every render.
+
+```js
+const optimizedDebounce = useMemo(() => {
+  debounce();
+});
+```
+
+A stackoverflow post on how to resolve [react-hooks/exhaustive-deps warning](https://stackoverflow.com/questions/64702521/best-way-to-resolve-react-hooks-exhaustive-deps-warning).
+
+Since I'm only using the debounce function in the `useMemo` callback, then it makes sense to define it in there. Then use debounce's dependencies in the deps array.
+
+```js
+
+
+  const optimizedDebounce = useMemo(() => {
+    const debounce = () => {
+      let timerId;
+      return (e) => {
+        setLocalSearch(e.target.value);
+        clearTimeout(timerId);
+        timerId = setTimeout(() => {
+          handleChange({ name: e.target.name, value: e.target.value });
+        }, 1000);
+      };
+    }
+
+    return debounce();
+  }, []);
+```
+
+Now it gives the warning `React Hook useMemo has a missing dependecy: 'handleChange'. So let's add that to deps.
+
+```js
+  const optimizedDebounce = useMemo(() => {
+    const debounce = () => {
+      let timerId;
+      return (e) => {
+        setLocalSearch(e.target.value);
+        clearTimeout(timerId);
+        timerId = setTimeout(() => {
+          handleChange({ name: e.target.name, value: e.target.value });
+        }, 1000);
+      };
+    }
+
+    return debounce();
+  }, [handleChange]);
+```
+
+Now we have our optimized debounce method to help improve the search functionality.
