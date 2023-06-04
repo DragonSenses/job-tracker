@@ -13770,13 +13770,17 @@ The button
 - Create new property on user object (testUser? true/false)
 - Create new middleware (testUser)
 - Check for test user, if true then send back BadRequest Error
-- add testUser middleware in front of routes you want to restrict access to
+- Add testUser middleware in front of routes you want to restrict access to
+
+### Check for test user in authenticate middleware
 
 Check if the `payload.userId` is the same as `testUserID` and save this boolean in `authenticate` middleware.
 
 ```js
 const testUser = (payload.userId === 'testUserId');
 ```
+
+### Create new property on user object
 
 Also add this boolean property `testUser` to the request's `user` property.
 
@@ -13791,4 +13795,62 @@ Becomes:
 ```js
 const testUser = (payload.userId === 'testUserId');
 req.user = { userId: payload.userId, testUser};
+```
+### Create new middleware (testUser)
+
+Now the `testUser` middleware will throw a `BadRequest` if that boolean property `req.user.testUser` is `true`.
+
+So in `./middleware/testUser.js`
+
+```js
+import { BadRequestError } from '../errors/index.js';
+
+function testUser(req, res, next) {
+  
+  if(req.user.testUser){
+    throw new BadRequestError('Test User. Read Only!');
+  }
+  
+  next();
+};
+
+export default testUser;
+```
+
+### Add testUser middleware in front of routes you want to restrict access to
+
+In `./routes/jobsRoutes.js`
+
+```js
+import express from 'express';
+const router = express.Router();
+
+import {
+  createJob,
+  getAllJobs,
+  updateJob,
+  deleteJob,
+  showStats,
+} from '../controllers/jobsController.js'
+
+router.route('/').post(createJob).get(getAllJobs);
+router.route('/stats').get(showStats);
+router.route('/:id').delete(deleteJob).patch(updateJob);
+
+export default router
+```
+
+- Import the `testUser` middleware
+
+```js
+import testUser from '../middleware/testUser.js';
+```
+
+- Restrict testUser access in the `POST`, `DELETE` and `PATCH` routes
+
+```js
+router.route('/').post(testUser, createJob).get(getAllJobs);
+// remember about :id
+router.route('/stats').get(showStats);
+router.route('/:id').delete(testUser, deleteJob).patch(testUser, updateJob);
 ```
