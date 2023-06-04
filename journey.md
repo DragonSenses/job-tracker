@@ -13533,6 +13533,18 @@ export default function SearchContainer() {
 }
 ```
 
+Notice how the initial state of `localSearch` is an empty string `''`.
+
+When we hit the `clear filters` button, which activates the `handleSubmit` function, we should also reset the state variable to an empty string. Do this by using the set function `setLocalSearch`.
+
+```js
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLocalSearch('');
+    clearFilters();
+  }; 
+```
+
 Let's remove the `isLoading` check within `handleSearch` for now, since the functionality will change.
 
 ```js
@@ -13542,3 +13554,24 @@ Let's remove the `isLoading` check within `handleSearch` for now, since the func
   };
 ```
 
+Create the debounce function.
+
+```js
+const debounce = () => {
+  let timerId;
+  return (e) => {
+    setLocalSearch(e.target.value);
+    clearTimeout(timerId);
+    timerId = setTimeout(() => {
+      handleChange({ name: e.target.name, value: e.target.value });
+    }, 1000);
+  };
+}
+```
+
+
+- It sets the `localSearch` to that of the event target's value.
+- Then `setTimeout` will return a `timer identifier` `timerId` that we can use to cancel the execution.
+- Then we use `setTimeout` to invoke `handleChange` function once after the interval of time 1000ms.
+
+This will effective suspend calls to `handleChange()` until there's 1000ms of inactivty, then invokes it once with the latest arguments.
