@@ -13840,17 +13840,63 @@ router.route('/:id').delete(deleteJob).patch(updateJob);
 export default router
 ```
 
-- Import the `testUser` middleware
+1. Import the `testUser` middleware
 
 ```js
 import testUser from '../middleware/testUser.js';
 ```
 
-- Restrict testUser access in the `POST`, `DELETE` and `PATCH` routes
+2. Restrict testUser access in the `POST`, `DELETE` and `PATCH` routes
 
 ```js
 router.route('/').post(testUser, createJob).get(getAllJobs);
 // remember about :id
 router.route('/stats').get(showStats);
 router.route('/:id').delete(testUser, deleteJob).patch(testUser, updateJob);
+```
+
+### Restrict access of test user in authentication routes
+
+Now in the `./routes/authRoutes.js` let's also restrict access of the testUser in the `patch` route.
+
+`authRoutes.js` so far:
+
+```js
+import express from 'express';
+const router = express.Router();
+
+import { register, login, updateUser } from '../controllers/authController.js';
+import authenticateUser from '../middleware/authenticate.js';
+
+import rateLimiter from 'express-rate-limit';
+
+const apiLimiter = rateLimiter({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 requests per `window` (here, per 15 minutes)
+  message:
+		'Too many accounts created from this IP, please try again after 15 minutes',
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
+router.route('/register').post(apiLimiter, register);
+router.route('/login').post(apiLimiter, login);
+router.route('/updateUser').patch(authenticateUser, updateUser);
+
+export default router
+```
+
+1. Import the `testUser` middleware
+
+```js
+import testUser from '../middleware/testUser.js';
+```
+
+2. Restrict testUser access in the `PATCH` route
+
+```js
+router.route('/register').post(apiLimiter, register);
+router.route('/login').post(apiLimiter, login);
+// Restrict testUser here
+router.route('/updateUser').patch(authenticateUser, testUser, updateUser);
 ```
