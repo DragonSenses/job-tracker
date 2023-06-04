@@ -13700,3 +13700,95 @@ Now it gives the warning `React Hook useMemo has a missing dependecy: 'handleCha
 ```
 
 Now we have our optimized debounce method to help improve the search functionality.
+
+# Test User
+
+It is time to test the App.
+
+- Create a login button for test user
+- Create a new (test) user
+- Populate DB with jobs
+
+Let's add the button right below the submit button on the register page:
+
+```js
+const Register = () => {
+  // ...
+
+  return (
+    <Wrapper className='full-page'>
+      <form className='form' onSubmit={onSubmit} action="">
+        // ...
+
+        <button type='submit' className='btn btn-block' disabled={isLoading}>
+          submit
+        </button>
+
+        <button
+          type='button'
+          className='btn btn-block btn-hipster'
+          disabled={isLoading}
+          onClick={() => {
+            setupUser({
+              currentUser: { email: 'testUser@test.com', password: 'test' },
+              endPoint: 'login',
+              alertText: 'Login Successful! Redirecting...',
+            });
+          }}
+        >
+          {isLoading ? 'loading...' : 'demo app'}
+        </button>
+
+        // ...
+      </form>
+    </Wrapper>
+  )
+}
+```
+
+The button
+```js
+<button
+  type='button'
+  className='btn btn-block btn-hipster'
+  disabled={isLoading}
+  onClick={() => {
+    setupUser({
+      currentUser: { email: 'testUser@test.com', password: 'test' },
+      endPoint: 'login',
+      alertText: 'Login Successful! Redirecting... (Test)',
+    });
+  }}
+>
+  {isLoading ? 'loading...' : 'demo app'}
+</button>
+```
+
+## Restricing Access (server)
+
+- We want to check for test user in authenticate middleware
+- Create new property on user object (testUser? true/false)
+- Create new middleware (testUser)
+- Check for test user, if true then send back BadRequest Error
+- add testUser middleware in front of routes you want to restrict access to
+
+Check if the `payload.userId` is the same as `testUserID` and save this boolean in `authenticate` middleware.
+
+```js
+const testUser = (payload.userId === 'testUserId');
+```
+
+Also add this boolean property `testUser` to the request's `user` property.
+
+So this:
+
+```js
+req.user = { userId: payload.userId};
+```
+
+Becomes:
+
+```js
+const testUser = (payload.userId === 'testUserId');
+req.user = { userId: payload.userId, testUser};
+```
