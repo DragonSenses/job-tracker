@@ -29,7 +29,6 @@ import { fileURLToPath } from 'url';
 // Security Packages
 import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
-import xssFilters from 'xss-filters';
 
 if(process.env.NODE_ENV !== 'production'){
   app.use(morgan('dev'));
