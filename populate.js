@@ -13,7 +13,7 @@ async function populate(){
     console.log("---- Finished connecting to database ---- ");
     console.log("---- Start to Read and Parse the json file ---- ");
     const jsonProducts = JSON.parse(
-      await readFile(new URL('./mock-data.json', import.meta.url))
+      await readFile(new URL('./MOCK_DATA.json', import.meta.url))
     );
     console.log("---- Read and parsed the data from MOCK_DATA.json ---- ");
     console.log(`The value of "jsonProducts" is: ${jsonProducts}`);
