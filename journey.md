@@ -13201,6 +13201,51 @@ Result:
 }
 ```
 
+## Sanitize the rest of the inputs for each page
+
+In `jobsController`, let's continue to sanitize each input.
+
+- For the `getJobs()` within our search functionality, let's add it:
+
+```js
+const getAllJobs = async (req, res) => {
+  // 1. Destructure the necessary variables from request's query
+  const { search, status, jobType, sort } = req.query;
+
+  // 2. Sanitize the search input from the query
+  req.query.search = xssFilters.inHTMLData(search);
+
+  // ...
+}
+```
+
+- For when we `updateJob` or when user is clicks on `Edit`
+
+```js
+const updateJob = async (req, res) => {
+  // 1. Extract job ID from the request
+  const { id: jobId } = req.params;
+
+  // 2. Extract company and position from the request's body
+  const { company, position } = req.body;
+
+  // 3. Check if any of these values are empty
+  if (!company || !position) {
+    throw new BadRequestError('Please Provide All Values');
+  }
+
+  // 4. Sanitize user inputs and save it to the request body
+  req.body.company = xssFilters.inHTMLData(company);
+  req.body.position = xssFilters.inHTMLData(position);
+
+  // ...
+}
+```
+
+## Finish sanitizing inputs - authController
+
+Now we finished the `jobsController` let's move on to the `authController`.
+
 ## Limit Requests
 
 ```sh
