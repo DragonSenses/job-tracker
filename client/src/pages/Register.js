@@ -37,7 +37,7 @@ export default function Register() {
     } else {
       registerUser(currentUser);
     }
-    console.log(values);
+    
   };
 
   const toggleMember = () => {
