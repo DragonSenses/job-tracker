@@ -14305,3 +14305,69 @@ app.use(express.json());
 app.use(cookieParser());
 ```
 
+## Refactor `authenticate` middleware
+
+So far with JWT, the `authenticate` middleware:
+
+```js
+import jwt from 'jsonwebtoken';
+import { UnAuthenticatedError } from "../errors/index.js";
+
+const authenticate = async (req, res, next) => {
+
+  const authHeader = req.headers.authorization;
+  if(!authHeader || !authHeader.startsWith("Bearer")){
+    throw new UnAuthenticatedError("Authentication Invalid");
+  }
+
+  const token = authHeader.split(' ')[1];
+  
+  try{
+    const payload = jwt.verify(token, process.env.SECRET_KEY);
+    
+    req.user = { userId: payload.userId };
+    
+    next();
+  } catch(error){
+    throw new UnAuthenticatedError("Authentication Invalid");
+  }
+};
+
+export default authenticate 
+```
+
+Let's log the cookie in the `authenticate` middleware
+
+`middleware/auth.js`
+
+```js
+const auth = async (req, res, next) => {
+  console.log(req.cookies)
+  // ...
+}
+```
+
+We can see the `req.cookies` has a property of `token` that stores our JWT.
+
+Since we no longer are trying to extract the token from the `req.headers.authorization` we can just check for the jwt within the `req.cookies`.
+
+So the code before the `try..catch` block, will be replaced:
+
+```js
+  const authHeader = req.headers.authorization;
+  if(!authHeader || !authHeader.startsWith("Bearer")){
+    throw new UnAuthenticatedError("Authentication Invalid");
+  }
+
+  const token = authHeader.split(' ')[1];
+```
+
+To this:
+
+```js
+const token = req.cookies.token;
+
+if(!token) {
+  throw new UnAuthenticatedError("Authentication Invalid");
+}
+```
