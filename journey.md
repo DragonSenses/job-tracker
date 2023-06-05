@@ -14014,6 +14014,8 @@ At this point, going to roll back all the previous changes that accomodated a de
 
 This is quite a complex topic to cover, and I am not too experienced regarding in this portion. I am going off of various sources on the issue between storing the JSON WEB TOKEN (JWT) in `localStorage` or a cookie.
 
+A source I used extensively was [Jerry Ng's post on Auth](https://jerrynsh.com/all-to-know-about-auth-and-cookies/#session-based-vs-token-based-authentication)
+
 According to this [Stackoverflow: Should JWT be stored in localStorage or cookie](https://stackoverflow.com/questions/34817617/should-jwt-be-stored-in-localstorage-or-cookie),
 
 - **localStorage** is subjected to **XSS** and generally it's not recommended to store any sensitive information in it.
@@ -14156,4 +14158,56 @@ Using Local Storage makes our JWT vulnerable to XSS.
 
 At this point, it may sound like using Cookie to store JWT is our only option. But remember, this makes our website vulnerable to CSRF attacks.
 
-# Security | Store JWT in cookie, not in localStorage
+### CSRF Prevention
+
+[Same-site cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value) can effectively prevent CSRF attacks, but [it has its limitations](https://security.stackexchange.com/questions/121971/will-same-site-cookies-be-sufficient-protection-against-csrf-and-xss/121986#121986)
+
+What follows assume we won't use **Same-Site** cookies.
+
+#### Common CSRF prevention methods
+
+Without JWT,
+
+- [Synchronizer token pattern](https://en.wikipedia.org/wiki/Cross-site_request_forgery#Synchronizer_token_pattern)
+-[Cookie-to-header token pattern](https://en.wikipedia.org/wiki/Cross-site_request_forgery#Cookie-to-header_token)
+
+[Summary of both approaches](https://stackoverflow.com/questions/34782493/difference-between-csrf-and-x-csrf-token/34783845#34783845).
+
+### Using JWT via Improved "Cookie-to-header token" approach
+
+From the video [100% Stateless with JWT (JSON Web Token) by Hubert Sablonniere](https://www.youtube.com/watch?v=67mezK3NzpU).
+
+Looks similar to the original Cookie-to-header token approach but with a few modifications:
+
+- The anti-CSRF token is returned in a separate response header (e.g., `X-CSRF-Token`) instead of the `Set-Cookie` response header
+- Sign and set a JWT on the `Set-Cookie` response header
+
+#### Explanation:
+
+1. The user logs in, the server would sign a JWT with `csrfToken` as part of the JWT claim (for verification in Step 6).
+
+- The generated `csrfToken` should be **unpredictable and unique** per-user session.
+
+```json
+{
+  "email": "your@email.com",
+  "exp": 1666798498,
+  "csrfToken": "1449bd3e-41c2-45cb-a538-73c7ad80ca2c",
+  "iat": 1666794898
+}
+```
+
+2. The JWT would then be stringified into a cookie which will be set into the `Set-Cookie` response header. The randomly generated `csrfToken` on the other hand will be set in the `X-CSRF-Token` response header.
+
+3. With the `Set-Cookie` header present in the response header, our browser would automatically store the JWT in the Cookies (storage). The `csrfToken` present in the `X-CSRF-Token` header will be extracted and set in the browser’s Local Storage.
+
+4. When a request (e.g. GET /hello) is triggered, our browser will fetch the `csrfToken` from the Local Storage.
+
+5. The JWT from the Cookies (storage) and the `csrfToken` retrieved from the Local Storage will be sent to the server in the request header.
+
+6. The server will verify the JWT and check  `csrfToken` from the request header against the `csrfToken` claim inside the JWT to verify if the CSRF Token is valid.
+
+# Security | Store JWT in cookie
+
+Going to refactor a lot of code here to implement a lot of what I learned.
+
