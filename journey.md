@@ -14371,3 +14371,28 @@ if(!token) {
   throw new UnAuthenticatedError("Authentication Invalid");
 }
 ```
+
+## Server | Back-End transition from Token to Cookies
+
+**Remove `token` from JSON response**.
+
+In `controllers/authController`, lets remove the `token` for the `register` controller's JSON response:
+
+```js
+const register = async (req, res) => {
+  // ...
+
+  res.status(StatusCodes.CREATED).json({
+    user: {
+      email: user.email,
+      lastName: user.lastName,
+      location: user.location,
+      name: user.name
+    }, 
+    // token removed
+    location: user.location,
+  });
+};
+```
+
+Repeat the process for `login` and `updateUser`.
