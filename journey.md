@@ -14284,3 +14284,24 @@ import attachCookie from '../utils/attachCookie.js';
 attachCookie({ res, token });
 ```
 
+## Parse Cookie on the back-end
+
+We need a way to parse the cookie coming back from the Front-End.
+
+- install [cookie-parser](https://www.npmjs.com/package/cookie-parser) on the server
+
+So in the root directory where the `server.js` is located, run:
+
+```sh
+npm i cookie-parser
+```
+
+Then use it in `/server.js`
+
+```js
+import cookieParser from 'cookie-parser';
+
+app.use(express.json());
+app.use(cookieParser());
+```
+
