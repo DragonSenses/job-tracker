@@ -14211,3 +14211,76 @@ Looks similar to the original Cookie-to-header token approach but with a few mod
 
 Going to refactor a lot of code here to implement a lot of what I learned.
 
+## Attach Cookies
+
+Using the [Express docs on res.cookie()](https://expressjs.com/en/api.html#res.cookie), this is how we would attach a cookie to the login response using `res.cookie`:
+
+`/controllers/authController.js`
+```js
+const login = async (req, res) => {
+  // ...
+
+  const token = user.createJWT();
+
+  const oneDay = 1000 * 60 * 60 * 24;
+
+  res.cookie('token', token, {
+    httpOnly: true,
+    expires: new Date(Date.now() + oneDay),
+    secure: process.env.NODE_ENV === 'production',
+  });
+}
+```
+
+The syntax of `res.cookie()` is
+
+```js
+res.cookie(name, value [, options]);
+```
+
+- `name` is `'token'`
+- `value` is `token`
+- `options` parameter is an object properties that we can set:
+  
+1. `httpOnly` set to `true`, will flag the cookie to be accessible only by the web server. 
+
+  - This would mean it is not accessible through JavaScript making it more safer against XSS attacks
+
+2. `expires` set to the current data + one day. Expiry date of the cookie in GMT. If not specified or set to 0, creates a session cookie.
+
+3. `secure` set to `process.env.NODE_ENV === 'production'`. Marks the cookie to be used with HTTPS only.
+
+## Create a `attachCookie()` in utils
+
+To avoid code reduplication, we should create the function that attaches cookies to the response with the JWT stored within. It should take in the `res` and `token` as parameters.
+
+Create `utils/attachCookie.js`
+
+```js
+function attachCookie(res, token) {
+  const oneDay = 1000 * 60 * 60 * 24;
+
+  res.cookie('token', token, {
+    httpOnly: true,
+    expires: new Date(Date.now() + oneDay),
+    secure: process.env.NODE_ENV === 'production',
+  });
+};
+
+export default attachCookie
+```
+
+Now we can use `attachCookie` function to attach a cookie for each controller in `authController`.
+
+- Import it in `authController`
+
+```js
+import attachCookie from '../utils/attachCookie.js';
+```
+
+- Then invoke the function passing in the response and token in the `register`, `login` and `updateUser` controllers.
+
+```js
+attachCookie({ res, token });
+```
+
