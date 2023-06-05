@@ -3,6 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { BadRequestError } from '../errors/index.js';
 import { UnAuthenticatedError } from '../errors/index.js';
 import xssFilters from 'xss-filters';
+import attachCookie from '../utils/attachCookie.js';
 
 const register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -18,10 +19,11 @@ const register = async (req, res) => {
     throw new BadRequestError(`The email: ${email} is already in use.`);
   }
 
-  // Instead of req.body, pass in the input fields
   const user = await User.create({ name, email, password });
 
   const token = user.createToken();
+
+  attachCookie({ res, token });
 
   res.status(StatusCodes.CREATED).json({
     user: {
@@ -57,8 +59,14 @@ const login = async (req, res) => {
   }
 
   const token = user.createToken();
+  attachCookie({ res, token });
   user.password = undefined;
-  res.status( StatusCodes.OK ).json({ user, token, location: user.location });
+
+  res.status( StatusCodes.OK ).json({ 
+    user,
+    token,
+    location: user.location 
+  });
 };
 
 const updateUser = async (req, res) => {
@@ -79,8 +87,13 @@ const updateUser = async (req, res) => {
   await user.save();
 
   const token = user.createToken();
+  attachCookie({ res, token });
 
-  res.status( StatusCodes.OK ).json({ user, token, location: user.location });
+  res.status( StatusCodes.OK ).json({ 
+    user, 
+    token, 
+    location: user.location 
+  });
 };
 
 export { register, login, updateUser }
