@@ -14525,3 +14525,29 @@ addUserToLocalStorage({ user, token, location });
 ```js
 removeUserFromLocalStorage();
 ```
+
+### Remove `token` from the `reducer`
+
+List of each action that has `token` removed:
+
+- REGISTER_USER_SUCCESS
+- LOGIN_USER_SUCCESS
+- LOGOUT_USER
+- UPDATE_USER_SUCCESS
+
+
+Going to store `LOGOUT_USER` code here as an example. Remove `token` for now, as for `userLocation` and `jobLocation` it will be dealt with.
+```js
+    case LOGOUT_USER: {
+      return {
+        ...initialState,
+        user: null,
+        token: null,
+        userLocation: '',
+        jobLocation: '',
+      };
+    }
+```
+
+
+
