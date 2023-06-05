@@ -13999,7 +13999,161 @@ Now this is what we will have to do:
 }
 ```
 
-In the email field type: `testUser@test.com`
-For the passwword type: `test`
+In the Login Page on the browser,
 
-Then click `[Demo App]` button
+In the email field type: `testUser@test.com`
+For the password type: `test`
+
+Then click `[Login]` button
+
+### After populating the db with data, view the app, etc.
+
+At this point, going to roll back all the previous changes that accomodated a demo user to test the app. A tester can simply log-in with simpler credentials: `test@test.com` and `test` as password.
+
+# Primer on JWT and Cookies
+
+This is quite a complex topic to cover, and I am not too experienced regarding in this portion. I am going off of various sources on the issue between storing the JSON WEB TOKEN (JWT) in `localStorage` or a cookie.
+
+According to this [Stackoverflow: Should JWT be stored in localStorage or cookie](https://stackoverflow.com/questions/34817617/should-jwt-be-stored-in-localstorage-or-cookie),
+
+- **localStorage** is subjected to **XSS** and generally it's not recommended to store any sensitive information in it.
+- With **Cookies** we can apply the flag "httpOnly" which mitigates the risk of XSS. However if we are to read the JWT from Cookies on backend, we then are subjected to **CSRF**.
+
+Some vocabulary, earlier we've discussed this when we sanitized the inputs but its good to cover it again: XSS.
+
+- **Cross Site Scripting (XSS)** attacks are a type of injection, in which malicious scripts are injected into otherwise benign and trusted websites. XSS attacks occur when an attacker uses a web application to send malicious code, generally in the form of a browser side script, to a different end user. [Source](https://owasp.org/www-community/attacks/xss/).
+
+- **Cross-Site Request Forgery (CSRF)** is an attack that forces an end user to execute unwanted actions on a web application in which they’re currently authenticated. With a little help of social engineering (such as sending a link via email or chat), an attacker may trick the users of a web application into executing actions of the attacker’s choosing. If the victim is a normal user, a successful CSRF attack can force the user to perform state changing requests like transferring funds, changing their email address, and so forth. If the victim is an administrative account, CSRF can compromise the entire web application.[Source](https://owasp.org/www-community/attacks/csrf)
+
+So is it best to store JWT in cookies? 
+
+On every request to server, the JWT will be read from Cookies and added in the AUthorization header using Bearer scheme. The server can then verify the JWT in the request header (as opposed to reading it from the cookies).
+
+## JWT & Cookie in a Nutshell
+
+Let's stamp out some definitions first.
+
+- **Client** - client application. In this context, usually specifically talking about our web browsers (e.g., Edge, Chrome, Opera)
+
+- **Server** - computers that serve up the files
+
+- **Request/Response Headers** - [HTTP headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) let the client and server pass additional information with an HTTP request or response. 
+
+  - Note there are case-insensitive names followed by a colon (`:`), then by its value. 
+  - Whitespace before the value is ignored.
+
+### **Cookie** - a small piece of information that a server sends back to a client.
+
+  -   Also called: HTTP cookie, web cookie, or browser cookie.
+
+  1. Stored in the browser's Cookies storage. 
+  2. They are used for authentication, personalization and tracking. 
+  3. A cookie is received in name-value pairs via the `Set-Cookie` response header in a request. With this, your cookie will automatically be kept in the browser's Cookies storage (`document.cookie`).
+  
+- Cookies with `HttpOnly`, `Secure` and `SameSite=Strict` flags are more secure.
+
+e.g., with the `HttpOnly` flag, the cookies are not accessible through JavaScript, thus making it safer against XSS attacks.
+
+[MDN's Using HTTP cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies) has more info.
+
+### XSS Attack
+
+**Cross**-**S**ite **S**cripting attack.
+
+XSS is a type of vulnerability where an attacker *injects JavaScript* that will run on your page.
+
+The Web Storage (e.g., `localStorage`) is accessible through JavaScript on the same domain. Consequently, Web Storage is vulnerable to XSS attacks.
+
+Basic XSS attacks attempt to inject JavaScript through form inputs, where the attacker puts *code* into a form to see if it is run by the browser and can be viewed by other users.
+
+*code* example:
+
+```js
+alert(localStorage.getItem('your-secret-token'));
+```
+
+### CSRF Attack
+
+**C**ross-**S**ite **R**equest **F**orgery attack.
+
+Cookies are vulnerable to CSRF attacks.
+
+**No cookies = No CSRF attacks**.
+
+As browsers automatically send Cookies with all requests, CSRF attacks make use of this to gain authenticated access to a trusted site.
+
+[Cross-site request forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery#Prevention) see ways to prevent on Wikipedia.
+
+### Cookies Storage
+
+Also called: "Cookies" or "Cookie Jar".
+
+- Client-side storage where HTTP cookies are stored.
+
+- **Important Note:** browsers automatically send cookies (no client-side code needed) along with every request via the cookie request header. This is exactly why Cookie (storage) is vulnerable to CSRF attacks.
+
+To view Cookies press: `[F12]` > Application > Storage > Cookies
+
+### Web Storage
+
+- `localStorage` - data persisted even when the browser is closed and reopened
+- `sessionStorage` - data persisted only for the duration of the page session
+
+Client-side storage, used to store data in key-value pairs on the user's client.
+
+Vulnerable to XSS attacks. Not ideal for storing private/sensitive/authentication-related data.
+
+|-|Local/Session Storage|Cookies (Storage)|
+|-|---------------------|-----------------|
+|JavaScript| Accessible through JavaScript on the same domain | Cookies, when used with the HttpOnly cookie flag, are not accessible through JavaScript |
+|XSS attacks|	Vulnerable to XSS attacks | Immune to XSS (with HttpOnly flag) |
+|CSRF attacks| Immune to CSRF attacks | Vulnerable to CSRF attacks |
+|Mitigation|Do not store private/sensitive/authentication-related data here| Make use of CSRF tokens or other prevention methods|
+
+### JWT
+
+JSON Web Tokens is an open standard [(RFC 7519)](https://datatracker.ietf.org/doc/html/rfc7519). All JWTs are tokens.
+
+Usually stored in Local Storage or Cookies (storage).
+
+- **JWT is not encrypted** by any means, it is **encoded in Base64**. 
+- To decode any JWT use [jwt.io](https://jwt.io/)
+
+### JWT is **stateless**
+
+Often used with token-based authentication, horizontal scaling is easier when using JWT. 
+
+This is because **the verification of JWT does not require any communication between the servers and databases.** In other words, the authentication can be **stateless**.
+
+### Conclusion
+
+- JWT is a [token format](https://www.rfc-editor.org/rfc/rfc7519)
+- A cookie is an [HTTP state management mechanism](https://www.rfc-editor.org/rfc/rfc6265)
+- A web cookie can contain JWT and can be stored within your browser’s Cookies storage
+
+### **Session-based** vs. **Token-based Authentication**
+
+|Token-Based|Session-Based|
+|-----------|-------------|
+|Stateless|Stateful|
+|The authentication state is NOT stored anywhere on the server-side|The authentication state is stored on the server side (DB)|
+|Easier to scale horizontally|[Harder to scale horizontally](https://www.authgear.com/post/session-vs-token-authentication#:~:text=in%20recent%20times.-,Limited%20Scalability,-Since%20Cookies%20are)|
+|Commonly uses JWT for authentication|Commonly uses Session ID|
+|Typically sent to the server via an HTTP Request `Authorization` Header (e.g., `Bearer <token>`). Can use `Cookie` too.|Usually sent to the server in the `Cookie` request header|
+|Harder to revoke a user session|Able to revoke user session with ease|
+
+### **Cookie** vs. **Bearer Tokens**
+
+`Bearer token` is a string (e.g., `JWT`) that goes into the `Authorization` header of any HTTP request. Unlike a browser cookie, it is not automatically stored anywhere, thus making this CSRF impossible.
+
+To use a `Bearer token`, we'll need to explicitly store the JWT somewhere in our client (Cookies storage or Local Storage) and add that JWT to our HTTP `Authorization` header while making requests.
+
+If your cookie (e.g., with a JWT) is set with the `HttpOnly` flag, retrieving your token from the client side would be impossible with JavaScript.
+
+#### Store JWT in `localStorage` then?
+
+Using Local Storage makes our JWT vulnerable to XSS.
+
+At this point, it may sound like using Cookie to store JWT is our only option. But remember, this makes our website vulnerable to CSRF attacks.
+
+# Security | Store JWT in cookie, not in localStorage
