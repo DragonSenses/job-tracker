@@ -13784,6 +13784,18 @@ Now it gives the warning `React Hook useMemo has a missing dependecy: 'handleCha
 
 Now we have our optimized debounce method to help improve the search functionality.
 
+# Project Completion
+
+At this point in the project, the app is fully working and has the features that it should have since the inception of the project. Just needs some testing and we could publish it to production.
+
+However, if you care about security then the next steps after Testing are going to be major updates to the entirety of the app. You can measure the pros and cons, but as of now there may be a security risk for the users. 
+
+**Anything worth doing, is worth doing right**.
+
+So for the rest of the journey, we are ensuring even more security. 
+
+**Caution is advised**, the next updates are major changes that could break the app. Please follow meticulously.
+
 # Test User
 
 It is time to test the App.
@@ -14396,3 +14408,120 @@ const register = async (req, res) => {
 ```
 
 Repeat the process for `login` and `updateUser`.
+
+## Front-End transition from tokens to cookies
+
+**Caution is advised**, these are major changes that could break the app. Please follow each change meticulously.
+
+### Removing our usage of `localStorage` in `initialState`
+
+In `client/src/context/appContext`,
+
+```js
+const user = localStorage.getItem('user');
+const token = localStorage.getItem('token');
+const userLocation = localStorage.getItem('location');
+
+const initialState = {
+  isLoading: false,
+  showAlert: false,
+  alertText: '',
+  alertType: '',
+  user: user ? JSON.parse(user) : null ,
+  token: token,
+  userLocation: userLocation || '',
+  showSidebar: false,
+  position: '',
+  company: '',
+  jobLocation: userLocation || '',
+  jobType: 'full-time',
+  jobTypeOptions: ['full-time', 'part-time', 'remote', 'internship'],
+  status: 'pending',
+  statusOptions: ['interview', 'declined', 'pending'],
+  isEditing: false,
+  editJobId: '',
+  jobs: [],
+  totalJobs: 0,
+  numOfPages: 1,
+  page: 1,
+  stats: {},
+  monthlyApplications: [],
+  search: '',
+  searchStatus: 'all',
+  searchType: 'all',
+  sort: 'latest',
+  sortOptions: ['latest', 'oldest', 'a-z', 'z-a'],
+}
+```
+
+Remove the 3 items using `localStorage` and ONLY the `token` property of `initialState`:
+```js
+const user = localStorage.getItem('user');
+const token = localStorage.getItem('token');
+const userLocation = localStorage.getItem('location');
+
+const initialState = {
+  token: token,
+}
+```
+
+In `initialState` fix and reset the properties: `user`, `userLocation`, `jobLocation`.
+
+```js
+const initialState = {
+  user: null,
+  userLocation: '',
+  jobLocation: '',
+}
+```
+
+### Remove Axios **request** interceptor
+
+Remove the request interceptor, which looks like this:
+
+```js
+// Axios request interceptor
+authFetch.interceptors.request.use( 
+  function (config) {
+    config.headers['Authorization'] = `Bearer ${state.token}`;
+    return config;
+  }, 
+  function (error) {
+    return Promise.reject(error);
+  }
+);
+```
+
+We will **keep the response** interceptor.
+
+### Remove `localStorage` functions
+
+Still in `/client/src/context/appContext`,
+
+```js
+  const addUserToLocalStorage = ({ user, token, location }) => {
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('token', token);
+    localStorage.setItem('location', location);
+  };
+  
+  const removeUserFromLocalStorage = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    localStorage.removeItem('location');
+  };
+```
+
+Remove these `localStorage` functions. And anywhere they were used, remove them.
+
+- In `registerUser`, `loginUser` and `updateUser` remove:
+
+```js
+addUserToLocalStorage({ user, token, location });
+```
+
+- In `logoutUser` remove:
+
+```js
+removeUserFromLocalStorage();
+```

@@ -34,22 +34,17 @@ import {
   CHANGE_PAGE,
 } from "./actions";
 
-const user = localStorage.getItem('user');
-const token = localStorage.getItem('token');
-const userLocation = localStorage.getItem('location');
-
 const initialState = {
   isLoading: false,
   showAlert: false,
   alertText: '',
   alertType: '',
-  user: user ? JSON.parse(user) : null ,
-  token: token,
-  userLocation: userLocation || '',
+  user: null,
+  userLocation: '',
   showSidebar: false,
   position: '',
   company: '',
-  jobLocation: userLocation || '',
+  jobLocation: '',
   jobType: 'full-time',
   jobTypeOptions: ['full-time', 'part-time', 'remote', 'internship'],
   status: 'pending',
@@ -80,17 +75,6 @@ export default function AppProvider(props) {
     baseURL: '/api/v1',
 
   });
-
-  // Axios request interceptor
-  authFetch.interceptors.request.use( 
-    function (config) {
-      config.headers['Authorization'] = `Bearer ${state.token}`;
-      return config;
-    }, 
-    function (error) {
-      return Promise.reject(error);
-    }
-  );
 
   // Axios response interceptor
   authFetch.interceptors.response.use( 
@@ -126,18 +110,6 @@ export default function AppProvider(props) {
     clearAlert();
   };
 
-  const addUserToLocalStorage = ({ user, token, location }) => {
-    localStorage.setItem('user', JSON.stringify(user));
-    localStorage.setItem('token', token);
-    localStorage.setItem('location', location);
-  };
-  
-  const removeUserFromLocalStorage = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    localStorage.removeItem('location');
-  };
-
   const registerUser = async (currentUser) => {
     dispatch({ type: REGISTER_USER_BEGIN });
     try{
@@ -149,8 +121,6 @@ export default function AppProvider(props) {
         type: REGISTER_USER_SUCCESS,
         payload: { user, token, location },
       });
-
-      addUserToLocalStorage({ user, token, location });
       
     } catch(error){
 
@@ -172,8 +142,7 @@ export default function AppProvider(props) {
         type: LOGIN_USER_SUCCESS,
         payload: { user, token, location },
       });
-      
-      addUserToLocalStorage({ user, token, location });
+
     } catch(error){
       dispatch( {
         type: LOGIN_USER_ERROR,
@@ -189,7 +158,6 @@ export default function AppProvider(props) {
 
   const logoutUser = () => {
     dispatch({ type: LOGOUT_USER });
-    removeUserFromLocalStorage();
   };
 
   const updateUser = async (currentUser) => {
@@ -205,8 +173,6 @@ export default function AppProvider(props) {
         type: UPDATE_USER_SUCCESS,
         payload: { user, location, token },
       });
-
-      addUserToLocalStorage({ user, location, token });
 
     } catch(error) {
       if(error.response.status !== 401){
