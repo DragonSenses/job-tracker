@@ -1,5 +1,5 @@
 import React from 'react';
-import { useReducer, useContext } from 'react';
+import { useReducer, useContext, useEffect } from 'react';
 import axios from 'axios';
 import reducer from './reducer';
 import { 
@@ -32,9 +32,12 @@ import {
   SHOW_STATS_SUCCESS,
   CLEAR_FILTERS,
   CHANGE_PAGE,
+  GET_CURRENT_USER_BEGIN,
+  GET_CURRENT_USER_SUCCESS,
 } from "./actions";
 
 const initialState = {
+  userLoading: true,
   isLoading: false,
   showAlert: false,
   alertText: '',
@@ -73,7 +76,6 @@ export default function AppProvider(props) {
   // Axios custom instance
   const authFetch = axios.create({
     baseURL: '/api/v1',
-
   });
 
   // Axios response interceptor
@@ -82,7 +84,8 @@ export default function AppProvider(props) {
       return response;
     }, 
     function (error) {
-      console.log(`Error triggered in authFetch, Axios Response Interceptor
+      console.log(`Error triggered in authFetch,
+      Axios Response Interceptor
       error: ${error}
       error.response: ${error.response}`);
 
@@ -115,11 +118,11 @@ export default function AppProvider(props) {
     try{
 
       const response = await axios.post('/api/v1/auth/register', currentUser);
-      const { user, token, location } = response.data;
+      const { user, location } = response.data;
 
       dispatch({
         type: REGISTER_USER_SUCCESS,
-        payload: { user, token, location },
+        payload: { user, location },
       });
       
     } catch(error){
@@ -135,12 +138,16 @@ export default function AppProvider(props) {
   const loginUser = async (currentUser) => {
     dispatch({ type: LOGIN_USER_BEGIN });
     try{
-      const { data } = await axios.post('/api/v1/auth/login', currentUser);
-      const { user, token, location } = data;
+      const { data } = await axios.post(
+        '/api/v1/auth/login',
+        currentUser
+      );
+
+      const { user, location } = data;
 
       dispatch({
         type: LOGIN_USER_SUCCESS,
-        payload: { user, token, location },
+        payload: { user, location },
       });
 
     } catch(error){
@@ -152,26 +159,23 @@ export default function AppProvider(props) {
     clearAlert();
   };
 
-  const toggleSidebar = () => {
-    dispatch({ type: TOGGLE_SIDEBAR });
-  };
-
-  const logoutUser = () => {
+  const logoutUser = async () => {
+    await authFetch.get('/auth/logout');
     dispatch({ type: LOGOUT_USER });
   };
-
+  
   const updateUser = async (currentUser) => {
-
+    
     dispatch({ type: UPDATE_USER_BEGIN });
-
+    
     try{
       const { data } = await authFetch.patch('/auth/updateUser', currentUser);
       
-      const { user, location, token } = data;
+      const { user, location } = data;
 
       dispatch({
         type: UPDATE_USER_SUCCESS,
-        payload: { user, location, token },
+        payload: { user, location },
       });
 
     } catch(error) {
@@ -185,13 +189,17 @@ export default function AppProvider(props) {
     clearAlert();
   };
 
+  const toggleSidebar = () => {
+    dispatch({ type: TOGGLE_SIDEBAR });
+  };
+  
   const handleChange = ({ name, value }) => {
     dispatch({
       type: HANDLE_CHANGE,
       payload: { name, value },
     });
   };
-
+  
   const clearValues = () => {
     dispatch({
       type: CLEAR_VALUES,
@@ -353,11 +361,53 @@ export default function AppProvider(props) {
     });
   };
 
+  
+  const getCurrentUser = async () => {
+    dispatch({ type: GET_CURRENT_USER_BEGIN });
+    
+    try{
+      const { data } = await authFetch('/auth/getCurrentUser');
+      const { user, location } = data;
+
+      dispatch({
+        type: GET_CURRENT_USER_SUCCESS,
+        payload: { user, location },
+      });
+
+    } catch(error) {
+      if(error.response.status === 401) {
+        return;
+      }
+      logoutUser();
+    }
+  };
+
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
+
   return (
-    <AppContext.Provider value = {{...state, 
-    displayAlert, registerUser, loginUser, toggleSidebar, logoutUser, updateUser, handleChange,
-    clearValues, createJob, getJobs, setEditJob, deleteJob, editJob, showStats, clearFilters,
-    changePage, }}>
+    <AppContext.Provider 
+      value = {{
+        ...state,
+        displayAlert,
+        registerUser,
+        loginUser,
+        logoutUser,
+        updateUser,
+        toggleSidebar,
+        handleChange,
+        clearValues,
+        createJob,
+        getJobs,
+        setEditJob,
+        deleteJob,
+        editJob,
+        showStats,
+        clearFilters,
+        changePage, 
+      }}
+    >
       {children}
     </AppContext.Provider>
   );
