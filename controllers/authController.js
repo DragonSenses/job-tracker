@@ -3,7 +3,8 @@ import { StatusCodes } from 'http-status-codes';
 import { BadRequestError } from '../errors/index.js';
 import { UnAuthenticatedError } from '../errors/index.js';
 import xssFilters from 'xss-filters';
-import attachCookie from '../utils/attachCookie.js';
+
+const oneDay = 1000 * 60 * 60 * 24;
 
 const register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -23,7 +24,11 @@ const register = async (req, res) => {
 
   const token = user.createToken();
 
-  attachCookie({ res, token });
+  res.cookie('token', token, {
+    httpOnly: true,
+    expires: new Date(Date.now() + oneDay),
+    secure: process.env.NODE_ENV === 'production',
+  });
 
   res.status(StatusCodes.CREATED).json({
     user: {
@@ -58,7 +63,12 @@ const login = async (req, res) => {
   }
 
   const token = user.createToken();
-  attachCookie({ res, token });
+  res.cookie('token', token, {
+    httpOnly: true,
+    expires: new Date(Date.now() + oneDay),
+    secure: process.env.NODE_ENV === 'production',
+  });
+
   user.password = undefined;
 
   res.status( StatusCodes.OK ).json({ 
@@ -85,7 +95,12 @@ const updateUser = async (req, res) => {
   await user.save();
 
   const token = user.createToken();
-  attachCookie({ res, token });
+  
+  res.cookie('token', token, {
+    httpOnly: true,
+    expires: new Date(Date.now() + oneDay),
+    secure: process.env.NODE_ENV === 'production',
+  });
 
   res.status( StatusCodes.OK ).json({ 
     user, 
@@ -93,4 +108,23 @@ const updateUser = async (req, res) => {
   });
 };
 
-export { register, login, updateUser }
+const getCurrentUser = async (req, res) => {
+  const user = await User.findOne({ _id: req.user.userId });
+  res.status(StatusCodes.OK).json({ 
+    user, 
+    location: user.location 
+  });
+};
+
+const logout = async (req, res) => {
+  res.cookie('token', 'logout', {
+    httpOnly: true,
+    expires: new Date(Date.now() + 1000),
+  });
+
+  res.status(StatusCodes.OK).json({
+    msg: 'User logged out!'
+  });
+};
+
+export { register, login, updateUser, getCurrentUser, logout }
