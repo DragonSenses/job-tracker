@@ -20,7 +20,6 @@ export default function SearchContainer() {
   } = useAppContext();
 
   const handleSearch = (e) => {
-    // if (isLoading) return;
     handleChange({ name: e.target.name, value: e.target.value });
   };
 
@@ -48,7 +47,7 @@ export default function SearchContainer() {
   return (
     <Wrapper>
       <form action="" className="form">
-        <h4>search form</h4>
+        <h4>search jobs</h4>
         <div className="form-center">
           <FormRow
             type='text'
