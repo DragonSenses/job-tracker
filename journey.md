@@ -14262,38 +14262,36 @@ res.cookie(name, value [, options]);
 
 3. `secure` set to `process.env.NODE_ENV === 'production'`. Marks the cookie to be used with HTTPS only.
 
-## Create a `attachCookie()` in utils
-
-To avoid code reduplication, we should create the function that attaches cookies to the response with the JWT stored within. It should take in the `res` and `token` as parameters.
-
-Create `utils/attachCookie.js`
+Let's move up the `oneDay` variable up the at the top of the file `authController.js` after imports. 
 
 ```js
-function attachCookie(res, token) {
-  const oneDay = 1000 * 60 * 60 * 24;
+import User from '../models/User.js';
+import { StatusCodes } from 'http-status-codes';
+import { BadRequestError } from '../errors/index.js';
+import { UnAuthenticatedError } from '../errors/index.js';
+import xssFilters from 'xss-filters';
+
+const oneDay = 1000 * 60 * 60 * 24;
+```
+
+Then for the `register`, `login` and `updateUser` controllers, attach the cookie before sending the `res.status().json()`.
+
+```js
+const register = async (req, res) => {
+  // ... logic
 
   res.cookie('token', token, {
     httpOnly: true,
     expires: new Date(Date.now() + oneDay),
     secure: process.env.NODE_ENV === 'production',
   });
+
+  res.status(StatusCodes.CREATED).json({
+    // ...
+  });
 };
 
-export default attachCookie
-```
-
-Now we can use `attachCookie` function to attach a cookie for each controller in `authController`.
-
-- Import it in `authController`
-
-```js
-import attachCookie from '../utils/attachCookie.js';
-```
-
-- Then invoke the function passing in the response and token in the `register`, `login` and `updateUser` controllers.
-
-```js
-attachCookie({ res, token });
+// Repeat for login and updateUser functions
 ```
 
 ## Parse Cookie on the back-end
@@ -14549,5 +14547,436 @@ Going to store `LOGOUT_USER` code here as an example. Remove `token` for now, as
     }
 ```
 
+### Remove remaining `token` form `appContext`
 
+`loginUser`, `registerUser`, `updateUser` and their payloadds. Any place where `token` is found in appContext and was removed form reducer.
 
+# Front-End | After the Unmaking of token
+
+With this in place, we lose the usage of token on the front-end and end our reliance on `localStorage`.
+
+But one glaring issue stands out: *How do we keep track of our current user!?*
+
+Fear not, for after **Destruction comes Creation**. Let's make something that tracks our `currentUser`.
+
+## `GET` Current User Route
+
+Starting from the place we initiated the destruction,
+
+in `/controllers/authController.js`
+
+```js
+const getCurrentUser = async (req, res) => {
+  const user = await User.findOne({ _id: req.user.userId });
+  res.status(StatusCodes.OK).json({ 
+    user, 
+    location: user.location 
+  });
+};
+
+export { register, login, updateUser, getCurrentUser };
+```
+
+- Create `getCurrentUser` function which will find the user from the database through the `req.user.userId` parameter. Then re-send back a json response that contains the `user` and `location`.
+- export the function
+
+This way we don't save the current `user` nor the user's `location` in `localStorage`.
+
+Now to update the routes:
+
+in `/routes/authRoutes.js`
+
+```js
+import { 
+  register,
+  login,
+  updateUser,
+  getCurrentUser,
+} from '../controllers/authController.js';
+```
+
+Update the imports to include the `getCurrentUser` function. Then create the route for it:
+
+```js
+router.route('/register').post(apiLimiter, register);
+router.route('/login').post(apiLimiter, login);
+router.route('/updateUser').patch(authenticateUser, updateUser);
+
+router.route('/getCurrentUser').get(authenticateUser, getCurrentUser);
+```
+
+## Front-End | `GET` Current User
+
+Create GET_CURRENT_USER actionss in `/client/src/context/actions.js`
+
+```js
+export const GET_CURRENT_USER_BEGIN = 'GET_CURRENT_USER_BEGIN';
+export const GET_CURRENT_USER_SUCCESS = 'GET_CURRENT_USER_SUCCESS';
+```
+
+Then import these actions in both `appContext.js` and `reducer.js`.
+
+### `GET` Current User Request
+
+Now we need to be able to send the current user as part of the request.
+
+- Set the state value `userLoading` in `initialState`, with a default value of `true`
+
+```js
+const initialState = {
+  userLoading: true,
+  // ...
+};
+```
+- Then create the `getCurrentUser()` function that will dispatch the corresponding actions.
+
+```js
+  const getCurrentUser = async () => {
+    dispatch({ type: GET_CURRENT_USER_BEGIN });
+    
+    try{
+      const { data } = await authFetch('/auth/getCurrentUser');
+      const { user, location } = data;
+
+      dispatch({
+        type: GET_CURRENT_USER_SUCCESS,
+        payload: { user, location },
+      });
+      
+    } catch(error) {
+      if(error.response.status === 401) {
+        return;
+      }
+      logoutUser();
+    }
+  };
+```
+
+Let's have it run once through the `useEffect()` hook by giving it an empty array. This will have the behavior of `componentDidMount` as in, it only runs once. So import `useEffect` from react, then invoke the function within it:
+
+```js
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
+```
+
+### Handle current user in reducer
+
+Let's handle those actions that we've dispatched.
+
+```js
+case GET_CURRENT_USER_BEGIN: {
+  return {
+    ...state,
+    userLoading: true,
+    showAlert: false
+  };
+}
+
+case GET_CURRENT_USER_SUCCESS: {
+  return {
+    ...state,
+    userLoading: false,
+    user: action.payload.user,
+    userLocation: action.payload.location,
+    jobLocation: action.payload.location,
+  };
+}
+```
+
+For `GET_CURRENT_USER_BEGIN` we just return the state, and set the `userLoading` to true and `showAlert` to false.
+
+For `GET_CURRENT_USER_SUCCESS` we return the state while:
+  - Set `userLoading` to false to indicate that we've retrieved the current user so it is no longer loading
+  - Save the `user`, `userLocation` and `jobLocation` from the payload
+
+One more thing to modify in the reducer, was earlier in for the `LOGOUT_USER` action when we removed the token we had some stray properties that just resetted the same values from above. It will now be dealt with:
+
+```js
+case LOGOUT_USER: {
+  return {
+    ...initialState,
+    user: null,
+    userLocation: '',
+    jobLocation: '',
+  };
+}
+```
+
+Return the initialState, and replace the rest with `userLoading: false`.
+
+```js
+case LOGOUT_USER: {
+  return {
+    ...initialState,
+    userLoading: false,
+  };
+}
+```
+
+## Fixing | Protected Route
+
+Now that we included current user and `userLoading` prop, a few other components needs changing.
+
+Let's say in the scenario that the current `user` is still being fetched, and `userLoading` has yet to resolve to false. We had `ProtectedRoute` component which wrapped our main pages and would kick them back to the landing page when the user does not exist (at the time the user was found in `localStorage`). 
+
+We want to be able to fix this in such a way that it would load the user in, and by the time `userLoading` is resolved it would bring us onto the main pages or home route `/`.
+
+Remember way back in `/client/App.js`
+
+```js
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <SharedLayout/>
+            </ProtectedRoute>
+          }
+        >
+        // ...
+```
+
+We wrapped the `SharedLayout` component with a `ProtectedRoute`, a component which would kick an unauthorized user back to the landing page if they weren't supposed to be here.
+
+`/client/pages/ProtectedRoute.js`
+
+```js
+export default function ProtectedRoute({ children }) {
+  const { user } = useAppContext();
+  if(!user){
+    return <Navigate to='/landing' />
+  }
+  return (
+    children
+  );
+}
+```
+
+It checked for the `user` within `appContext`. To which we should add `userLoading` too.
+
+We'll show the `<Loading />` component when `userLoading` is true.
+
+```js
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+import { useAppContext } from '../context/appContext';
+import Loading from '../components/Loading';
+
+export default function ProtectedRoute({ children }) {
+  const { user, userLoading } = useAppContext();
+
+  if(userLoading) {
+    return <Loading />;
+  }
+
+  if(!user){
+    return <Navigate to='/landing' />
+  }
+
+  return (
+    children
+  );
+};
+```
+
+## Fixing | Landing Page
+
+Now on the Landing Page, we had something like this:
+
+```js
+import React from 'react';
+import main from '../assets/images/main.svg';
+import Wrapper from '../assets/wrappers/LandingPage';
+import Logo from '../components/Logo';
+import { Link } from 'react-router-dom';
+
+function Landing() {
+  return (
+    <Wrapper>
+      <nav>
+        <Logo />
+      </nav>
+      <div className="container page">
+
+        <div className="info">
+          <h1>Job <span>Tracking</span> App</h1>
+          <h4>Track and manage all your job applications in one place.</h4>
+          <p>
+            Are you also feeling lost as a job seeker? I created this app to ease 
+            the process of applying. To give you that organization and certainty fraught
+            with a time where there is little to none. Keep sending out applications.
+            I know it is discouraging, but you have to bump the number of applications up.
+            You are not alone in this struggle, I'm also in the same process.
+            I hope this app will prevent you from growing too despondent. <strong>"If I can ease one
+            life the aching, I shall not live in vain" - Emily Dickinson</strong>
+          </p>
+          <Link to='/register' className='btn btn-hero'>
+            Login/Register
+          </Link>
+        </div>
+
+        <img src={main} alt="job hunt" className='img main-img'></img>
+
+      </div>
+    </Wrapper>
+  );
+}
+
+export default Landing 
+```
+
+Or simplified:
+```js
+function Landing() {
+  return (
+    <Wrapper>
+      { /* ... */ }
+    </Wrapper>
+  );
+}
+
+export default Landing 
+```
+
+Now we want our Landing page to check for the user in `appContext` and if current `user` exists and `userLoading` is resolved to false, it should navigate the user back to the home route or `Stats` page.
+
+Going to use a React [<Fragment>](https://react.dev/reference/react/Fragment), or the alternative syntax `<>...</>`, lets you group elements without a wrapper node.
+
+We are going to need to return something alongside the `Wrapper` this time, which is the code that checks for the `user` and Navigates them back to the home page.
+
+So in our simplified example:
+
+- We add two imports `useAppContext` and `Navigate` from `react-router-dom`
+- Extract `user` from the global context
+- Return a React Fragment that contains:
+  - A conditional check for the `user` which Navigates them back to the home page if the current user exists
+  - The `Wrapper` and the rest of the code
+
+```js
+import { Navigate } from 'react-router-dom';
+import { useAppContext } from '../context/appContext';
+
+function Landing() {
+  const { user } = useAppContext();
+
+  return (
+    <>
+      {user && <Navigate to='/' />}
+      <Wrapper>
+        { /* ... */ }
+      </Wrapper>
+    </>
+  );
+}
+
+export default Landing 
+```
+
+## Back-End | Logging Out
+
+In `/controllers/authController.js`, create the `logout` function
+
+```js
+const logout = async (req, res) => {
+  
+  res.cookie('token', 'logout', {
+    httpOnly: true,
+    expires: new Date(Date.now() + 1000),
+  });
+
+  res.status(StatusCodes.OK).json({
+    msg: 'User logged out!'
+  });
+};
+```
+
+In `/routes/authRoutes.js`, import `logout` and add the `GET` route method. 
+
+See [Express Routing - Route methods](https://expressjs.com/en/guide/routing.html).
+
+```js
+import {
+  // ...
+  logout,
+} from '../controllers/authController.js';
+
+router.route('/register').post(apiLimiter, register);
+router.route('/login').post(apiLimiter, login);
+router.get('/logout', logout);
+
+router.route('/updateUser').patch(authenticateUser, updateUser);
+router.route('/getCurrentUser').get(authenticateUser, getCurrentUser);
+```
+
+## Front-End | Logging Out
+
+Back in `/client/src/context/appContext.js`, we should update our `logout` function:
+
+```js
+const logoutUser = () => {
+  dispatch({ type: LOGOUT_USER });
+};
+```
+
+Turns into:
+
+```js
+const logoutUser = async () => {
+  await authFetch.get('/auth/logout');
+  dispatch({ type: LOGOUT_USER });
+};
+```
+
+# Completion
+
+Finally, our project is now complete. Congrats to anyone reading this.
+
+What's next is to get it up and running.
+
+## Prepare for Deployment
+
+- In `/client`, remove `build` and `node_modules`
+- In `server`, or the root directory of the project, remove `node_modules`
+- These will be re-installed with a script later
+
+In `package.json` in the server, setup the production scripts:
+
+```json
+{
+  "scripts": {
+    "install-dependencies": "npm run install-client && npm install",
+    "setup-production": "npm run install-client && npm run build-client && npm install",
+    "install-client": "cd client && npm install",
+    "build-client": "cd client && npm run build",
+    "server": "nodemon server --ignore client",
+    "client": "npm start --prefix client",
+    "start": "concurrently --kill-others-on-fail \" npm run server\" \" npm run client\""
+  },
+}
+```
+
+Now we can just type into the command
+
+```sh
+node server
+```
+
+App must run locally. 
+
+## Hosting on [render](https://render.com/)
+
+To host our full-stack app, we should make it a Web Service. Make an account, link your GitHub, and go to the Dashboard.
+
+Create New Web Service, and connect your GitHub repository.
+
+- Going to give it a unique name of `dragons-job-tracker`.
+- Region where web service runs, Oregon (US West).
+- The build command is `npm run setup-production`
+- The start command is `npm run start`
+- Add secret file `.env`
+- Health Check Path -> `/landing`
+- Auto-Deploy -> yes
