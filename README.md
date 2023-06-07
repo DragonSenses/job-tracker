@@ -1,40 +1,85 @@
 # job-tracker
  A job tracking and management application.
 
-**Work In Progress**
-
-Coming Soon: [Live Link] when it is a viable product
-
 # Description
 
-A full stack MERN application that helps the user track applications. App's purpose is to help the user track and manage their job applications.
+A full stack MERN application that helps the user track and manage their job applications.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-# Specifications
+# Live Link
 
-- 
+[Job Tracker](https://dragons-job-tracker.onrender.com).
+
+You can log-in with a test account:
+
+```js
+email: test@test.com
+pass:  test
+```
 
 # Technologies:
 MongoDB, Express, React, Node.js
 
+# Specifications
+
+- User can view their pending applications and job statistics, together with an interchangeable chart.
+- User can Register, Log-in, Log-out of the app securely with authentication
+- Be able to search through their list of jobs added, with filter search options. Can quickly remove filters in one click.
+- User can view and browse their list of jobs.
+- Jobs have pagination so the user can browse all their jobs in manageable chunks and won't be overwhelmed.
+- Add Job with position, company, location, status, and type as parameters
+- Users can update their profile
+
+
 # Instructions to run locally
 
-1. Clone this repo (or download zip on GitHub)
-2. Go to the directory the files are located
+- Note: You are going to need an existing [MongoDB Atlas account](https://www.mongodb.com/), to [Get a Connection String](https://www.mongodb.com/docs/guides/atlas/connection-string/).
 
-```powershell
-cd /job-tracker
+
+**1. Clone this repo (or download zip on GitHub)**
+
+**2. Go to the directory the files are located**
+
+    In the terminal:
+
+    ```powershell
+    cd /job-tracker
+    ```
+
+**3. Install dependencies**
+
+    In the terminal:
+
+    ```powershell
+    npm run install-dependencies
+    ```
+
+**4. Create an `.env` file**
+
+Setup values for the following parameters:
+
+- `MONGO_URL` - should be equal to your MongoDB connection string
+- `SECRET_KEY` - any string that is secret to you. You can use this [Key Generator](https://www.allkeysgenerator.com/)
+- `LIFETIME` - the lifetime of the JWT. This will determine a few things for the app such as for how long a user can stay logged in.
+- `PORT` - is the port number you want the express server to listen to. 4000 by default.
+
+Example of a `.env` file:
+
+```js
+MONGO_URL="Your_MongoDB_Connection_String"
+SECRET_KEY="Secret_Key_You_Generated_Random_Characters"
+LIFETIME="1d"
+PORT=4000
 ```
 
-3. Install dependencies
+**5. Run the app on localhost:3000**
 
-```powershell
-npm install
-```
-
-4. Run the app on localhost:3000
-
+In the terminal:
 ```powershell
 npm run start
 ```
+
+Now visit the URL: 
+
+http://localhost:3000/
