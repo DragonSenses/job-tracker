@@ -15058,3 +15058,29 @@ npm install package-name@"<3.0.0"
 ```
 
 Would install the latest right before 3.0.0 (e.g. 2.11.1)
+
+## Dependency log
+
+(May 20, 2024)
+```sh
+npm outdated
+
+Package             Current   Wanted   Latest  Location                         Depended by
+concurrently          7.6.0    7.6.0    8.2.2  node_modules/concurrently        job-tracker
+dotenv               16.0.3   16.4.5   16.4.5  node_modules/dotenv              job-tracker
+express              4.18.2   4.19.2   4.19.2  node_modules/express             job-tracker
+express-rate-limit    6.7.0   6.11.2    7.2.0  node_modules/express-rate-limit  job-tracker
+helmet                7.0.0    7.1.0    7.1.0  node_modules/helmet              job-tracker
+http-status-codes     2.2.0    2.3.0    2.3.0  node_modules/http-status-codes   job-tracker
+jsonwebtoken          9.0.0    9.0.2    9.0.2  node_modules/jsonwebtoken        job-tracker
+moment               2.29.4   2.30.1   2.30.1  node_modules/moment              job-tracker
+mongoose              7.0.1   7.6.11    8.4.0  node_modules/mongoose            job-tracker
+nodemon              2.0.21   2.0.22    3.1.0  node_modules/nodemon             job-tracker
+validator            13.9.0  13.12.0  13.12.0  node_modules/validator           job-tracker
+```
+
+chore: Update dependencies to latest semver range
+
+```sh
+npm update --save
+```
