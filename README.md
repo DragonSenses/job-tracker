@@ -5,11 +5,9 @@
 
 A full stack MERN application that helps the user track and manage their job applications.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Live Demo
 
-# Live Link
-
-[Job Tracker](https://dragons-job-tracker.onrender.com).
+[Job Tracker - Live Demo](https://dragons-job-tracker.onrender.com)
 
 You can log-in with a test account:
 
@@ -17,6 +15,24 @@ You can log-in with a test account:
 email: test@test.com
 pass:  test
 ```
+
+# Preview & Screenshots
+
+### 📊 Job Statistics Overview  
+Monitor the status of your job applications. 
+![Stats Page](demo/img/stats-page.jpg)
+
+### 🔍 Browse & Search Jobs  
+View your entire job list with search filters and pagination.
+![All Jobs Page](demo/img/all-jobs-page.jpg)
+
+### ➕ Add New Jobs  
+Submit job entries quickly using a simple input form.
+![Add Job Page](demo/img/add-job-page.jpg)
+
+### 👤 Profile Management  
+Update your basic profile information.
+![Profile Page](demo/img/profile-page.jpg)
 
 # Technologies:
 MongoDB, Express, React, Node.js
@@ -31,11 +47,9 @@ MongoDB, Express, React, Node.js
 - Add Job with position, company, location, status, and type as parameters
 - Users can update their profile
 
-
 # Instructions to run locally
 
 - Note: You are going to need an existing [MongoDB Atlas account](https://www.mongodb.com/), to [Get a Connection String](https://www.mongodb.com/docs/guides/atlas/connection-string/).
-
 
 **1. Clone this repo (or download zip on GitHub)**
 
